@@ -1,32 +1,43 @@
-#include <functional>
-#include <string>
+/**
+ * @brief Regular expression matching with support for '.' and '*'.
+ * @intuition Use recursion with memoization to efficiently match string and
+ * pattern.
+ * @approach Top-down DP (recursion + memo) using std::vector and string_view
+ * for clarity and performance.
+ * @complexity Time: O(m*n), Space: O(m*n), where m = s.size(), n = p.size().
+ */
+#include <string_view>
+#include <vector>
 
 class Solution {
 public:
-  bool isMatch(std::string s, std::string p) {
-    int m = s.size(), n = p.size();
-    int f[m + 1][n + 1];
-    memset(f, 0, sizeof f);
-    std::function<bool(int, int)> dfs = [&](int i, int j) -> bool {
-      if (j >= n) {
-        return i == m;
+  /**
+   * @brief Returns true if s matches p (with '.' and '*').
+   * @param s Input string to match.
+   * @param p Pattern string (may include '.' and '*').
+   * @return True if s matches p, false otherwise.
+   */
+  [[nodiscard]] bool isMatch(std::string s, std::string p) const {
+    const auto m = s.size(), n = p.size();
+    std::vector<std::vector<std::optional<bool>>> memo(
+        m + 1, std::vector<std::optional<bool>>(n + 1));
+    const auto sv = std::string_view{s};
+    const auto pv = std::string_view{p};
+
+    auto match = [&](auto &&self, size_t i, size_t j) -> bool {
+      if (memo[i][j].has_value())
+        return memo[i][j].value();
+      if (j == n)
+        return memo[i][j] = (i == m);
+      const bool firstMatch = (i < m) && (sv[i] == pv[j] || pv[j] == '.');
+      bool res = false;
+      if (j + 1 < n && pv[j + 1] == '*') {
+        res = self(self, i, j + 2) || (firstMatch && self(self, i + 1, j));
+      } else {
+        res = firstMatch && self(self, i + 1, j + 1);
       }
-      if (f[i][j]) {
-        return f[i][j] == 1;
-      }
-      int res = -1;
-      if (j + 1 < n && p[j + 1] == '*') {
-        if (dfs(i, j + 2) or
-            (i < m and (s[i] == p[j] or p[j] == '.') and dfs(i + 1, j))) {
-          res = 1;
-        }
-      } else if (i < m and (s[i] == p[j] or p[j] == '.') and
-                 dfs(i + 1, j + 1)) {
-        res = 1;
-      }
-      f[i][j] = res;
-      return res == 1;
+      return memo[i][j] = res;
     };
-    return dfs(0, 0);
+    return match(match, 0, 0);
   }
 };
