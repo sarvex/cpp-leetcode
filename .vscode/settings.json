@@ -20,5 +20,9 @@
   "files.associations": {
     ".gitignore.genai": "ignore",
     "cctype": "cpp"
+  },
+  "sonarlint.connectedMode.project": {
+    "connectionId": "sarvex",
+    "projectKey": "sarvex_leetcode-cpp"
   }
 }
