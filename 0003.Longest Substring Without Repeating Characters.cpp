@@ -1,17 +1,27 @@
-#include <string>
+#include <algorithm>
+#include <array>
+#include <string_view>
 
 class Solution {
 public:
-  int lengthOfLongestSubstring(std::string s) {
-    int cnt[128]{};
-    int ans = 0, n = s.size();
-    for (int l = 0, r = 0; r < n; ++r) {
-      ++cnt[s[r]];
-      while (cnt[s[r]] > 1) {
-        --cnt[s[l++]];
-      }
-      ans = std::max(ans, r - l + 1);
+  /**
+   * Sliding window for longest substring without repeats.
+   * @intuition: Track last seen positions to efficiently skip duplicates.
+   * @approach: Use a fixed-size array for ASCII, update window start on
+   * repeats.
+   * @complexity: O(n) time, O(1) space (ASCII charset).
+   */
+  [[nodiscard]] static constexpr int
+  lengthOfLongestSubstring(std::string_view s) noexcept {
+    std::array<int, 128> lastSeen{};
+    lastSeen.fill(-1);
+    int maxLen = 0, windowStart = 0;
+    for (int i = 0; i < static_cast<int>(s.size()); ++i) {
+      const auto ch = static_cast<unsigned char>(s[i]);
+      windowStart = std::max(windowStart, lastSeen[ch] + 1);
+      maxLen = std::max(maxLen, i - windowStart + 1);
+      lastSeen[ch] = i;
     }
-    return ans;
+    return maxLen;
   }
 };
