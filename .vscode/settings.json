@@ -9,5 +9,16 @@
     "statusBarItem.remoteForeground": "#e7e7e7",
     "tab.activeBorder": "#df53fe"
   },
-  "peacock.color": "#d620fe"
+  "peacock.color": "#d620fe",
+  "python-envs.pythonProjects": [
+    {
+      "path": "",
+      "envManager": "ms-python.python:venv",
+      "packageManager": "ms-python.python:pip"
+    }
+  ],
+  "files.associations": {
+    ".gitignore.genai": "ignore",
+    "cctype": "cpp"
+  }
 }
