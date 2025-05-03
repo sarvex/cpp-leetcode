@@ -97,6 +97,10 @@ This rules file defines standards for modern C++23 development, emphasizing best
 - Comment on "why", not "what".
 - Keep comments up-to-date.
 - Document edge cases and caveats.
+- always create a tagline at the top of Header comments telling the approach of the solution
+- describe the @intuition i.e. "first thoughts on how to solve this problem" in the Header comments as second section
+- describe the @approach i.e. "your approach to solving the problem" in the Header comments as third section
+- include @complexity in the Header comments, separate lines for time and space, as forth section
 
 ## Clean Architecture
 

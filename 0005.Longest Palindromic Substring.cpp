@@ -1,24 +1,36 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief Dynamic programming for longest palindromic substring.
+ * @intuition: Palindromes expand from the center; DP can track valid substrings.
+ * @approach: Use a DP table to mark palindromic substrings, updating max as we go.
+ * @complexity: O(n^2) time, O(n^2) space.
+ */
 class Solution {
 public:
-  std::string longestPalindrome(std::string s) {
-    int n = s.size();
-    std::vector<std::vector<bool>> f(n, std::vector<bool>(n, true));
-    int k = 0, mx = 1;
-    for (int i = n - 2; ~i; --i) {
-      for (int j = i + 1; j < n; ++j) {
-        f[i][j] = false;
-        if (s[i] == s[j]) {
-          f[i][j] = f[i + 1][j - 1];
-          if (f[i][j] && mx < j - i + 1) {
-            mx = j - i + 1;
-            k = i;
+  [[nodiscard]] std::string longestPalindrome(const std::string& s) const {
+
+    const auto n = static_cast<int>(s.size());
+
+    if (n < 2) return s;
+    std::vector<std::vector<bool>> isPalindrome(n, std::vector<bool>(n, false));
+    int start = 0, maxLen = 1;
+
+    for (int i = 0; i < n; ++i) isPalindrome[i][i] = true;
+
+    for (int len = 2; len <= n; ++len) {
+      for (int i = 0; i <= n - len; ++i) {
+        int j = i + len - 1;
+        if (s[i] == s[j] && (len == 2 || isPalindrome[i + 1][j - 1])) {
+          isPalindrome[i][j] = true;
+          if (len > maxLen) {
+            start = i;
+            maxLen = len;
           }
         }
       }
     }
-    return s.substr(k, mx);
+    return s.substr(start, maxLen);
   }
 };
