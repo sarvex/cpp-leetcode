@@ -19,7 +19,9 @@
   ],
   "files.associations": {
     ".gitignore.genai": "ignore",
-    "cctype": "cpp"
+    "cctype": "cpp",
+    "vector": "cpp",
+    "valarray": "cpp"
   },
   "sonarlint.connectedMode.project": {
     "connectionId": "sarvex",

@@ -1,32 +1,18 @@
 #include <vector>
-using std::vector;
+#include <algorithm>
 
-class Solution {
-public:
-  /**
-   * Removes all instances of 'val' from the input vector 'nums' in-place.
-   *
-   * @param nums Reference to a vector of integers. Modified in-place such that
-   *             the first k elements are those not equal to 'val'.
-   * @param val  The integer value to remove from the vector.
-   * @return     The number of elements remaining after removal (new length).
-   *
-   * Approach:
-   *   Uses the two-pointer technique. Iterates through the vector, and whenever
-   *   an element not equal to 'val' is found, it is written to the next
-   * position at index 'k'. After processing, the first 'k' elements are those
-   * not equal to 'val'.
-   */
-  int removeElement(vector<int> &nums, int val) {
-    int k = 0;
-    const int size = nums.size();
-    for (int i = 0; i < size; ++i) {
-      if (nums[i] != val) {
-        nums[k] = nums[i];
-        ++k;
-      }
-    }
-    // After loop, first 'k' elements are those not equal to val
-    return k;
+
+class Solution final {
+/**
+ * @brief In-place removal using STL algorithms.
+ * @intuition Use standard algorithms to minimize manual iteration.
+ * @approach Use std::remove to shift unwanted elements, then return new size.
+ * @complexity Time: O(n)
+ * @complexity Space: O(1)
+ */
+  public:
+  int removeElement(std::vector<int>& nums, int val) {
+    const auto newEnd = std::remove(nums.begin(), nums.end(), val);
+    return static_cast<int>(std::distance(nums.begin(), newEnd));
   }
 };
