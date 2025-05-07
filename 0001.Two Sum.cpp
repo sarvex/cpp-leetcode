@@ -1,28 +1,27 @@
+#include <concepts>
 #include <unordered_map>
 #include <vector>
 
-/**
- * Hash map single-pass solution for Two Sum
- * @intuition: Use a hash map to track seen values and their indices for O(1)
- * lookup.
- * @approach: Iterate once, for each element check if complement exists in map,
- * else insert.
- * @complexity: O(n) time, O(n) space
- */
 class Solution {
 public:
-  [[nodiscard]] std::vector<int> twoSum(const std::vector<int> &nums,
-                                        int target) const {
+  /**
+   * @brief Single-pass hash map lookup for Two Sum problem.
+   * @intuition: Use a hash map to track seen values and their indices.
+   * @approach: Iterate once, storing each value's index; check if complement
+   * exists.
+   * @complexity: O(n) time, O(n) space.
+   */
+  [[nodiscard]] static auto twoSum(std::vector<int> const &nums, int target)
+      -> std::vector<int> {
     std::unordered_map<int, int> seen;
-    for (auto [i, x] = std::pair{0, 0}; i < static_cast<int>(nums.size());
-         ++i) {
-      x = nums[i];
-      const int y = target - x;
-      if (auto it = seen.find(y); it != seen.end()) {
-        return {it->second, i};
+    for (auto i = 0UZ; i < nums.size(); ++i) {
+      const auto complement = target - nums[i];
+      if (const auto it = seen.find(complement); it != seen.end()) {
+        return {static_cast<int>(it->second), static_cast<int>(i)};
       }
-      seen[x] = i;
+      seen[nums[i]] = static_cast<int>(i);
     }
+    return {};
     return {};
   }
 };
