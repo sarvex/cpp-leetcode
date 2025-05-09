@@ -5,23 +5,27 @@
 class Solution {
 public:
   /**
-   * Sliding window for longest substring without repeats.
-   * @intuition: Track last seen positions to efficiently skip duplicates.
-   * @approach: Use a fixed-size array for ASCII, update window start on
-   * repeats.
-   * @complexity: O(n) time, O(1) space (ASCII charset).
+   * Finds longest substring without character repetition using sliding window.
+   * @intuition: Each character's last position determines where new windows can start.
+   * @approach: Track last positions in fixed array, adjust window on duplicates.
+   * @complexity: O(n) time, O(1) space (128 ASCII chars).
    */
   [[nodiscard]] static constexpr int
-  lengthOfLongestSubstring(std::string_view s) noexcept {
-    std::array<int, 128> lastSeen{};
-    lastSeen.fill(-1);
-    int maxLen = 0, windowStart = 0;
-    for (int i = 0; i < static_cast<int>(s.size()); ++i) {
-      const auto ch = static_cast<unsigned char>(s[i]);
-      windowStart = std::max(windowStart, lastSeen[ch] + 1);
-      maxLen = std::max(maxLen, i - windowStart + 1);
-      lastSeen[ch] = i;
+  lengthOfLongestSubstring(std::string_view input) noexcept {
+    constexpr std::array<int, 128> emptyPositions{};
+    std::array<int, 128> lastPositions = emptyPositions;
+    int longestLength = 0;
+    int currentWindowStart = 0;
+
+    for (int currentPos = 0; currentPos < static_cast<int>(input.size()); ++currentPos) {
+      const auto currentChar = static_cast<unsigned char>(input[currentPos]);
+      const bool isFirstOccurrence = !lastPositions[currentChar];
+      currentWindowStart = std::max(currentWindowStart, isFirstOccurrence ? 0 : lastPositions[currentChar]);
+
+      const int currentWindowLength = currentPos - currentWindowStart + 1;
+      longestLength = std::max(longestLength, currentWindowLength);
+      lastPositions[currentChar] = currentPos + 1;
     }
-    return maxLen;
+    return longestLength;
   }
 };

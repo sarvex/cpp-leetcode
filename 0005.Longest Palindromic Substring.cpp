@@ -1,14 +1,14 @@
 #include <string>
 #include <vector>
 
-/**
- * @brief Dynamic programming for longest palindromic substring.
- * @intuition: Palindromes expand from the center; DP can track valid substrings.
- * @approach: Use a DP table to mark palindromic substrings, updating max as we go.
- * @complexity: O(n^2) time, O(n^2) space.
- */
 class Solution {
 public:
+  /**
+   * @brief Dynamic programming for longest palindromic substring.
+   * @intuition: Palindromes expand from the center; DP can track valid substrings.
+   * @approach: Use a DP table to mark palindromic substrings, updating max as we go.
+   * @complexity: O(n^2) time, O(n^2) space.
+   */
   [[nodiscard]] std::string longestPalindrome(const std::string& s) const {
 
     const auto n = static_cast<int>(s.size());
