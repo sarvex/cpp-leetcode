@@ -1,26 +1,27 @@
 #include <algorithm>
 #include <vector>
+#include <limits>
 
 class Solution {
 public:
-  int threeSumClosest(std::vector<int> &nums, int target) {
+  /**
+   * Efficient two-pointer approach for 3Sum Closest problem.
+   * @intuition: Sort and use two pointers to scan for closest sum.
+   * @approach: Fix one element, use two pointers for the rest, update closest sum.
+   * @complexity: Time O(n^2), Space O(1)
+   */
+  int threeSumClosest(std::vector<int> &nums, int target) const {
     std::sort(nums.begin(), nums.end());
-    int ans = 1 << 30;
-    int n = nums.size();
-    for (int i = 0; i < n; ++i) {
-      int j = i + 1, k = n - 1;
-      while (j < k) {
-        int t = nums[i] + nums[j] + nums[k];
-        if (t == target)
-          return t;
-        if (std::abs(t - target) < std::abs(ans - target))
-          ans = t;
-        if (t > target)
-          --k;
-        else
-          ++j;
+    int closest = std::numeric_limits<int>::max();
+    for (size_t i = 0; i + 2 < nums.size(); ++i) {
+      size_t left = i + 1, right = nums.size() - 1;
+      while (left < right) {
+        const int sum = nums[i] + nums[left] + nums[right];
+        if (sum == target) return sum;
+        if (std::abs(sum - target) < std::abs(closest - target)) closest = sum;
+        (sum < target) ? ++left : --right;
       }
     }
-    return ans;
+    return closest;
   }
 };

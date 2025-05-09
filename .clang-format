@@ -4,7 +4,7 @@ TabWidth: 2
 UseTab: Never
 ColumnLimit: 120
 AllowShortFunctionsOnASingleLine: Inline
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Stroustrup
 BraceWrapping:
   AfterClass: true
   AfterControlStatement: true
