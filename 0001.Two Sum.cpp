@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <vector>
 
-class Solution {
+class Solution final {
 public:
   /**
    * @brief Single-pass hash map lookup for Two Sum problem.

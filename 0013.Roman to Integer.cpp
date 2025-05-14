@@ -1,10 +1,7 @@
 #include <string>
 #include <unordered_map>
 
-#include <string>
-#include <unordered_map>
-
-class Solution {
+class Solution final {
 public:
   /**
    * @brief Convert a Roman numeral string to its integer value (C++23,

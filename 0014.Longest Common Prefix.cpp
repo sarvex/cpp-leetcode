@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 
-class Solution {
+class Solution final {
 public:
   std::string longestCommonPrefix(std::vector<std::string> &strs) {
     int n = strs.size();

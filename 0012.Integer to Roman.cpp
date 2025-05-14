@@ -3,16 +3,16 @@
 #include <string_view>
 #include <utility>
 
-/**
- * Greedy mapping of integers to Roman numerals.
- * @intuition Use the largest possible Roman numeral at each step, subtracting
- * until the number is reduced to zero.
- * @approach Iterate over a constexpr array of value-numeral pairs, greedily
- * appending numerals and subtracting values.
- * @complexity Time: O(1), Space: O(1) – input range is fixed and bounded.
- */
-class Solution {
+class Solution final {
 public:
+  /**
+   * Greedy mapping of integers to Roman numerals.
+   * @intuition Use the largest possible Roman numeral at each step, subtracting
+   * until the number is reduced to zero.
+   * @approach Iterate over a constexpr array of value-numeral pairs, greedily
+   * appending numerals and subtracting values.
+   * @complexity Time: O(1), Space: O(1) – input range is fixed and bounded.
+   */
   [[nodiscard]] constexpr std::string intToRoman(int num) const {
     static constexpr std::array<std::pair<int, std::string_view>, 13> romanMap{
         {{1000, "M"},

@@ -1,6 +1,6 @@
 #include <limits>
 
-class Solution {
+class Solution final {
 public:
   int reverse(int x) {
     int ans = 0;

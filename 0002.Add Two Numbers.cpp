@@ -8,21 +8,15 @@ struct ListNode {
   ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
 
-/**
- * Digit-wise addition of two reversed linked-list numbers.
- * @intuition: Each node represents a digit; add corresponding digits and carry,
- * as in grade-school addition.
- * @approach: Iterate both lists, summing digits and carry, appending new nodes
- * to result. Use a dummy head for simplicity.
- * @complexity: O(max(N, M)) time, O(max(N, M)) space.
- */
-class Solution {
+class Solution final {
 public:
   /**
-   * Adds two numbers represented by reversed linked lists.
-   * @param l1 First number as a linked list (least significant digit first).
-   * @param l2 Second number as a linked list (least significant digit first).
-   * @return Head of new linked list representing the sum.
+   * Digit-wise addition of two reversed linked-list numbers.
+   * @intuition: Each node represents a digit; add corresponding digits and
+   * carry, as in grade-school addition.
+   * @approach: Iterate both lists, summing digits and carry, appending new
+   * nodes to result. Use a dummy head for simplicity.
+   * @complexity: O(max(N, M)) time, O(max(N, M)) space.
    */
   [[nodiscard]] static auto addTwoNumbers(const ListNode *l1,
                                           const ListNode *l2) -> ListNode * {

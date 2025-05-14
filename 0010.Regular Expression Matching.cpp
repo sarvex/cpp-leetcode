@@ -1,21 +1,15 @@
-/**
- * @brief Regular expression matching with support for '.' and '*'.
- * @intuition Use recursion with memoization to efficiently match string and
- * pattern.
- * @approach Top-down DP (recursion + memo) using std::vector and string_view
- * for clarity and performance.
- * @complexity Time: O(m*n), Space: O(m*n), where m = s.size(), n = p.size().
- */
 #include <string_view>
 #include <vector>
 
-class Solution {
+class Solution final {
 public:
   /**
-   * @brief Returns true if s matches p (with '.' and '*').
-   * @param s Input string to match.
-   * @param p Pattern string (may include '.' and '*').
-   * @return True if s matches p, false otherwise.
+   * @brief Regular expression matching with support for '.' and '*'.
+   * @intuition Use recursion with memoization to efficiently match string and
+   * pattern.
+   * @approach Top-down DP (recursion + memo) using std::vector and string_view
+   * for clarity and performance.
+   * @complexity Time: O(m*n), Space: O(m*n), where m = s.size(), n = p.size().
    */
   [[nodiscard]] bool isMatch(std::string s, std::string p) const {
     const auto m = s.size(), n = p.size();

@@ -1,6 +1,6 @@
 #include <vector>
 
-class Solution {
+class Solution final {
 public:
   int maxArea(std::vector<int> &height) {
     int l = 0, r = height.size() - 1;

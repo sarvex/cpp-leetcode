@@ -1,4 +1,6 @@
-class Solution {
+#include <vector>
+
+class Solution final {
 public:
   /**
    * Removes duplicates from a sorted array in-place such that each element
@@ -8,7 +10,7 @@ public:
    * this vector in-place.
    * @return The number of unique elements after removing duplicates.
    */
-  int removeDuplicates(vector<int> &nums) {
+  int removeDuplicates(std::vector<int> &nums) {
     if (nums.empty())
       return 0;
     int i = 0;
