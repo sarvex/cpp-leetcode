@@ -1,7 +1,7 @@
 #include <functional>
 #include <string>
 
-class Solution {
+class Solution final {
 public:
   bool isMatch(std::string s, std::string p) {
     int m = s.size(), n = p.size();

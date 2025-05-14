@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 
-class Solution {
+class Solution final {
 public:
   std::string multiply(std::string num1, std::string num2) {
     if (num1 == "0" || num2 == "0") {

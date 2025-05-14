@@ -1,6 +1,6 @@
 #include <string>
 
-class Solution {
+class Solution final {
 public:
   std::string countAndSay(int n) {
     std::string s = "1";
