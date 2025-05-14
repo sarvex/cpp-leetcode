@@ -1,24 +1,30 @@
 #include <algorithm>
 #include <string>
+#include <vector>
 
 class Solution final {
 public:
-  int longestValidParentheses(std::string s) {
-    int n = s.size();
-    int f[n + 1];
-    memset(f, 0, sizeof(f));
-    for (int i = 2; i <= n; ++i) {
-      if (s[i - 1] == ')') {
-        if (s[i - 2] == '(') {
-          f[i] = f[i - 2] + 2;
-        } else {
-          int j = i - f[i - 1] - 1;
-          if (j && s[j - 1] == '(') {
-            f[i] = f[i - 1] + 2 + f[j - 1];
-          }
+  /**
+   * @brief Returns the length of the longest valid parentheses substring using dynamic programming.
+   * @intuition: Track valid substrings ending at each position using a DP table.
+   * @approach: For each ')', check if it closes a valid '('. Use dpTable[i] to store the length of the longest valid substring ending at i-1.
+   * @complexity: Time: O(n)
+   * @complexity: Space: O(n)
+   */
+  int longestValidParentheses(const std::string& parentheses) const {
+    const auto stringLength = parentheses.size();
+    std::vector<int> dpTable(stringLength + 1, 0);
+    int longestLength = 0;
+    for (size_t index = 2; index <= stringLength; ++index) {
+      if (parentheses[index - 1] == ')') {
+        if (parentheses[index - 2] == '(') {
+          dpTable[index] = dpTable[index - 2] + 2;
+        } else if (index > dpTable[index - 1] + 1 && parentheses[index - dpTable[index - 1] - 2] == '(') {
+          dpTable[index] = dpTable[index - 1] + 2 + dpTable[index - dpTable[index - 1] - 2];
         }
+        longestLength = std::max(longestLength, dpTable[index]);
       }
     }
-    return *max_element(f, f + n + 1);
+    return longestLength;
   }
 };
