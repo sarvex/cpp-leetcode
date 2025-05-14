@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <vector>
 
-class Solution {
+class Solution final {
 public:
   /**
    * @brief Calculates the total trapped rainwater using prefix maxima.

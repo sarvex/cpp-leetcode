@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <vector>
 
-class Solution {
+class Solution final {
 public:
   /**
    * Greedy minimum-jump solver for Jump Game II.
