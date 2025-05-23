@@ -1,5 +1,5 @@
 /**
- * @brief In-place deletion of duplicates in a sorted linked list using single-pass traversal
+ * In-place deletion of duplicates in a sorted linked list using single-pass traversal
  *
  * @intuition Since the list is sorted, duplicates will be adjacent. We can traverse once,
  * comparing current node with next and skip duplicates by adjusting pointers.

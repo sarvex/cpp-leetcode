@@ -1,31 +1,35 @@
 #include <vector>
+#include <concepts>
 using namespace std;
 
 class Solution {
 public:
-  /**
-   * Removes duplicates from a sorted array in-place such that each unique
-   * element appears at most twice.
-   *
-   * @param nums Reference to a vector of integers sorted in non-decreasing
-   * order.
-   * @return The new length of the array after removing extra duplicates (at
-   * most two occurrences allowed).
-   *
-   * The function modifies the input vector in-place to retain at most two
-   * occurrences of each element and returns the new length. Elements beyond the
-   * returned length are unspecified.
-   */
-  int removeDuplicates(vector<int> &nums) {
-    int insertPos = 0; // Position to insert the next allowed element
-    for (int number : nums) {
-      // Allow the first two elements or if the current number is not the same
-      // as the element two positions before
-      if (insertPos < 2 || number != nums[insertPos - 2]) {
-        nums[insertPos] = number;
-        ++insertPos;
-      }
+    /**
+     * @brief Two-pointer in-place deduplication allowing at most two occurrences
+     *
+     * @intuition: Use two pointers - one for reading (current element) and one for
+     * writing (insertion position). We can determine if an element should be kept by
+     * checking if it's different from the element two positions before the write pointer.
+     *
+     * @approach: Iterate through the array once, maintaining a write position.
+     * For each element, we either:
+     * 1. Allow it if we have fewer than 2 elements written
+     * 2. Allow it if it's different from the element at (write_pos - 2)
+     * This ensures each element appears at most twice while preserving order.
+     *
+     * @complexity Time: O(n) where n is the array length, single pass through array
+     * @complexity Space: O(1) in-place modification with constant extra space
+     */
+    [[nodiscard]]
+    constexpr int removeDuplicates(vector<int>& nums) noexcept {
+        if (nums.empty()) return 0;
+
+        size_t writePos = 0;  // Position to write the next valid element
+        for (const auto number : nums) {
+            if (writePos < 2 || number != nums[writePos - 2]) {
+                nums[writePos++] = number;
+            }
+        }
+        return static_cast<int>(writePos);
     }
-    return insertPos;
-  }
 };

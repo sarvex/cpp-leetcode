@@ -11,11 +11,11 @@ public:
    */
   void merge(std::vector<int> &nums1, int m, const std::vector<int> &nums2,
              int n) const {
-    auto writeIdx = m + n;
+    auto write = m + n;
     auto i = m;
     auto j = n;
     while (i > 0 && j > 0) {
-      nums1[--writeIdx] =
+      nums1[--write] =
           (nums1[i - 1] > nums2[j - 1]) ? nums1[--i] : nums2[--j];
     }
     std::copy_n(nums2.begin(), j, nums1.begin());

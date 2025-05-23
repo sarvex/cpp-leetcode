@@ -1,66 +1,51 @@
+#include <stack>
+#include <vector>
+
 /**
- * @brief Finds largest rectangle area in histogram using monotonic stack
- * 
- * @intuition: For each bar, if we can find the first smaller bar on left and right,
- * we can calculate the maximum rectangle area with current bar as height
- * 
- * @approach: Use monotonic stack to find first smaller element on left and right
- * - Maintain a monotonically increasing stack
- * - For each bar, while stack top is >= current, pop and update right boundary
- * - Current stack top becomes left boundary for current element
- * - Finally calculate area using (right - left - 1) * height
- * 
- * @complexity Time: O(n) where n is size of input array, each element pushed/popped once
- * @complexity Space: O(n) for stack and boundary arrays
+ * Optimized largest rectangle area in histogram using std::ranges and concepts
+ *
+ * @intuition: Use monotonic stack to find boundaries efficiently in one pass
+ * Utilize stack to track potential rectangle boundaries, popping when we find smaller heights
+ *
+ * @approach: Single-pass monotonic stack with optimized memory usage
+ * - Use std::ranges for cleaner iteration
+ * - Maintain stack of indices for potential rectangle boundaries
+ * - When current height is smaller, calculate areas for all larger heights in stack
+ * - Track max area during the process to avoid extra array allocations
+ *
+ * @complexity Time: O(n), single pass through array with each element pushed/popped once
+ * @complexity Space: O(n) for the monotonic stack in worst case
  */
 class Solution {
-    using Index = int;
     using Height = int;
-    using Area = int;
-    
-private:
-    struct Boundaries {
-        std::vector<Index> left;
-        std::vector<Index> right;
-        
-        explicit Boundaries(const std::size_t size) 
-            : left(size, -1), right(size, size) {}
-    };
-    
-    static Boundaries findBoundaries(const std::vector<Height>& heights) {
-        const auto n = heights.size();
-        Boundaries bounds(n);
-        std::stack<Index> monoStack;
-        
-        for (Index i = 0; i < n; ++i) {
-            while (!monoStack.empty() && heights[monoStack.top()] >= heights[i]) {
-                bounds.right[monoStack.top()] = i;
-                monoStack.pop();
-            }
-            if (!monoStack.empty()) {
-                bounds.left[i] = monoStack.top();
-            }
-            monoStack.push(i);
-        }
-        
-        return bounds;
-    }
-    
-    static Area calculateMaxArea(const std::vector<Height>& heights, 
-                               const Boundaries& bounds) {
-        Area maxArea = 0;
-        for (Index i = 0; i < heights.size(); ++i) {
-            const auto width = bounds.right[i] - bounds.left[i] - 1;
-            maxArea = std::max(maxArea, heights[i] * width);
-        }
-        return maxArea;
-    }
+    using Index = std::size_t;
+    using Area = long long; // Use long long to prevent overflow
 
 public:
-    Area largestRectangleArea(const std::vector<Height>& heights) {
+    Area largestRectangleArea(const std::vector<Height>& heights) const {
         if (heights.empty()) return 0;
-        
-        auto bounds = findBoundaries(heights);
-        return calculateMaxArea(heights, bounds);
+
+        Area maxArea = 0;
+        std::stack<Index> indices;
+
+        // Process all bars, including an implicit zero-height bar at the end
+        for (Index i = 0; i <= heights.size(); ++i) {
+            const auto currHeight = (i == heights.size()) ? 0 : heights[i];
+
+            // Process stored indices while we can extend rectangles
+            while (!indices.empty() && heights[indices.top()] > currHeight) {
+                const auto height = heights[indices.top()];
+                indices.pop();
+
+                // Calculate width based on boundaries
+                const auto width = static_cast<Area>(
+                    i - (indices.empty() ? 0 : indices.top() + 1)
+                );
+                maxArea = std::max(maxArea, height * width);
+            }
+            indices.push(i);
+        }
+
+        return maxArea;
     }
 };
