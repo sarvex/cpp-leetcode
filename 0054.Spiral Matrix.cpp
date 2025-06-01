@@ -1,22 +1,64 @@
-class Solution {
+#include <vector>
+#include <array>
+
+class Solution final {
 public:
-    vector<int> spiralOrder(vector<vector<int>>& matrix) {
-        int m = matrix.size(), n = matrix[0].size();
-        int dirs[5] = {0, 1, 0, -1, 0};
-        int i = 0, j = 0, k = 0;
-        vector<int> ans;
-        bool vis[m][n];
-        memset(vis, false, sizeof(vis));
-        for (int h = m * n; h; --h) {
-            ans.push_back(matrix[i][j]);
-            vis[i][j] = true;
-            int x = i + dirs[k], y = j + dirs[k + 1];
-            if (x < 0 || x >= m || y < 0 || y >= n || vis[x][y]) {
-                k = (k + 1) % 4;
-            }
-            i += dirs[k];
-            j += dirs[k + 1];
+/**
+ * @brief Traverses a 2D matrix in spiral order
+ *
+ * @intuition Use direction vectors to move right, down, left, and up in order.
+ * Change direction when hitting boundaries or visited cells.
+ *
+ * @approach Maintain current position and direction. Mark visited cells and
+ * change direction when necessary. Stop after visiting all cells.
+ *
+ * @complexity
+ *      Time:   O(m*n), where m and n are matrix dimensions
+ *      Space:  O(m*n) for visited matrix, O(1) additional space
+ */
+    std::vector<int> spiralOrder(const std::vector<std::vector<int>>& matrix) {
+        if (matrix.empty() || matrix[0].empty()) {
+            return {};
         }
-        return ans;
+
+        const int rows = matrix.size();
+        const int cols = matrix[0].size();
+        std::vector<int> result;
+        result.reserve(rows * cols);
+
+        // Directions: right, down, left, up
+        constexpr std::array<std::pair<int, int>, 4> directions = {{
+            {0, 1},   // right
+            {1, 0},   // down
+            {0, -1},  // left
+            {-1, 0}   // up
+        }};
+
+        // Visited matrix
+        std::vector<std::vector<bool>> visited(rows, std::vector<bool>(cols, false));
+        int direction_index = 0;
+        int row = 0, col = 0;
+
+        for (int i = 0; i < rows * cols; ++i) {
+            result.push_back(matrix[row][col]);
+            visited[row][col] = true;
+
+            // Calculate next position
+            int next_row = row + directions[direction_index].first;
+            int next_col = col + directions[direction_index].second;
+
+            // Change direction if next position is out of bounds or already visited
+            if (next_row < 0 || next_row >= rows ||
+                next_col < 0 || next_col >= cols ||
+                visited[next_row][next_col]) {
+                direction_index = (direction_index + 1) % 4;
+            }
+
+            // Move to next position
+            row += directions[direction_index].first;
+            col += directions[direction_index].second;
+        }
+
+        return result;
     }
 };
