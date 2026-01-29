@@ -1,6 +1,12 @@
-class Solution {
+/**
+ * @brief Check if number is a power of four
+ * @intuition Power of 4 is power of 2 with single bit at even position
+ * @approach Check power of 2 and bit position using mask 0xAAAAAAAA
+ * @complexity Time: O(1), Space: O(1)
+ */
+class Solution final {
 public:
-    bool isPowerOfFour(int n) {
-        return n > 0 && (n & (n - 1)) == 0 && (n & 0xaaaaaaaa) == 0;
+    [[nodiscard]] constexpr bool isPowerOfFour(int n) const {
+        return n > 0 && (n & (n - 1)) == 0 && (n & 0xAAAAAAAA) == 0;
     }
 };

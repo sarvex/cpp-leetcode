@@ -1,31 +1,29 @@
 /**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
+ * @brief Partition linked list around value x
+ * @intuition Separate nodes into two lists: less than x and >= x
+ * @approach Build two separate lists using dummy heads, then concatenate
+ * @complexity Time: O(n), Space: O(1)
  */
-class Solution {
+class Solution final {
 public:
-    ListNode* partition(ListNode* head, int x) {
-        ListNode* l = new ListNode();
-        ListNode* r = new ListNode();
-        ListNode* tl = l;
-        ListNode* tr = r;
-        for (; head; head = head->next) {
+    [[nodiscard]] static auto partition(ListNode* head, const int x) -> ListNode* {
+        ListNode leftDummy;
+        ListNode rightDummy;
+        auto leftTail = &leftDummy;
+        auto rightTail = &rightDummy;
+        
+        for (; head != nullptr; head = head->next) {
             if (head->val < x) {
-                tl->next = head;
-                tl = tl->next;
+                leftTail->next = head;
+                leftTail = leftTail->next;
             } else {
-                tr->next = head;
-                tr = tr->next;
+                rightTail->next = head;
+                rightTail = rightTail->next;
             }
         }
-        tr->next = nullptr;
-        tl->next = r->next;
-        return l->next;
+        
+        rightTail->next = nullptr;
+        leftTail->next = rightDummy.next;
+        return leftDummy.next;
     }
 };

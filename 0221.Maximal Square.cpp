@@ -1,17 +1,28 @@
-class Solution {
+/**
+ * @brief Dynamic programming for maximal square in matrix
+ * @intuition dp[i][j] represents side length of max square ending at (i-1, j-1)
+ * @approach Take minimum of three neighbors plus one when cell is '1'
+ * @complexity Time: O(m*n), Space: O(m*n)
+ */
+#include <algorithm>
+#include <vector>
+
+class Solution final {
 public:
-    int maximalSquare(vector<vector<char>>& matrix) {
-        int m = matrix.size(), n = matrix[0].size();
-        vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
-        int mx = 0;
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                if (matrix[i][j] == '1') {
-                    dp[i + 1][j + 1] = min(min(dp[i][j + 1], dp[i + 1][j]), dp[i][j]) + 1;
-                    mx = max(mx, dp[i + 1][j + 1]);
-                }
-            }
+  [[nodiscard]] auto maximalSquare(const std::vector<std::vector<char>>& matrix) const -> int {
+    const auto rows = matrix.size();
+    const auto cols = matrix[0].size();
+    std::vector<std::vector<int>> dp(rows + 1, std::vector<int>(cols + 1, 0));
+    int maxSide = 0;
+    
+    for (std::size_t i = 0; i < rows; ++i) {
+      for (std::size_t j = 0; j < cols; ++j) {
+        if (matrix[i][j] == '1') {
+          dp[i + 1][j + 1] = std::min({dp[i][j + 1], dp[i + 1][j], dp[i][j]}) + 1;
+          maxSide = std::max(maxSide, dp[i + 1][j + 1]);
         }
-        return mx * mx;
+      }
     }
+    return maxSide * maxSide;
+  }
 };

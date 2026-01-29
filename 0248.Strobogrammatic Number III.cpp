@@ -1,33 +1,54 @@
-using ll = long long;
+/**
+ * @brief Count strobogrammatic numbers in range
+ * @intuition Generate all strobogrammatic numbers of valid lengths and count in range
+ * @approach Generate numbers for each length, filter by range bounds
+ * @complexity Time: O(5^(n/2) * m) where m is max digit count, Space: O(5^(n/2))
+ */
+#include <functional>
+#include <string>
+#include <utility>
+#include <vector>
 
-class Solution {
+class Solution final {
 public:
-    const vector<pair<char, char>> pairs = {{'1', '1'}, {'8', '8'}, {'6', '9'}, {'9', '6'}};
-
-    int strobogrammaticInRange(string low, string high) {
-        int n;
-        function<vector<string>(int)> dfs = [&](int u) {
-            if (u == 0) return vector<string>{""};
-            if (u == 1) return vector<string>{"0", "1", "8"};
-            vector<string> ans;
-            for (auto& v : dfs(u - 2)) {
-                for (auto& [l, r] : pairs) ans.push_back(l + v + r);
-                if (u != n) ans.push_back('0' + v + '0');
-            }
-            return ans;
-        };
-
-        int a = low.size(), b = high.size();
-        int ans = 0;
-        ll l = stoll(low), r = stoll(high);
-        for (n = a; n <= b; ++n) {
-            for (auto& s : dfs(n)) {
-                ll v = stoll(s);
-                if (l <= v && v <= r) {
-                    ++ans;
-                }
-            }
+  [[nodiscard]] auto strobogrammaticInRange(const std::string& low, const std::string& high) const -> int {
+    const std::vector<std::pair<char, char>> pairs = {{'1', '1'}, {'8', '8'}, {'6', '9'}, {'9', '6'}};
+    int targetLen = 0;
+    
+    std::function<std::vector<std::string>(int)> generate = [&](int len) -> std::vector<std::string> {
+      if (len == 0) {
+        return {""};
+      }
+      if (len == 1) {
+        return {"0", "1", "8"};
+      }
+      
+      std::vector<std::string> result;
+      for (const auto& inner : generate(len - 2)) {
+        for (const auto& [left, right] : pairs) {
+          result.push_back(left + inner + right);
         }
-        return ans;
+        if (len != targetLen) {
+          result.push_back('0' + inner + '0');
+        }
+      }
+      return result;
+    };
+    
+    const auto lowLen = static_cast<int>(low.size());
+    const auto highLen = static_cast<int>(high.size());
+    const auto lowVal = std::stoll(low);
+    const auto highVal = std::stoll(high);
+    
+    int count = 0;
+    for (targetLen = lowLen; targetLen <= highLen; ++targetLen) {
+      for (const auto& s : generate(targetLen)) {
+        const auto val = std::stoll(s);
+        if (lowVal <= val && val <= highVal) {
+          ++count;
+        }
+      }
     }
+    return count;
+  }
 };

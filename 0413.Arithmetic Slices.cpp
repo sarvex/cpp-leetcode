@@ -1,9 +1,19 @@
-class Solution {
+/**
+ * @brief Count number of arithmetic slices (subarrays with constant difference)
+ * @intuition Each additional element in arithmetic sequence adds cnt+1 new slices
+ * @approach Track consecutive elements with same difference, sum contributions
+ * @complexity Time: O(n) Space: O(1)
+ */
+#include <vector>
+
+class Solution final {
 public:
-    int numberOfArithmeticSlices(vector<int>& nums) {
-        int ans = 0, cnt = 0;
+    [[nodiscard]] auto numberOfArithmeticSlices(const std::vector<int>& nums) const -> int {
+        int ans = 0;
+        int cnt = 0;
         int d = 3000;
-        for (int i = 0; i < nums.size() - 1; ++i) {
+
+        for (std::size_t i = 0; i + 1 < nums.size(); ++i) {
             if (nums[i + 1] - nums[i] == d) {
                 ++cnt;
             } else {
@@ -12,6 +22,7 @@ public:
             }
             ans += cnt;
         }
+
         return ans;
     }
 };

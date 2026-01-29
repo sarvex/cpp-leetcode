@@ -1,22 +1,37 @@
-class Solution {
+/**
+ * @brief Find the kth permutation sequence of [1, n]
+ * @intuition Use factorial decomposition to determine each digit position
+ * @approach Calculate position in each factorial group to pick digits
+ * @complexity Time: O(n^2), Space: O(n)
+ */
+
+class Solution final {
 public:
-    string getPermutation(int n, int k) {
-        string ans;
-        bitset<10> vis;
-        for (int i = 0; i < n; ++i) {
-            int fact = 1;
-            for (int j = 1; j < n - i; ++j) fact *= j;
-            for (int j = 1; j <= n; ++j) {
-                if (vis[j]) continue;
-                if (k > fact)
-                    k -= fact;
-                else {
-                    ans += to_string(j);
-                    vis[j] = 1;
-                    break;
-                }
-            }
+  [[nodiscard]] static auto getPermutation(int const n, int k) -> std::string {
+    std::string result;
+    std::bitset<10> used;
+
+    for (int i = 0; i < n; ++i) {
+      int factorial = 1;
+      for (int j = 1; j < n - i; ++j) {
+        factorial *= j;
+      }
+
+      for (int j = 1; j <= n; ++j) {
+        if (used[j]) {
+          continue;
         }
-        return ans;
+
+        if (k > factorial) {
+          k -= factorial;
+        } else {
+          result += std::to_string(j);
+          used[j] = true;
+          break;
+        }
+      }
     }
+
+    return result;
+  }
 };

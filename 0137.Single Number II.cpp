@@ -1,15 +1,28 @@
-class Solution {
+/**
+ * @brief Find single number when others appear three times using bit counting
+ * @intuition Count bits at each position mod 3 to isolate single number's bits
+ * @approach For each bit position, sum across all numbers and mod by 3
+ * @complexity Time: O(32n) = O(n), Space: O(1)
+ */
+
+#include <vector>
+
+using std::vector;
+
+class Solution final {
 public:
-    int singleNumber(vector<int>& nums) {
-        int ans = 0;
-        for (int i = 0; i < 32; ++i) {
-            int cnt = 0;
-            for (int num : nums) {
-                cnt += ((num >> i) & 1);
+    [[nodiscard]] auto singleNumber(vector<int>& nums) const -> int {
+        int result = 0;
+        
+        for (int bit = 0; bit < 32; ++bit) {
+            int bitCount = 0;
+            for (const int num : nums) {
+                bitCount += (num >> bit) & 1;
             }
-            cnt %= 3;
-            ans |= cnt << i;
+            bitCount %= 3;
+            result |= bitCount << bit;
         }
-        return ans;
+        
+        return result;
     }
 };

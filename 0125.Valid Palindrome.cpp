@@ -1,17 +1,32 @@
-class Solution {
+/**
+ * @brief Check if string is palindrome considering only alphanumeric characters
+ * @intuition Two pointers from both ends, skip non-alphanumeric, compare lowercase
+ * @approach Move pointers inward, comparing valid characters case-insensitively
+ * @complexity Time: O(n), Space: O(1)
+ */
+
+#include <cctype>
+#include <string>
+
+using std::string;
+
+class Solution final {
 public:
-    bool isPalindrome(string s) {
-        int i = 0, j = s.size() - 1;
-        while (i < j) {
-            if (!isalnum(s[i])) {
-                ++i;
-            } else if (!isalnum(s[j])) {
-                --j;
-            } else if (tolower(s[i]) != tolower(s[j])) {
+    [[nodiscard]] auto isPalindrome(const string& s) const -> bool {
+        int left = 0;
+        int right = static_cast<int>(s.size()) - 1;
+        
+        while (left < right) {
+            if (!std::isalnum(static_cast<unsigned char>(s[left]))) {
+                ++left;
+            } else if (!std::isalnum(static_cast<unsigned char>(s[right]))) {
+                --right;
+            } else if (std::tolower(static_cast<unsigned char>(s[left])) != 
+                       std::tolower(static_cast<unsigned char>(s[right]))) {
                 return false;
             } else {
-                ++i;
-                --j;
+                ++left;
+                --right;
             }
         }
         return true;

@@ -1,3 +1,10 @@
+/**
+ * @brief Convert BST to circular sorted doubly linked list in-place
+ * @intuition In-order traversal visits nodes in sorted order
+ * @approach Track previous node during in-order, link nodes bidirectionally
+ * @complexity Time: O(n) Space: O(h) for recursion stack
+ */
+
 /*
 // Definition for a Node.
 class Node {
@@ -10,8 +17,8 @@ public:
 
     Node(int _val) {
         val = _val;
-        left = NULL;
-        right = NULL;
+        left = nullptr;
+        right = nullptr;
     }
 
     Node(int _val, Node* _left, Node* _right) {
@@ -22,30 +29,41 @@ public:
 };
 */
 
-class Solution {
+class Solution final {
 public:
-    Node* prev;
-    Node* head;
+    [[nodiscard]] auto treeToDoublyList(Node* root) -> Node* {
+        if (!root) {
+            return nullptr;
+        }
 
-    Node* treeToDoublyList(Node* root) {
-        if (!root) return nullptr;
-        prev = nullptr;
-        head = nullptr;
+        prev_ = nullptr;
+        head_ = nullptr;
         dfs(root);
-        prev->right = head;
-        head->left = prev;
-        return head;
+        prev_->right = head_;
+        head_->left = prev_;
+
+        return head_;
     }
 
-    void dfs(Node* root) {
-        if (!root) return;
+private:
+    Node* prev_ = nullptr;
+    Node* head_ = nullptr;
+
+    auto dfs(Node* root) -> void {
+        if (!root) {
+            return;
+        }
+
         dfs(root->left);
-        if (prev) {
-            prev->right = root;
-            root->left = prev;
-        } else
-            head = root;
-        prev = root;
+
+        if (prev_) {
+            prev_->right = root;
+            root->left = prev_;
+        } else {
+            head_ = root;
+        }
+        prev_ = root;
+
         dfs(root->right);
     }
 };

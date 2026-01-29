@@ -1,56 +1,88 @@
-class Solution {
+/**
+ * @brief Topological sort for alien dictionary order
+ * @intuition Build directed graph from word comparisons, topological sort gives order
+ * @approach Compare adjacent words to find edges, use BFS topological sort
+ * @complexity Time: O(C) where C is total characters, Space: O(1) for 26 letters
+ */
+#include <array>
+#include <queue>
+#include <string>
+#include <vector>
+
+class Solution final {
 public:
-    string alienOrder(vector<string>& words) {
-        vector<vector<bool>> g(26, vector<bool>(26));
-        vector<bool> s(26);
-        int cnt = 0;
-        int n = words.size();
-        for (int i = 0; i < n - 1; ++i) {
-            for (char c : words[i]) {
-                if (cnt == 26) break;
-                c -= 'a';
-                if (!s[c]) {
-                    ++cnt;
-                    s[c] = true;
-                }
-            }
-            int m = words[i].size();
-            for (int j = 0; j < m; ++j) {
-                if (j >= words[i + 1].size()) return "";
-                char c1 = words[i][j], c2 = words[i + 1][j];
-                if (c1 == c2) continue;
-                if (g[c2 - 'a'][c1 - 'a']) return "";
-                g[c1 - 'a'][c2 - 'a'] = true;
-                break;
-            }
+  [[nodiscard]] auto alienOrder(const std::vector<std::string>& words) const -> std::string {
+    std::array<std::array<bool, 26>, 26> graph{};
+    std::array<bool, 26> exists{};
+    int charCount = 0;
+    const auto n = words.size();
+    
+    for (std::size_t i = 0; i < n - 1; ++i) {
+      for (const char c : words[i]) {
+        if (charCount == 26) break;
+        const int idx = c - 'a';
+        if (!exists[idx]) {
+          ++charCount;
+          exists[idx] = true;
         }
-        for (char c : words[n - 1]) {
-            if (cnt == 26) break;
-            c -= 'a';
-            if (!s[c]) {
-                ++cnt;
-                s[c] = true;
-            }
+      }
+      const auto& word1 = words[i];
+      const auto& word2 = words[i + 1];
+      for (std::size_t j = 0; j < word1.size(); ++j) {
+        if (j >= word2.size()) {
+          return "";
         }
-        vector<int> indegree(26);
-        for (int i = 0; i < 26; ++i)
-            for (int j = 0; j < 26; ++j)
-                if (i != j && s[i] && s[j] && g[i][j])
-                    ++indegree[j];
-        queue<int> q;
-        for (int i = 0; i < 26; ++i)
-            if (s[i] && indegree[i] == 0)
-                q.push(i);
-        string ans = "";
-        while (!q.empty()) {
-            int t = q.front();
-            ans += (t + 'a');
-            q.pop();
-            for (int i = 0; i < 26; ++i)
-                if (i != t && s[i] && g[t][i])
-                    if (--indegree[i] == 0)
-                        q.push(i);
+        if (word1[j] != word2[j]) {
+          const int from = word1[j] - 'a';
+          const int to = word2[j] - 'a';
+          if (graph[to][from]) {
+            return "";
+          }
+          graph[from][to] = true;
+          break;
         }
-        return ans.size() < cnt ? "" : ans;
+      }
     }
+    
+    for (const char c : words[n - 1]) {
+      if (charCount == 26) break;
+      const int idx = c - 'a';
+      if (!exists[idx]) {
+        ++charCount;
+        exists[idx] = true;
+      }
+    }
+    
+    std::array<int, 26> indegree{};
+    for (int i = 0; i < 26; ++i) {
+      for (int j = 0; j < 26; ++j) {
+        if (i != j && exists[i] && exists[j] && graph[i][j]) {
+          ++indegree[j];
+        }
+      }
+    }
+    
+    std::queue<int> q;
+    for (int i = 0; i < 26; ++i) {
+      if (exists[i] && indegree[i] == 0) {
+        q.push(i);
+      }
+    }
+    
+    std::string result;
+    while (!q.empty()) {
+      const int curr = q.front();
+      q.pop();
+      result += static_cast<char>(curr + 'a');
+      for (int i = 0; i < 26; ++i) {
+        if (i != curr && exists[i] && graph[curr][i]) {
+          if (--indegree[i] == 0) {
+            q.push(i);
+          }
+        }
+      }
+    }
+    
+    return result.size() < static_cast<std::size_t>(charCount) ? "" : result;
+  }
 };

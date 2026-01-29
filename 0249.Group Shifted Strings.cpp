@@ -1,23 +1,38 @@
-class Solution {
+/**
+ * @brief Group strings by shift pattern
+ * @intuition Strings in same group have same relative character differences
+ * @approach Normalize each string by shifting first char to 'a', group by key
+ * @complexity Time: O(n * m), Space: O(n * m) where m is average string length
+ */
+#include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
+class Solution final {
 public:
-    vector<vector<string>> groupStrings(vector<string>& strings) {
-        unordered_map<string, vector<string>> g;
-        for (auto& s : strings) {
-            string t;
-            int diff = s[0] - 'a';
-            for (int i = 0; i < s.size(); ++i) {
-                char c = s[i] - diff;
-                if (c < 'a') {
-                    c += 26;
-                }
-                t.push_back(c);
-            }
-            g[t].emplace_back(s);
+  [[nodiscard]] auto groupStrings(const std::vector<std::string>& strings) const 
+      -> std::vector<std::vector<std::string>> {
+    std::unordered_map<std::string, std::vector<std::string>> groups;
+    
+    for (const auto& s : strings) {
+      std::string normalized;
+      const int shift = s[0] - 'a';
+      for (const char c : s) {
+        char normalizedChar = static_cast<char>(c - shift);
+        if (normalizedChar < 'a') {
+          normalizedChar += 26;
         }
-        vector<vector<string>> ans;
-        for (auto& p : g) {
-            ans.emplace_back(move(p.second));
-        }
-        return ans;
+        normalized.push_back(normalizedChar);
+      }
+      groups[normalized].push_back(s);
     }
+    
+    std::vector<std::vector<std::string>> result;
+    result.reserve(groups.size());
+    for (auto& [key, group] : groups) {
+      result.push_back(std::move(group));
+    }
+    return result;
+  }
 };

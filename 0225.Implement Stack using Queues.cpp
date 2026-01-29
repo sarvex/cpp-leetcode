@@ -1,41 +1,40 @@
-class MyStack {
-public:
-    MyStack() {
-    }
-
-    void push(int x) {
-        q2.push(x);
-        while (!q1.empty()) {
-            q2.push(q1.front());
-            q1.pop();
-        }
-        swap(q1, q2);
-    }
-
-    int pop() {
-        int x = q1.front();
-        q1.pop();
-        return x;
-    }
-
-    int top() {
-        return q1.front();
-    }
-
-    bool empty() {
-        return q1.empty();
-    }
-
-private:
-    queue<int> q1;
-    queue<int> q2;
-};
-
 /**
- * Your MyStack object will be instantiated and called as such:
- * MyStack* obj = new MyStack();
- * obj->push(x);
- * int param_2 = obj->pop();
- * int param_3 = obj->top();
- * bool param_4 = obj->empty();
+ * @brief Stack implementation using two queues
+ * @intuition Reverse order on push by rotating elements
+ * @approach On push, add to q2, then move all q1 elements to q2, swap queues
+ * @complexity Time: O(n) push, O(1) others, Space: O(n)
  */
+#include <queue>
+#include <utility>
+
+class MyStack final {
+private:
+  std::queue<int> primary;
+  std::queue<int> secondary;
+
+public:
+  MyStack() = default;
+
+  auto push(int x) -> void {
+    secondary.push(x);
+    while (!primary.empty()) {
+      secondary.push(primary.front());
+      primary.pop();
+    }
+    std::swap(primary, secondary);
+  }
+
+  [[nodiscard]] auto pop() -> int {
+    const int top = primary.front();
+    primary.pop();
+    return top;
+  }
+
+  [[nodiscard]] auto top() const -> int {
+    return primary.front();
+  }
+
+  [[nodiscard]] auto empty() const -> bool {
+    return primary.empty();
+  }
+};

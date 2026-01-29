@@ -1,4 +1,15 @@
 /**
+ * @brief Sum all root-to-leaf numbers using DFS
+ * @intuition Each path forms a number by concatenating node values
+ * @approach DFS passing accumulated number, sum at leaves
+ * @complexity Time: O(n), Space: O(h) where h is tree height
+ */
+
+#include <functional>
+
+using std::function;
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,14 +20,19 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    int sumNumbers(TreeNode* root) {
-        function<int(TreeNode*, int)> dfs = [&](TreeNode* root, int s) -> int {
-            if (!root) return 0;
-            s = s * 10 + root->val;
-            if (!root->left && !root->right) return s;
-            return dfs(root->left, s) + dfs(root->right, s);
+    [[nodiscard]] auto sumNumbers(TreeNode* root) const -> int {
+        function<int(TreeNode*, int)> dfs = [&](TreeNode* node, int currentSum) -> int {
+            if (!node) {
+                return 0;
+            }
+            currentSum = currentSum * 10 + node->val;
+            if (!node->left && !node->right) {
+                return currentSum;
+            }
+            return dfs(node->left, currentSum) + dfs(node->right, currentSum);
         };
         return dfs(root, 0);
     }

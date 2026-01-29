@@ -1,33 +1,56 @@
-class Solution {
+/**
+ * @brief Convert fraction to decimal with repeating detection
+ * @intuition Repeating decimals occur when same remainder appears twice
+ * @approach Use hash map to detect remainder cycles, insert parentheses for repeating part
+ * @complexity Time: O(denominator), Space: O(denominator)
+ */
+
+#include <cmath>
+#include <string>
+#include <unordered_map>
+
+using std::string;
+using std::unordered_map;
+
+class Solution final {
 public:
-    string fractionToDecimal(int numerator, int denominator) {
+    [[nodiscard]] auto fractionToDecimal(int numerator, int denominator) const -> string {
         if (numerator == 0) {
             return "0";
         }
-        string ans;
-        bool neg = (numerator > 0) ^ (denominator > 0);
-        if (neg) {
-            ans += "-";
+        
+        string result;
+        const bool negative = (numerator > 0) ^ (denominator > 0);
+        if (negative) {
+            result += '-';
         }
-        long long a = abs(1LL * numerator), b = abs(1LL * denominator);
-        ans += to_string(a / b);
-        a %= b;
-        if (a == 0) {
-            return ans;
+        
+        long long num = std::abs(static_cast<long long>(numerator));
+        long long den = std::abs(static_cast<long long>(denominator));
+        
+        result += std::to_string(num / den);
+        num %= den;
+        
+        if (num == 0) {
+            return result;
         }
-        ans += ".";
-        unordered_map<long long, int> d;
-        while (a) {
-            d[a] = ans.size();
-            a *= 10;
-            ans += to_string(a / b);
-            a %= b;
-            if (d.contains(a)) {
-                ans.insert(d[a], "(");
-                ans += ")";
+        
+        result += '.';
+        unordered_map<long long, int> remainderPos;
+        
+        while (num != 0) {
+            remainderPos[num] = static_cast<int>(result.size());
+            num *= 10;
+            result += std::to_string(num / den);
+            num %= den;
+            
+            if (remainderPos.contains(num)) {
+                result.insert(remainderPos[num], "(");
+                result += ')';
                 break;
             }
         }
-        return ans;
+        
+        return result;
     }
 };

@@ -1,4 +1,17 @@
 /**
+ * @brief Preorder traversal of binary tree using recursion
+ * @intuition Visit root, then left subtree, then right subtree
+ * @approach Recursive DFS with preorder visit pattern
+ * @complexity Time: O(n), Space: O(h) where h is tree height
+ */
+
+#include <functional>
+#include <vector>
+
+using std::function;
+using std::vector;
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,19 +22,22 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    vector<int> preorderTraversal(TreeNode* root) {
-        vector<int> ans;
-        function<void(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+    [[nodiscard]] auto preorderTraversal(TreeNode* root) const -> vector<int> {
+        vector<int> result;
+        
+        function<void(TreeNode*)> dfs = [&](TreeNode* node) {
+            if (!node) {
                 return;
             }
-            ans.push_back(root->val);
-            dfs(root->left);
-            dfs(root->right);
+            result.push_back(node->val);
+            dfs(node->left);
+            dfs(node->right);
         };
+        
         dfs(root);
-        return ans;
+        return result;
     }
 };

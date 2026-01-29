@@ -1,30 +1,41 @@
+/**
+ * @brief Generate all unique permutations (may contain duplicates)
+ * @intuition Sort and skip duplicates at same recursion level
+ * @approach Backtracking with duplicate detection
+ * @complexity Time: O(n * n!), Space: O(n)
+ */
+
 #include <algorithm>
 #include <vector>
 
 class Solution final {
 public:
-  std::vector<std::vector<int>> permuteUnique(std::vector<int> &nums) {
-    std::ranges::sort(nums);
-    int n = nums.size();
-    std::vector<std::vector<int>> ans;
-    std::vector<int> t(n);
-    std::vector<bool> vis(n);
-    auto dfs = [&](this auto &&dfs, int i) {
-      if (i == n) {
-        ans.emplace_back(t);
+  [[nodiscard]] auto permuteUnique(std::vector<int>& nums) const
+      -> std::vector<std::vector<int>> {
+    std::sort(nums.begin(), nums.end());
+    const int n = static_cast<int>(nums.size());
+    std::vector<std::vector<int>> result;
+    std::vector<int> current(n);
+    std::vector<bool> visited(n, false);
+
+    auto dfs = [&](auto&& self, int index) -> void {
+      if (index == n) {
+        result.emplace_back(current);
         return;
       }
+
       for (int j = 0; j < n; ++j) {
-        if (vis[j] || (j && nums[j] == nums[j - 1] && !vis[j - 1])) {
+        if (visited[j] || (j > 0 && nums[j] == nums[j - 1] && !visited[j - 1])) {
           continue;
         }
-        t[i] = nums[j];
-        vis[j] = true;
-        dfs(i + 1);
-        vis[j] = false;
+        current[index] = nums[j];
+        visited[j] = true;
+        self(self, index + 1);
+        visited[j] = false;
       }
     };
-    dfs(0);
-    return ans;
+
+    dfs(dfs, 0);
+    return result;
   }
 };

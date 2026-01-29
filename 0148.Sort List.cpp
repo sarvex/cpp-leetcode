@@ -1,4 +1,11 @@
 /**
+ * @brief Sort linked list using merge sort
+ * @intuition Merge sort is optimal for linked lists due to O(1) merge
+ * @approach Split at middle using slow/fast pointers, recursively sort and merge
+ * @complexity Time: O(n log n), Space: O(log n) for recursion stack
+ */
+
+/**
  * Definition for singly-linked list.
  * struct ListNode {
  *     int val;
@@ -8,36 +15,46 @@
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    ListNode* sortList(ListNode* head) {
+    [[nodiscard]] auto sortList(ListNode* head) const -> ListNode* {
         if (!head || !head->next) {
             return head;
         }
+        
+        // Find middle using slow/fast pointers
         ListNode* slow = head;
         ListNode* fast = head->next;
-        while (fast && fast->next) {
+        while (fast != nullptr && fast->next != nullptr) {
             slow = slow->next;
             fast = fast->next->next;
         }
-        ListNode* l1 = head;
-        ListNode* l2 = slow->next;
+        
+        // Split the list
+        ListNode* rightHead = slow->next;
         slow->next = nullptr;
-        l1 = sortList(l1);
-        l2 = sortList(l2);
-        ListNode* dummy = new ListNode();
+        
+        // Recursively sort both halves
+        ListNode* left = sortList(head);
+        ListNode* right = sortList(rightHead);
+        
+        // Merge sorted halves
+        auto* dummy = new ListNode();
         ListNode* tail = dummy;
-        while (l1 && l2) {
-            if (l1->val <= l2->val) {
-                tail->next = l1;
-                l1 = l1->next;
+        
+        while (left != nullptr && right != nullptr) {
+            if (left->val <= right->val) {
+                tail->next = left;
+                left = left->next;
             } else {
-                tail->next = l2;
-                l2 = l2->next;
+                tail->next = right;
+                right = right->next;
             }
             tail = tail->next;
         }
-        tail->next = l1 ? l1 : l2;
+        
+        tail->next = left != nullptr ? left : right;
         return dummy->next;
     }
 };

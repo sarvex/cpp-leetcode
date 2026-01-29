@@ -1,17 +1,26 @@
-#include <vector>
+/**
+ * @brief Find index where target should be inserted to keep sorted order
+ * @intuition Binary search for insertion point
+ * @approach Use lower_bound semantics in binary search
+ * @complexity Time: O(log n), Space: O(1)
+ */
 
 class Solution final {
 public:
-  int searchInsert(std::vector<int> &nums, int target) {
-    int l = 0, r = nums.size();
-    while (l < r) {
-      int mid = (l + r) >> 1;
+  [[nodiscard]] static auto searchInsert(const std::vector<int>& nums,
+                                         const int target) -> int {
+    int left = 0;
+    int right = static_cast<int>(nums.size());
+
+    while (left < right) {
+      const int mid = left + (right - left) / 2;
       if (nums[mid] >= target) {
-        r = mid;
+        right = mid;
       } else {
-        l = mid + 1;
+        left = mid + 1;
       }
     }
-    return l;
+
+    return left;
   }
 };

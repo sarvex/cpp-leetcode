@@ -1,31 +1,39 @@
+/**
+ * @brief Four sum using two-pointer technique after sorting
+ * @intuition Reduce 4Sum to 2Sum by fixing two indices and using two pointers
+ * @approach Sort, skip duplicates, use nested loops then two-pointer
+ * @complexity Time: O(n^3), Space: O(1) excluding output
+ */
+
 #include <algorithm>
 #include <vector>
 
 class Solution final {
 public:
-  /**
-   * Four sum using two-pointer technique after sorting.
-   *
-   * @intuition: Reduce 4Sum to 2Sum by fixing two indices and using two
-   * pointers for the rest.
-   * @approach: Sort, skip duplicates, use nested loops for first two indices,
-   * then two-pointer for the rest.
-   * @complexity: Time: O(n^3), Space: O(1) (excluding output)
-   */
-  [[nodiscard]] std::vector<std::vector<int>> fourSum(std::vector<int> &nums,
-                                                      int target) const {
+  [[nodiscard]] auto fourSum(std::vector<int>& nums, int target) const
+      -> std::vector<std::vector<int>> {
     const int n = static_cast<int>(nums.size());
     std::vector<std::vector<int>> result;
-    if (n < 4)
+
+    if (n < 4) {
       return result;
-    std::ranges::sort(nums);
+    }
+
+    std::sort(nums.begin(), nums.end());
+
     for (int i = 0; i < n - 3; ++i) {
-      if (i > 0 && nums[i] == nums[i - 1])
+      if (i > 0 && nums[i] == nums[i - 1]) {
         continue;
+      }
+
       for (int j = i + 1; j < n - 2; ++j) {
-        if (j > i + 1 && nums[j] == nums[j - 1])
+        if (j > i + 1 && nums[j] == nums[j - 1]) {
           continue;
-        int left = j + 1, right = n - 1;
+        }
+
+        int left = j + 1;
+        int right = n - 1;
+
         while (left < right) {
           const long long sum = static_cast<long long>(nums[i]) + nums[j] +
                                 nums[left] + nums[right];
@@ -35,14 +43,19 @@ public:
             --right;
           } else {
             result.push_back({nums[i], nums[j], nums[left], nums[right]});
-            while (left < right && nums[left] == nums[++left - 1])
-              ;
-            while (left < right && nums[right] == nums[--right + 1])
-              ;
+            while (left < right && nums[left] == nums[left + 1]) {
+              ++left;
+            }
+            while (left < right && nums[right] == nums[right - 1]) {
+              --right;
+            }
+            ++left;
+            --right;
           }
         }
       }
     }
+
     return result;
   }
 };

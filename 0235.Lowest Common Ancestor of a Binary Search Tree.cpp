@@ -1,24 +1,30 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
+ * @brief BST property-based LCA search
+ * @intuition LCA is first node where p and q are in different subtrees
+ * @approach Navigate based on BST property until split point
+ * @complexity Time: O(h), Space: O(1)
  */
+#include <algorithm>
 
-class Solution {
+struct TreeNode {
+  int val;
+  TreeNode* left;
+  TreeNode* right;
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+class Solution final {
 public:
-    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        while (1) {
-            if (root->val < min(p->val, q->val)) {
-                root = root->right;
-            } else if (root->val > max(p->val, q->val)) {
-                root = root->left;
-            } else {
-                return root;
-            }
-        }
+  [[nodiscard]] auto lowestCommonAncestor(TreeNode* root, const TreeNode* p, const TreeNode* q) const -> TreeNode* {
+    while (root != nullptr) {
+      if (root->val < std::min(p->val, q->val)) {
+        root = root->right;
+      } else if (root->val > std::max(p->val, q->val)) {
+        root = root->left;
+      } else {
+        return root;
+      }
     }
+    return nullptr;
+  }
 };

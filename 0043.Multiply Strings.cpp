@@ -1,30 +1,46 @@
+/**
+ * @brief Multiply two numbers represented as strings
+ * @intuition Simulate grade-school multiplication
+ * @approach Multiply each digit pair, accumulate in result array, handle carries
+ * @complexity Time: O(m * n), Space: O(m + n)
+ */
+
 #include <string>
 #include <vector>
 
 class Solution final {
 public:
-  std::string multiply(std::string num1, std::string num2) {
+  [[nodiscard]] auto multiply(const std::string& num1,
+                              const std::string& num2) const -> std::string {
     if (num1 == "0" || num2 == "0") {
       return "0";
     }
-    int m = num1.size(), n = num2.size();
-    std::vector<int> arr(m + n);
+
+    const int m = static_cast<int>(num1.size());
+    const int n = static_cast<int>(num2.size());
+    std::vector<int> result(m + n, 0);
+
     for (int i = m - 1; i >= 0; --i) {
-      int a = num1[i] - '0';
+      const int a = num1[i] - '0';
       for (int j = n - 1; j >= 0; --j) {
-        int b = num2[j] - '0';
-        arr[i + j + 1] += a * b;
+        const int b = num2[j] - '0';
+        result[i + j + 1] += a * b;
       }
     }
-    for (int i = arr.size() - 1; i; --i) {
-      arr[i - 1] += arr[i] / 10;
-      arr[i] %= 10;
+
+    // Handle carries
+    for (int i = static_cast<int>(result.size()) - 1; i > 0; --i) {
+      result[i - 1] += result[i] / 10;
+      result[i] %= 10;
     }
-    int i = arr[0] ? 0 : 1;
-    std::string ans;
-    for (; i < arr.size(); ++i) {
-      ans += '0' + arr[i];
+
+    // Build result string, skip leading zeros
+    std::string answer;
+    size_t start = (result[0] != 0) ? 0 : 1;
+    for (size_t i = start; i < result.size(); ++i) {
+      answer += static_cast<char>('0' + result[i]);
     }
-    return ans;
+
+    return answer;
   }
 };

@@ -1,23 +1,39 @@
-#include <functional>
+/**
+ * @brief Generate all valid combinations of n pairs of parentheses
+ * @intuition Use backtracking with open/close count constraints
+ * @approach DFS adding '(' if open < n, ')' if close < open
+ * @complexity Time: O(4^n / sqrt(n)), Space: O(n)
+ */
+
 #include <string>
 #include <vector>
 
 class Solution final {
 public:
-  std::vector<std::string> generateParenthesis(int n) {
-    std::vector<std::string> ans;
-    std::function<void(int, int, std::string)> dfs = [&](int l, int r,
-                                                         std::string t) {
-      if (l > n || r > n || l < r)
-        return;
-      if (l == n && r == n) {
-        ans.push_back(t);
+  [[nodiscard]] auto generateParenthesis(int n) const
+      -> std::vector<std::string> {
+    std::vector<std::string> result;
+    std::string current;
+
+    auto dfs = [&](auto&& self, int open, int close) -> void {
+      if (open > n || close > n || close > open) {
         return;
       }
-      dfs(l + 1, r, t + "(");
-      dfs(l, r + 1, t + ")");
+      if (open == n && close == n) {
+        result.push_back(current);
+        return;
+      }
+
+      current.push_back('(');
+      self(self, open + 1, close);
+      current.pop_back();
+
+      current.push_back(')');
+      self(self, open, close + 1);
+      current.pop_back();
     };
-    dfs(0, 0, "");
-    return ans;
+
+    dfs(dfs, 0, 0);
+    return result;
   }
 };

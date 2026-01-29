@@ -1,16 +1,27 @@
-class Solution {
+/**
+ * @brief Greedy patching to cover range [1, n]
+ * @intuition If we can cover [1, x-1], either extend with nums[i] or patch with x
+ * @approach Track covered range, patch when gap exists
+ * @complexity Time: O(m + log n), Space: O(1)
+ */
+#include <vector>
+
+class Solution final {
 public:
-    int minPatches(vector<int>& nums, int n) {
-        long long x = 1;
-        int ans = 0;
-        for (int i = 0; x <= n;) {
-            if (i < nums.size() && nums[i] <= x) {
-                x += nums[i++];
+    [[nodiscard]] int minPatches(const std::vector<int>& nums, int n) const {
+        long long covered = 1;
+        int patches = 0;
+        int i = 0;
+        const int m = static_cast<int>(nums.size());
+        
+        while (covered <= n) {
+            if (i < m && nums[i] <= covered) {
+                covered += nums[i++];
             } else {
-                ++ans;
-                x <<= 1;
+                ++patches;
+                covered <<= 1;
             }
         }
-        return ans;
+        return patches;
     }
 };

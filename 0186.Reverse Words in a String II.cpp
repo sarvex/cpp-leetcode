@@ -1,20 +1,35 @@
-class Solution {
+/**
+ * @brief Reverse words in character array in-place
+ * @intuition Reverse each word, then reverse entire array
+ * @approach Two-pass: reverse individual words, then reverse whole string
+ * @complexity Time: O(n), Space: O(1)
+ */
+
+#include <algorithm>
+#include <vector>
+
+using std::vector;
+
+class Solution final {
 public:
-    void reverseWords(vector<char>& s) {
-        auto reverse = [&](int i, int j) {
-            for (; i < j; ++i, --j) {
-                swap(s[i], s[j]);
+    auto reverseWords(vector<char>& s) -> void {
+        auto reverseRange = [&](int start, int end) {
+            while (start < end) {
+                std::swap(s[start++], s[end--]);
             }
         };
-        int n = s.size();
-        for (int i = 0, j = 0; j < n; ++j) {
-            if (s[j] == ' ') {
-                reverse(i, j - 1);
-                i = j + 1;
-            } else if (j == n - 1) {
-                reverse(i, j);
+        
+        const int n = static_cast<int>(s.size());
+        
+        // Reverse each word
+        for (int wordStart = 0, i = 0; i <= n; ++i) {
+            if (i == n || s[i] == ' ') {
+                reverseRange(wordStart, i - 1);
+                wordStart = i + 1;
             }
         }
-        reverse(0, n - 1);
+        
+        // Reverse entire string
+        reverseRange(0, n - 1);
     }
 };

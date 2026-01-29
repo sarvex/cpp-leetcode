@@ -1,17 +1,34 @@
-class Solution {
+/**
+ * @brief For each interval find minimum start >= its end
+ * @intuition Sort intervals by start, binary search for each end value
+ * @approach Store original indices, use lower_bound after sorting
+ * @complexity Time: O(n log n) Space: O(n)
+ */
+#include <algorithm>
+#include <utility>
+#include <vector>
+
+class Solution final {
 public:
-    vector<int> findRightInterval(vector<vector<int>>& intervals) {
-        int n = intervals.size();
-        vector<pair<int, int>> arr;
+    [[nodiscard]] auto findRightInterval(std::vector<std::vector<int>>& intervals) const
+        -> std::vector<int> {
+        const int n = static_cast<int>(intervals.size());
+        std::vector<std::pair<int, int>> arr;
+
         for (int i = 0; i < n; ++i) {
             arr.emplace_back(intervals[i][0], i);
         }
-        sort(arr.begin(), arr.end());
-        vector<int> ans;
-        for (auto& e : intervals) {
-            int j = lower_bound(arr.begin(), arr.end(), make_pair(e[1], -1)) - arr.begin();
+
+        std::sort(arr.begin(), arr.end());
+
+        std::vector<int> ans;
+        ans.reserve(n);
+
+        for (const auto& e : intervals) {
+            auto j = std::lower_bound(arr.begin(), arr.end(), std::make_pair(e[1], -1)) - arr.begin();
             ans.push_back(j == n ? -1 : arr[j].second);
         }
+
         return ans;
     }
 };

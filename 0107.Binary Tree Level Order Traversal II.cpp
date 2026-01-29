@@ -1,4 +1,18 @@
 /**
+ * @brief Bottom-up level order traversal using BFS
+ * @intuition Same as regular level order, but reverse result at end
+ * @approach Use BFS to collect levels top-down, then reverse the result
+ * @complexity Time: O(n), Space: O(w) where w is max width of tree
+ */
+
+#include <algorithm>
+#include <queue>
+#include <vector>
+
+using std::queue;
+using std::vector;
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,20 +23,22 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    vector<vector<int>> levelOrderBottom(TreeNode* root) {
+    [[nodiscard]] auto levelOrderBottom(TreeNode* root) const -> vector<vector<int>> {
         vector<vector<int>> ans;
         if (!root) {
             return ans;
         }
+        
         queue<TreeNode*> q{{root}};
         while (!q.empty()) {
-            vector<int> t;
-            for (int n = q.size(); n; --n) {
-                auto node = q.front();
+            vector<int> level;
+            for (int n = q.size(); n > 0; --n) {
+                auto* node = q.front();
                 q.pop();
-                t.push_back(node->val);
+                level.push_back(node->val);
                 if (node->left) {
                     q.push(node->left);
                 }
@@ -30,9 +46,10 @@ public:
                     q.push(node->right);
                 }
             }
-            ans.push_back(t);
+            ans.push_back(std::move(level));
         }
-        reverse(ans.begin(), ans.end());
+        
+        std::ranges::reverse(ans);
         return ans;
     }
 };

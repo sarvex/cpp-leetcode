@@ -1,25 +1,35 @@
-class Solution {
+/**
+ * @brief Binary search in rotated sorted array with duplicates
+ * @intuition Modified binary search handling rotation pivot and duplicates
+ * @approach Compare mid with right to determine sorted half; handle duplicates
+ *           by shrinking range when mid equals right
+ * @complexity Time: O(log n) average, O(n) worst case with duplicates, Space: O(1)
+ */
+class Solution final {
 public:
-    bool search(vector<int>& nums, int target) {
-        int l = 0, r = nums.size() - 1;
-        while (l < r) {
-            int mid = (l + r) >> 1;
-            if (nums[mid] > nums[r]) {
-                if (nums[l] <= target && target <= nums[mid]) {
-                    r = mid;
+    [[nodiscard]] static auto search(const vector<int>& nums, const int target) -> bool {
+        int left = 0;
+        int right = static_cast<int>(nums.size()) - 1;
+        
+        while (left < right) {
+            const int mid = left + (right - left) / 2;
+            
+            if (nums[mid] > nums[right]) {
+                if (nums[left] <= target && target <= nums[mid]) {
+                    right = mid;
                 } else {
-                    l = mid + 1;
+                    left = mid + 1;
                 }
-            } else if (nums[mid] < nums[r]) {
-                if (nums[mid] < target && target <= nums[r]) {
-                    l = mid + 1;
+            } else if (nums[mid] < nums[right]) {
+                if (nums[mid] < target && target <= nums[right]) {
+                    left = mid + 1;
                 } else {
-                    r = mid;
+                    right = mid;
                 }
             } else {
-                --r;
+                --right;
             }
         }
-        return nums[l] == target;
+        return nums[left] == target;
     }
 };

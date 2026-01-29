@@ -1,13 +1,27 @@
-class Solution {
+/**
+ * @brief Dynamic programming for minimum paint cost
+ * @intuition Each house color depends on min of other colors for previous house
+ * @approach Track costs for each color, update based on previous minimum
+ * @complexity Time: O(n), Space: O(1)
+ */
+#include <algorithm>
+#include <vector>
+
+class Solution final {
 public:
-    int minCost(vector<vector<int>>& costs) {
-        int r = 0, g = 0, b = 0;
-        for (auto& cost : costs) {
-            int _r = r, _g = g, _b = b;
-            r = min(_g, _b) + cost[0];
-            g = min(_r, _b) + cost[1];
-            b = min(_r, _g) + cost[2];
-        }
-        return min(r, min(g, b));
+  [[nodiscard]] auto minCost(const std::vector<std::vector<int>>& costs) const -> int {
+    int red = 0;
+    int green = 0;
+    int blue = 0;
+    
+    for (const auto& cost : costs) {
+      const int prevRed = red;
+      const int prevGreen = green;
+      const int prevBlue = blue;
+      red = std::min(prevGreen, prevBlue) + cost[0];
+      green = std::min(prevRed, prevBlue) + cost[1];
+      blue = std::min(prevRed, prevGreen) + cost[2];
     }
+    return std::min({red, green, blue});
+  }
 };

@@ -1,67 +1,60 @@
-class trie {
-public:
-    vector<trie*> children;
-    bool is_end;
-
-    trie() {
-        children = vector<trie*>(26, nullptr);
-        is_end = false;
-    }
-
-    void insert(const string& word) {
-        trie* cur = this;
-        for (char c : word) {
-            c -= 'a';
-            if (cur->children[c] == nullptr) {
-                cur->children[c] = new trie;
-            }
-            cur = cur->children[c];
-        }
-        cur->is_end = true;
-    }
-};
-
-class WordDictionary {
-private:
-    trie* root;
-
-public:
-    WordDictionary()
-        : root(new trie) {}
-
-    void addWord(string word) {
-        root->insert(word);
-    }
-
-    bool search(string word) {
-        return dfs(word, 0, root);
-    }
-
-private:
-    bool dfs(const string& word, int i, trie* cur) {
-        if (i == word.size()) {
-            return cur->is_end;
-        }
-        char c = word[i];
-        if (c != '.') {
-            trie* child = cur->children[c - 'a'];
-            if (child != nullptr && dfs(word, i + 1, child)) {
-                return true;
-            }
-        } else {
-            for (trie* child : cur->children) {
-                if (child != nullptr && dfs(word, i + 1, child)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-};
-
 /**
- * Your WordDictionary object will be instantiated and called as such:
- * WordDictionary* obj = new WordDictionary();
- * obj->addWord(word);
- * bool param_2 = obj->search(word);
+ * @brief Trie with wildcard search using DFS
+ * @intuition Trie enables prefix matching, DFS handles '.' wildcards
+ * @approach Build trie for words, recursively search with wildcard branching
+ * @complexity Time: O(m) for add, O(26^m) worst case for search, Space: O(n*m)
  */
+#include <array>
+#include <memory>
+#include <string>
+
+class TrieNode final {
+public:
+  std::array<std::unique_ptr<TrieNode>, 26> children{};
+  bool isEnd = false;
+
+  auto insert(const std::string& word) -> void {
+    TrieNode* current = this;
+    for (const char c : word) {
+      const int index = c - 'a';
+      if (!current->children[index]) {
+        current->children[index] = std::make_unique<TrieNode>();
+      }
+      current = current->children[index].get();
+    }
+    current->isEnd = true;
+  }
+};
+
+class WordDictionary final {
+private:
+  std::unique_ptr<TrieNode> root;
+
+  [[nodiscard]] auto dfs(const std::string& word, std::size_t index, const TrieNode* node) const -> bool {
+    if (index == word.size()) {
+      return node->isEnd;
+    }
+    const char c = word[index];
+    if (c != '.') {
+      const auto* child = node->children[c - 'a'].get();
+      return child != nullptr && dfs(word, index + 1, child);
+    }
+    for (const auto& child : node->children) {
+      if (child && dfs(word, index + 1, child.get())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+public:
+  WordDictionary() : root(std::make_unique<TrieNode>()) {}
+
+  auto addWord(const std::string& word) -> void {
+    root->insert(word);
+  }
+
+  [[nodiscard]] auto search(const std::string& word) const -> bool {
+    return dfs(word, 0, root.get());
+  }
+};

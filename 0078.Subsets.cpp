@@ -1,19 +1,28 @@
-class Solution {
+/**
+ * @brief Backtracking to generate all subsets (power set)
+ * @intuition Each element can either be included or excluded from a subset
+ * @approach Use DFS exploring both choices for each element; collect subset at leaf
+ * @complexity Time: O(2^n * n), Space: O(n) recursion depth
+ */
+class Solution final {
 public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> ans;
-        vector<int> t;
-        function<void(int)> dfs = [&](int i) -> void {
-            if (i == nums.size()) {
-                ans.push_back(t);
+    [[nodiscard]] static auto subsets(const vector<int>& nums) -> vector<vector<int>> {
+        vector<vector<int>> result;
+        vector<int> current;
+        const int n = static_cast<int>(nums.size());
+        
+        auto dfs = [&](this auto&& dfs, const int i) -> void {
+            if (i == n) {
+                result.push_back(current);
                 return;
             }
             dfs(i + 1);
-            t.push_back(nums[i]);
+            current.push_back(nums[i]);
             dfs(i + 1);
-            t.pop_back();
+            current.pop_back();
         };
+        
         dfs(0);
-        return ans;
+        return result;
     }
 };

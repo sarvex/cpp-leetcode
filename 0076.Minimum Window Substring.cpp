@@ -1,36 +1,47 @@
-class Solution {
+/**
+ * @brief Sliding window with character frequency tracking
+ * @intuition Use two pointers to maintain a window containing all characters of t
+ * @approach Track character frequencies with arrays; expand right to include chars,
+ *           contract left to minimize window while maintaining validity
+ * @complexity Time: O(m + n), Space: O(1) - fixed size arrays for ASCII
+ */
+class Solution final {
 public:
-  string minWindow(string s, string t) {
-    vector<int> need(128, 0);
-    vector<int> window(128, 0);
-    for (char c : t) {
-      ++need[c];
-    }
-
-    int m = s.length(), n = t.length();
-    int k = -1, mi = m + 1, cnt = 0;
-
-    for (int l = 0, r = 0; r < m; ++r) {
-      char c = s[r];
-      if (++window[c] <= need[c]) {
-        ++cnt;
-      }
-
-      while (cnt == n) {
-        if (r - l + 1 < mi) {
-          mi = r - l + 1;
-          k = l;
+    [[nodiscard]] static auto minWindow(const string& s, const string& t) -> string {
+        array<int, 128> need{};
+        array<int, 128> window{};
+        
+        for (const char c : t) {
+            ++need[c];
         }
 
-        c = s[l];
-        if (window[c] <= need[c]) {
-          --cnt;
-        }
-        --window[c];
-        ++l;
-      }
-    }
+        const int m = static_cast<int>(s.length());
+        const int n = static_cast<int>(t.length());
+        int k = -1;
+        int minLen = m + 1;
+        int cnt = 0;
 
-    return k < 0 ? "" : s.substr(k, mi);
-  }
+        for (int left = 0, right = 0; right < m; ++right) {
+            const char c = s[right];
+            if (++window[c] <= need[c]) {
+                ++cnt;
+            }
+
+            while (cnt == n) {
+                if (right - left + 1 < minLen) {
+                    minLen = right - left + 1;
+                    k = left;
+                }
+
+                const char leftChar = s[left];
+                if (window[leftChar] <= need[leftChar]) {
+                    --cnt;
+                }
+                --window[leftChar];
+                ++left;
+            }
+        }
+
+        return k < 0 ? "" : s.substr(k, minLen);
+    }
 };

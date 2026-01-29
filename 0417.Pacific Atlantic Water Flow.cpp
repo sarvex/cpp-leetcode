@@ -1,19 +1,26 @@
-typedef pair<int, int> pii;
+/**
+ * @brief Find cells where water can flow to both Pacific and Atlantic oceans
+ * @intuition BFS from ocean borders inward, find intersection of reachable cells
+ * @approach Two BFS from each ocean edge, return cells in both visited sets
+ * @complexity Time: O(m*n) Space: O(m*n)
+ */
+#include <queue>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
-class Solution {
+class Solution final {
 public:
-    vector<vector<int>> heights;
-    int m;
-    int n;
+    [[nodiscard]] auto pacificAtlantic(std::vector<std::vector<int>>& heights) const
+        -> std::vector<std::vector<int>> {
+        const int m = static_cast<int>(heights.size());
+        const int n = static_cast<int>(heights[0].size());
 
-    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
-        m = heights.size();
-        n = heights[0].size();
-        this->heights = heights;
-        queue<pii> q1;
-        queue<pii> q2;
-        unordered_set<int> vis1;
-        unordered_set<int> vis2;
+        std::queue<std::pair<int, int>> q1;
+        std::queue<std::pair<int, int>> q2;
+        std::unordered_set<int> vis1;
+        std::unordered_set<int> vis2;
+
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (i == 0 || j == 0) {
@@ -26,35 +33,39 @@ public:
                 }
             }
         }
+
+        auto bfs = [&](std::queue<std::pair<int, int>>& q, std::unordered_set<int>& vis) {
+            constexpr int dirs[5] = {-1, 0, 1, 0, -1};
+            while (!q.empty()) {
+                for (int k = static_cast<int>(q.size()); k > 0; --k) {
+                    auto [pi, pj] = q.front();
+                    q.pop();
+                    for (int d = 0; d < 4; ++d) {
+                        const int x = pi + dirs[d];
+                        const int y = pj + dirs[d + 1];
+                        if (x >= 0 && x < m && y >= 0 && y < n &&
+                            !vis.count(x * n + y) && heights[x][y] >= heights[pi][pj]) {
+                            vis.insert(x * n + y);
+                            q.emplace(x, y);
+                        }
+                    }
+                }
+            }
+        };
+
         bfs(q1, vis1);
         bfs(q2, vis2);
-        vector<vector<int>> ans;
+
+        std::vector<std::vector<int>> ans;
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                int x = i * n + j;
+                const int x = i * n + j;
                 if (vis1.count(x) && vis2.count(x)) {
                     ans.push_back({i, j});
                 }
             }
         }
-        return ans;
-    }
 
-    void bfs(queue<pii>& q, unordered_set<int>& vis) {
-        vector<int> dirs = {-1, 0, 1, 0, -1};
-        while (!q.empty()) {
-            for (int k = q.size(); k > 0; --k) {
-                auto p = q.front();
-                q.pop();
-                for (int i = 0; i < 4; ++i) {
-                    int x = p.first + dirs[i];
-                    int y = p.second + dirs[i + 1];
-                    if (x >= 0 && x < m && y >= 0 && y < n && !vis.count(x * n + y) && heights[x][y] >= heights[p.first][p.second]) {
-                        vis.insert(x * n + y);
-                        q.emplace(x, y);
-                    }
-                }
-            }
-        }
+        return ans;
     }
 };

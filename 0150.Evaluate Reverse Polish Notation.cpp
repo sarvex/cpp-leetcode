@@ -1,25 +1,50 @@
-class Solution {
+/**
+ * @brief Evaluate RPN expression using stack
+ * @intuition Operands go on stack, operators pop two and push result
+ * @approach Use stack to track operands, apply operators as encountered
+ * @complexity Time: O(n), Space: O(n)
+ */
+
+#include <cctype>
+#include <stack>
+#include <string>
+#include <vector>
+
+using std::stack;
+using std::string;
+using std::vector;
+
+class Solution final {
 public:
-    int evalRPN(vector<string>& tokens) {
-        stack<int> stk;
-        for (auto& t : tokens) {
-            if (t.size() > 1 || isdigit(t[0])) {
-                stk.push(stoi(t));
+    [[nodiscard]] auto evalRPN(vector<string>& tokens) const -> int {
+        stack<int> operands;
+        
+        for (const auto& token : tokens) {
+            if (token.size() > 1 || std::isdigit(static_cast<unsigned char>(token[0]))) {
+                operands.push(std::stoi(token));
             } else {
-                int y = stk.top();
-                stk.pop();
-                int x = stk.top();
-                stk.pop();
-                if (t[0] == '+')
-                    stk.push(x + y);
-                else if (t[0] == '-')
-                    stk.push(x - y);
-                else if (t[0] == '*')
-                    stk.push(x * y);
-                else
-                    stk.push(x / y);
+                const int right = operands.top();
+                operands.pop();
+                const int left = operands.top();
+                operands.pop();
+                
+                switch (token[0]) {
+                    case '+':
+                        operands.push(left + right);
+                        break;
+                    case '-':
+                        operands.push(left - right);
+                        break;
+                    case '*':
+                        operands.push(left * right);
+                        break;
+                    case '/':
+                        operands.push(left / right);
+                        break;
+                }
             }
         }
-        return stk.top();
+        
+        return operands.top();
     }
 };

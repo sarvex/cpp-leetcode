@@ -1,49 +1,56 @@
-#include <algorithm>
-#include <string>
-#include <unordered_map>
-#include <vector>
+/**
+ * @brief Find starting indices of concatenation of all words
+ * @intuition Use sliding window with word frequency counting
+ * @approach Try each starting offset, slide window by word length
+ * @complexity Time: O(n * k), Space: O(m * k) where k is word length
+ */
 
 class Solution final {
 public:
-  std::vector<int> findSubstring(std::string s,
-                                 std::vector<std::string> &words) {
-    std::unordered_map<std::string, int> cnt;
-    for (const auto &w : words) {
-      cnt[w]++;
+  [[nodiscard]] static auto findSubstring(const std::string& s,
+                                          const std::vector<std::string>& words)
+      -> std::vector<int> {
+    std::unordered_map<std::string, int> wordCount;
+    for (const auto& w : words) {
+      ++wordCount[w];
     }
 
-    std::vector<int> ans;
-    int m = s.length(), n = words.size(), k = words[0].length();
+    std::vector<int> result;
+    const int sLen = static_cast<int>(s.length());
+    const int numWords = static_cast<int>(words.size());
+    const int wordLen = static_cast<int>(words[0].length());
 
-    for (int i = 0; i < k; ++i) {
-      int l = i, r = i;
-      std::unordered_map<std::string, int> cnt1;
-      while (r + k <= m) {
-        std::string t = s.substr(r, k);
-        r += k;
+    for (int i = 0; i < wordLen; ++i) {
+      int left = i;
+      int right = i;
+      std::unordered_map<std::string, int> windowCount;
 
-        if (!cnt.contains(t)) {
-          cnt1.clear();
-          l = r;
+      while (right + wordLen <= sLen) {
+        std::string word = s.substr(right, wordLen);
+        right += wordLen;
+
+        if (wordCount.find(word) == wordCount.end()) {
+          windowCount.clear();
+          left = right;
           continue;
         }
 
-        cnt1[t]++;
+        ++windowCount[word];
 
-        while (cnt1[t] > cnt[t]) {
-          std::string w = s.substr(l, k);
-          if (--cnt1[w] == 0) {
-            cnt1.erase(w);
+        while (windowCount[word] > wordCount[word]) {
+          std::string leftWord = s.substr(left, wordLen);
+          if (--windowCount[leftWord] == 0) {
+            windowCount.erase(leftWord);
           }
-          l += k;
+          left += wordLen;
         }
 
-        if (r - l == n * k) {
-          ans.push_back(l);
+        if (right - left == numWords * wordLen) {
+          result.push_back(left);
         }
       }
     }
 
-    return ans;
+    return result;
   }
 };

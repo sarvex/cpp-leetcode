@@ -1,4 +1,19 @@
 /**
+ * @brief Build tree using preorder root identification and inorder partitioning
+ * @intuition Preorder gives root, inorder divides left/right subtrees
+ * @approach Use hashmap for O(1) inorder index lookup, recursively build subtrees
+ * @complexity Time: O(n), Space: O(n)
+ */
+
+#include <functional>
+#include <unordered_map>
+#include <vector>
+
+using std::function;
+using std::unordered_map;
+using std::vector;
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,24 +24,30 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        int n = preorder.size();
-        unordered_map<int, int> d;
+    [[nodiscard]] auto buildTree(vector<int>& preorder, vector<int>& inorder) const -> TreeNode* {
+        const int n = static_cast<int>(preorder.size());
+        unordered_map<int, int> indexMap;
+        
         for (int i = 0; i < n; ++i) {
-            d[inorder[i]] = i;
+            indexMap[inorder[i]] = i;
         }
-        function<TreeNode*(int, int, int)> dfs = [&](int i, int j, int n) -> TreeNode* {
-            if (n <= 0) {
+        
+        function<TreeNode*(int, int, int)> dfs = [&](int preIdx, int inStart, int count) -> TreeNode* {
+            if (count <= 0) {
                 return nullptr;
             }
-            int v = preorder[i];
-            int k = d[v];
-            TreeNode* l = dfs(i + 1, j, k - j);
-            TreeNode* r = dfs(i + 1 + k - j, k + 1, n - 1 - (k - j));
-            return new TreeNode(v, l, r);
+            const int rootVal = preorder[preIdx];
+            const int inIdx = indexMap[rootVal];
+            const int leftCount = inIdx - inStart;
+            
+            auto* left = dfs(preIdx + 1, inStart, leftCount);
+            auto* right = dfs(preIdx + 1 + leftCount, inIdx + 1, count - 1 - leftCount);
+            return new TreeNode(rootVal, left, right);
         };
+        
         return dfs(0, 0, n);
     }
 };

@@ -1,4 +1,13 @@
 /**
+ * @brief Recursive depth calculation for binary tree
+ * @intuition Max depth is 1 plus the max of left and right subtree depths
+ * @approach Recursively compute depth of subtrees and return max plus one
+ * @complexity Time: O(n), Space: O(h) where h is tree height
+ */
+
+#include <algorithm>
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,11 +18,15 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    int maxDepth(TreeNode* root) {
-        if (!root) return 0;
-        int l = maxDepth(root->left), r = maxDepth(root->right);
-        return 1 + max(l, r);
+    [[nodiscard]] auto maxDepth(TreeNode* root) const -> int {
+        if (!root) {
+            return 0;
+        }
+        const int leftDepth = maxDepth(root->left);
+        const int rightDepth = maxDepth(root->right);
+        return 1 + std::max(leftDepth, rightDepth);
     }
 };

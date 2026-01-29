@@ -1,3 +1,16 @@
+/**
+ * @brief Deep clone graph using DFS with memoization
+ * @intuition Map original nodes to clones, recursively clone neighbors
+ * @approach DFS with hash map to track already-cloned nodes
+ * @complexity Time: O(V+E), Space: O(V)
+ */
+
+#include <unordered_map>
+#include <vector>
+
+using std::unordered_map;
+using std::vector;
+
 /*
 // Definition for a Node.
 class Node {
@@ -19,24 +32,28 @@ public:
 };
 */
 
-class Solution {
+class Solution final {
 public:
-    Node* cloneGraph(Node* node) {
-        unordered_map<Node*, Node*> g;
-        auto dfs = [&](this auto&& dfs, Node* node) -> Node* {
-            if (!node) {
+    [[nodiscard]] auto cloneGraph(Node* node) const -> Node* {
+        unordered_map<Node*, Node*> cloned;
+        
+        auto dfs = [&](this auto&& dfs, Node* original) -> Node* {
+            if (!original) {
                 return nullptr;
             }
-            if (g.contains(node)) {
-                return g[node];
+            if (cloned.contains(original)) {
+                return cloned[original];
             }
-            Node* cloned = new Node(node->val);
-            g[node] = cloned;
-            for (auto& nxt : node->neighbors) {
-                cloned->neighbors.push_back(dfs(nxt));
+            
+            auto* clone = new Node(original->val);
+            cloned[original] = clone;
+            
+            for (auto* neighbor : original->neighbors) {
+                clone->neighbors.push_back(dfs(neighbor));
             }
-            return cloned;
+            return clone;
         };
+        
         return dfs(node);
     }
 };

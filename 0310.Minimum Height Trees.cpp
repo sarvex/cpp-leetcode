@@ -1,34 +1,50 @@
-class Solution {
+/**
+ * @brief Topological sort to find minimum height tree roots
+ * @intuition MHT roots are the centers of the tree - at most 2 nodes
+ * @approach BFS from leaves, peeling layer by layer until 1-2 nodes remain
+ * @complexity Time: O(n), Space: O(n)
+ */
+#include <queue>
+#include <vector>
+
+class Solution final {
 public:
-    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
+    [[nodiscard]] std::vector<int> findMinHeightTrees(int n, 
+                                                       std::vector<std::vector<int>>& edges) const {
         if (n == 1) {
             return {0};
         }
-        vector<vector<int>> g(n);
-        vector<int> degree(n);
-        for (auto& e : edges) {
-            int a = e[0], b = e[1];
-            g[a].push_back(b);
-            g[b].push_back(a);
+        
+        std::vector<std::vector<int>> graph(n);
+        std::vector<int> degree(n);
+        
+        for (const auto& edge : edges) {
+            const int a = edge[0];
+            const int b = edge[1];
+            graph[a].push_back(b);
+            graph[b].push_back(a);
             ++degree[a];
             ++degree[b];
         }
-        queue<int> q;
+        
+        std::queue<int> q;
         for (int i = 0; i < n; ++i) {
             if (degree[i] == 1) {
                 q.push(i);
             }
         }
-        vector<int> ans;
+        
+        std::vector<int> ans;
         while (!q.empty()) {
             ans.clear();
-            for (int i = q.size(); i > 0; --i) {
-                int a = q.front();
+            const int size = static_cast<int>(q.size());
+            for (int i = 0; i < size; ++i) {
+                const int node = q.front();
                 q.pop();
-                ans.push_back(a);
-                for (int b : g[a]) {
-                    if (--degree[b] == 1) {
-                        q.push(b);
+                ans.push_back(node);
+                for (const int neighbor : graph[node]) {
+                    if (--degree[neighbor] == 1) {
+                        q.push(neighbor);
                     }
                 }
             }

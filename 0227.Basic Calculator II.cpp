@@ -1,35 +1,50 @@
-class Solution {
+/**
+ * @brief Stack-based calculator with operator precedence
+ * @intuition Handle * and / immediately, defer + and - using stack
+ * @approach Push values for +/-, compute immediately for *//, sum stack at end
+ * @complexity Time: O(n), Space: O(n)
+ */
+#include <cctype>
+#include <stack>
+#include <string>
+
+class Solution final {
 public:
-    int calculate(string s) {
-        int v = 0, n = s.size();
-        char sign = '+';
-        stack<int> stk;
-        for (int i = 0; i < n; ++i) {
-            char c = s[i];
-            if (isdigit(c)) v = v * 10 + (c - '0');
-            if (i == n - 1 || c == '+' || c == '-' || c == '*' || c == '/') {
-                if (sign == '+')
-                    stk.push(v);
-                else if (sign == '-')
-                    stk.push(-v);
-                else if (sign == '*') {
-                    int t = stk.top();
-                    stk.pop();
-                    stk.push(t * v);
-                } else {
-                    int t = stk.top();
-                    stk.pop();
-                    stk.push(t / v);
-                }
-                sign = c;
-                v = 0;
-            }
+  [[nodiscard]] auto calculate(const std::string& s) const -> int {
+    int currentNum = 0;
+    char prevOp = '+';
+    std::stack<int> stk;
+    const auto n = s.size();
+    
+    for (std::size_t i = 0; i < n; ++i) {
+      const char c = s[i];
+      if (std::isdigit(c)) {
+        currentNum = currentNum * 10 + (c - '0');
+      }
+      if (i == n - 1 || c == '+' || c == '-' || c == '*' || c == '/') {
+        if (prevOp == '+') {
+          stk.push(currentNum);
+        } else if (prevOp == '-') {
+          stk.push(-currentNum);
+        } else if (prevOp == '*') {
+          const int top = stk.top();
+          stk.pop();
+          stk.push(top * currentNum);
+        } else if (prevOp == '/') {
+          const int top = stk.top();
+          stk.pop();
+          stk.push(top / currentNum);
         }
-        int ans = 0;
-        while (!stk.empty()) {
-            ans += stk.top();
-            stk.pop();
-        }
-        return ans;
+        prevOp = c;
+        currentNum = 0;
+      }
     }
+    
+    int result = 0;
+    while (!stk.empty()) {
+      result += stk.top();
+      stk.pop();
+    }
+    return result;
+  }
 };

@@ -1,4 +1,15 @@
 /**
+ * @brief BST iterator using inorder traversal caching
+ * @intuition Precompute inorder traversal, then iterate through cached values
+ * @approach Store inorder traversal in vector, use index for iteration
+ * @complexity Time: O(1) per operation, Space: O(n) for storage
+ */
+
+#include <vector>
+
+using std::vector;
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,29 +20,31 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class BSTIterator {
+
+class BSTIterator final {
+private:
+    vector<int> values_;
+    size_t index_;
+    
+    auto inorder(TreeNode* node) -> void {
+        if (node != nullptr) {
+            inorder(node->left);
+            values_.push_back(node->val);
+            inorder(node->right);
+        }
+    }
+    
 public:
-    vector<int> vals;
-    int cur;
-    BSTIterator(TreeNode* root) {
-        cur = 0;
+    explicit BSTIterator(TreeNode* root) : index_(0) {
         inorder(root);
     }
-
-    int next() {
-        return vals[cur++];
+    
+    [[nodiscard]] auto next() -> int {
+        return values_[index_++];
     }
-
-    bool hasNext() {
-        return cur < vals.size();
-    }
-
-    void inorder(TreeNode* root) {
-        if (root) {
-            inorder(root->left);
-            vals.push_back(root->val);
-            inorder(root->right);
-        }
+    
+    [[nodiscard]] auto hasNext() const -> bool {
+        return index_ < values_.size();
     }
 };
 

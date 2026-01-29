@@ -1,31 +1,43 @@
-class Solution {
+/**
+ * @brief Digit DP to count numbers with unique digits
+ * @intuition Use bitmask to track used digits during DFS
+ * @approach DFS with memoization, handle leading zeros specially
+ * @complexity Time: O(n * 2^10), Space: O(n * 2^10)
+ */
+#include <cstring>
+
+class Solution final {
 public:
-    int countNumbersWithUniqueDigits(int n) {
-        int f[n + 1][1 << 10];
-        memset(f, -1, sizeof(f));
-        auto dfs = [&](this auto&& dfs, int i, int mask, bool lead) -> int {
-            if (i < 0) {
+    [[nodiscard]] int countNumbersWithUniqueDigits(int n) const {
+        int memo[n + 1][1 << 10];
+        std::memset(memo, -1, sizeof(memo));
+        
+        auto dfs = [&](this auto&& dfs, int pos, int mask, bool leadingZero) -> int {
+            if (pos < 0) {
                 return 1;
             }
-            if (!lead && f[i][mask] != -1) {
-                return f[i][mask];
+            if (!leadingZero && memo[pos][mask] != -1) {
+                return memo[pos][mask];
             }
+            
             int ans = 0;
-            for (int j = 0; j <= 9; ++j) {
-                if (mask >> j & 1) {
+            for (int digit = 0; digit <= 9; ++digit) {
+                if ((mask >> digit) & 1) {
                     continue;
                 }
-                if (lead && j == 0) {
-                    ans += dfs(i - 1, mask, true);
+                if (leadingZero && digit == 0) {
+                    ans += dfs(pos - 1, mask, true);
                 } else {
-                    ans += dfs(i - 1, mask | 1 << i, false);
+                    ans += dfs(pos - 1, mask | (1 << digit), false);
                 }
             }
-            if (!lead) {
-                f[i][mask] = ans;
+            
+            if (!leadingZero) {
+                memo[pos][mask] = ans;
             }
             return ans;
         };
+        
         return dfs(n - 1, 0, true);
     }
 };

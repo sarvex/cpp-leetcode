@@ -1,4 +1,12 @@
 /**
+ * @brief Iterator to flatten nested list
+ * @intuition Flatten all nested integers into a simple vector
+ * @approach DFS to flatten at construction, then iterate linearly
+ * @complexity Time: O(n) flatten, O(1) next/hasNext, Space: O(n)
+ */
+#include <vector>
+
+/**
  * // This is the interface that allows for creating nested lists.
  * // You should not implement it, or speculate about its implementation
  * class NestedInteger {
@@ -16,32 +24,32 @@
  * };
  */
 
-class NestedIterator {
+class NestedIterator final {
 public:
-    NestedIterator(vector<NestedInteger>& nestedList) {
-        auto dfs = [&](this auto&& dfs, vector<NestedInteger>& ls) -> void {
-            for (auto& x : ls) {
-                if (x.isInteger()) {
-                    nums.push_back(x.getInteger());
+    explicit NestedIterator(std::vector<NestedInteger>& nestedList) {
+        auto dfs = [&](this auto&& dfs, std::vector<NestedInteger>& list) -> void {
+            for (auto& item : list) {
+                if (item.isInteger()) {
+                    nums_.push_back(item.getInteger());
                 } else {
-                    dfs(x.getList());
+                    dfs(item.getList());
                 }
             }
         };
         dfs(nestedList);
     }
 
-    int next() {
-        return nums[++i];
+    [[nodiscard]] int next() {
+        return nums_[++index_];
     }
 
-    bool hasNext() {
-        return i + 1 < nums.size();
+    [[nodiscard]] bool hasNext() const {
+        return index_ + 1 < static_cast<int>(nums_.size());
     }
 
 private:
-    vector<int> nums;
-    int i = -1;
+    std::vector<int> nums_;
+    int index_ = -1;
 };
 
 /**

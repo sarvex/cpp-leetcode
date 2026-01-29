@@ -1,4 +1,11 @@
 /**
+ * @brief Group odd and even indexed nodes in linked list
+ * @intuition Maintain two lists for odd and even nodes, then connect
+ * @approach Use two pointers to separate odd/even, then link them
+ * @complexity Time: O(n), Space: O(1)
+ */
+
+/**
  * Definition for singly-linked list.
  * struct ListNode {
  *     int val;
@@ -8,21 +15,25 @@
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    ListNode* oddEvenList(ListNode* head) {
-        if (!head) {
+    [[nodiscard]] ListNode* oddEvenList(ListNode* head) const {
+        if (head == nullptr) {
             return nullptr;
         }
-        ListNode* a = head;
-        ListNode *b = head->next, *c = b;
-        while (b && b->next) {
-            a->next = b->next;
-            a = a->next;
-            b->next = a->next;
-            b = b->next;
+        
+        ListNode* odd = head;
+        ListNode* even = head->next;
+        ListNode* evenHead = even;
+        
+        while (even != nullptr && even->next != nullptr) {
+            odd->next = even->next;
+            odd = odd->next;
+            even->next = odd->next;
+            even = even->next;
         }
-        a->next = c;
+        odd->next = evenHead;
         return head;
     }
 };

@@ -1,23 +1,39 @@
-class Solution {
+/**
+ * @brief Hierholzer's algorithm for Eulerian path reconstruction
+ * @intuition Find path using all tickets exactly once, lexicographically smallest
+ * @approach DFS with backtracking, pop visited edges, reverse final path
+ * @complexity Time: O(E log E), Space: O(E)
+ */
+#include <algorithm>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+class Solution final {
 public:
-    vector<string> findItinerary(vector<vector<string>>& tickets) {
-        sort(tickets.rbegin(), tickets.rend());
-        unordered_map<string, vector<string>> g;
+    [[nodiscard]] std::vector<std::string> findItinerary(
+        std::vector<std::vector<std::string>>& tickets) const {
+        
+        std::sort(tickets.rbegin(), tickets.rend());
+        std::unordered_map<std::string, std::vector<std::string>> graph;
+        
         for (const auto& ticket : tickets) {
-            g[ticket[0]].push_back(ticket[1]);
+            graph[ticket[0]].push_back(ticket[1]);
         }
-        vector<string> ans;
-        auto dfs = [&](this auto&& dfs, string& f) -> void {
-            while (!g[f].empty()) {
-                string t = g[f].back();
-                g[f].pop_back();
-                dfs(t);
+        
+        std::vector<std::string> ans;
+        auto dfs = [&](this auto&& dfs, std::string& from) -> void {
+            while (!graph[from].empty()) {
+                std::string to = graph[from].back();
+                graph[from].pop_back();
+                dfs(to);
             }
-            ans.emplace_back(f);
+            ans.emplace_back(from);
         };
-        string f = "JFK";
-        dfs(f);
-        reverse(ans.begin(), ans.end());
+        
+        std::string start = "JFK";
+        dfs(start);
+        std::reverse(ans.begin(), ans.end());
         return ans;
     }
 };

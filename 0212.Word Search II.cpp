@@ -1,62 +1,74 @@
-class Trie {
+/**
+ * @brief Trie + DFS backtracking for word search on board
+ * @intuition Build trie from words, search board using DFS with trie guidance
+ * @approach DFS from each cell, prune paths not in trie, mark found words
+ * @complexity Time: O(m*n*4^L) where L is max word length, Space: O(W*L) for trie
+ */
+#include <array>
+#include <functional>
+#include <memory>
+#include <string>
+#include <vector>
+
+class Trie final {
 public:
-    vector<Trie*> children;
-    int ref;
+  std::array<std::unique_ptr<Trie>, 26> children{};
+  int wordIndex = -1;
 
-    Trie()
-        : children(26, nullptr)
-        , ref(-1) {}
-
-    void insert(const string& w, int ref) {
-        Trie* node = this;
-        for (char c : w) {
-            c -= 'a';
-            if (!node->children[c]) {
-                node->children[c] = new Trie();
-            }
-            node = node->children[c];
-        }
-        node->ref = ref;
+  auto insert(const std::string& word, int index) -> void {
+    Trie* node = this;
+    for (const char c : word) {
+      const int idx = c - 'a';
+      if (!node->children[idx]) {
+        node->children[idx] = std::make_unique<Trie>();
+      }
+      node = node->children[idx].get();
     }
+    node->wordIndex = index;
+  }
 };
 
-class Solution {
+class Solution final {
 public:
-    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
-        Trie* tree = new Trie();
-        for (int i = 0; i < words.size(); ++i) {
-            tree->insert(words[i], i);
-        }
-        vector<string> ans;
-        int m = board.size(), n = board[0].size();
-
-        function<void(Trie*, int, int)> dfs = [&](Trie* node, int i, int j) {
-            int idx = board[i][j] - 'a';
-            if (!node->children[idx]) {
-                return;
-            }
-            node = node->children[idx];
-            if (node->ref != -1) {
-                ans.emplace_back(words[node->ref]);
-                node->ref = -1;
-            }
-            int dirs[5] = {-1, 0, 1, 0, -1};
-            char c = board[i][j];
-            board[i][j] = '#';
-            for (int k = 0; k < 4; ++k) {
-                int x = i + dirs[k], y = j + dirs[k + 1];
-                if (x >= 0 && x < m && y >= 0 && y < n && board[x][y] != '#') {
-                    dfs(node, x, y);
-                }
-            }
-            board[i][j] = c;
-        };
-
-        for (int i = 0; i < m; ++i) {
-            for (int j = 0; j < n; ++j) {
-                dfs(tree, i, j);
-            }
-        }
-        return ans;
+  [[nodiscard]] auto findWords(std::vector<std::vector<char>>& board, 
+                                const std::vector<std::string>& words) const -> std::vector<std::string> {
+    auto trie = std::make_unique<Trie>();
+    for (int i = 0; i < static_cast<int>(words.size()); ++i) {
+      trie->insert(words[i], i);
     }
+    
+    std::vector<std::string> result;
+    const int rows = static_cast<int>(board.size());
+    const int cols = static_cast<int>(board[0].size());
+    constexpr std::array<int, 5> directions = {-1, 0, 1, 0, -1};
+    
+    std::function<void(Trie*, int, int)> dfs = [&](Trie* node, int row, int col) {
+      const int charIndex = board[row][col] - 'a';
+      if (!node->children[charIndex]) {
+        return;
+      }
+      node = node->children[charIndex].get();
+      if (node->wordIndex != -1) {
+        result.push_back(words[node->wordIndex]);
+        node->wordIndex = -1;
+      }
+      const char originalChar = board[row][col];
+      board[row][col] = '#';
+      for (int k = 0; k < 4; ++k) {
+        const int newRow = row + directions[k];
+        const int newCol = col + directions[k + 1];
+        if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && board[newRow][newCol] != '#') {
+          dfs(node, newRow, newCol);
+        }
+      }
+      board[row][col] = originalChar;
+    };
+    
+    for (int i = 0; i < rows; ++i) {
+      for (int j = 0; j < cols; ++j) {
+        dfs(trie.get(), i, j);
+      }
+    }
+    return result;
+  }
 };

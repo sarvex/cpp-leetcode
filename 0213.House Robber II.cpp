@@ -1,20 +1,31 @@
-class Solution {
-public:
-    int rob(vector<int>& nums) {
-        int n = nums.size();
-        if (n == 1) {
-            return nums[0];
-        }
-        return max(robRange(nums, 0, n - 2), robRange(nums, 1, n - 1));
-    }
+/**
+ * @brief Circular house robber using two linear passes
+ * @intuition Houses form a circle, so rob either [0..n-2] or [1..n-1]
+ * @approach Run linear house robber twice, take maximum of both
+ * @complexity Time: O(n), Space: O(1)
+ */
+#include <algorithm>
+#include <vector>
 
-    int robRange(vector<int>& nums, int l, int r) {
-        int f = 0, g = 0;
-        for (; l <= r; ++l) {
-            int ff = max(f, g);
-            g = f + nums[l];
-            f = ff;
-        }
-        return max(f, g);
+class Solution final {
+public:
+  [[nodiscard]] auto rob(const std::vector<int>& nums) const -> int {
+    const auto n = nums.size();
+    if (n == 1) {
+      return nums[0];
     }
+    return std::max(robRange(nums, 0, n - 2), robRange(nums, 1, n - 1));
+  }
+
+private:
+  [[nodiscard]] auto robRange(const std::vector<int>& nums, std::size_t left, std::size_t right) const -> int {
+    int prevPrev = 0;
+    int prev = 0;
+    for (auto i = left; i <= right; ++i) {
+      const int current = std::max(prev, prevPrev + nums[i]);
+      prevPrev = prev;
+      prev = current;
+    }
+    return prev;
+  }
 };

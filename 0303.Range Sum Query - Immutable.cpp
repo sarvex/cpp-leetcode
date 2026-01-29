@@ -1,19 +1,27 @@
-class NumArray {
+/**
+ * @brief Prefix sum for immutable range sum queries
+ * @intuition Precompute prefix sums to answer range queries in O(1)
+ * @approach Build prefix sum array, then query as s[right+1] - s[left]
+ * @complexity Time: O(n) build, O(1) query, Space: O(n)
+ */
+#include <vector>
+
+class NumArray final {
 public:
-    NumArray(vector<int>& nums) {
-        int n = nums.size();
-        s.resize(n + 1);
+    explicit NumArray(const std::vector<int>& nums) {
+        const int n = static_cast<int>(nums.size());
+        prefix_sum_.resize(n + 1);
         for (int i = 0; i < n; ++i) {
-            s[i + 1] = s[i] + nums[i];
+            prefix_sum_[i + 1] = prefix_sum_[i] + nums[i];
         }
     }
 
-    int sumRange(int left, int right) {
-        return s[right + 1] - s[left];
+    [[nodiscard]] int sumRange(int left, int right) const {
+        return prefix_sum_[right + 1] - prefix_sum_[left];
     }
 
 private:
-    vector<int> s;
+    std::vector<int> prefix_sum_;
 };
 
 /**

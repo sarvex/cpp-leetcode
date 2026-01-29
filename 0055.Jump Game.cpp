@@ -1,28 +1,23 @@
-#include <algorithm>
-#include <vector>
-
-using std::max;
-using std::vector;
+/**
+ * @brief Determine if you can reach the last index
+ * @intuition Track the furthest reachable index as you iterate through the array
+ * @approach Greedy single pass, updating max reachable index at each position
+ * @complexity Time: O(n), Space: O(1)
+ */
 
 class Solution final {
 public:
-  /**
-   * Greedy reachability check for Jump Game
-   * @intuition: Track the furthest reachable index as you iterate.
-   * @approach: Use a single pass, updating max reachable index; fail if stuck.
-   * @complexity: O(n) time, O(1) space
-
-   * @param nums Jump lengths from each index.
-   * @return true if last index is reachable, false otherwise.
-   */
-  [[nodiscard]] static constexpr bool
-  canJump(const vector<int> &nums) noexcept {
+  [[nodiscard]] static auto canJump(std::vector<int> const& nums) -> bool {
     int maxReach = 0;
-    for (int i = 0, n = static_cast<int>(nums.size()); i < n; ++i) {
-      if (i > maxReach)
+    int const n = static_cast<int>(nums.size());
+
+    for (int i = 0; i < n; ++i) {
+      if (i > maxReach) {
         return false;
+      }
       maxReach = std::max(maxReach, i + nums[i]);
     }
+
     return true;
   }
 };

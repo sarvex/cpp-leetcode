@@ -1,30 +1,42 @@
-class MinStack {
+/**
+ * @brief Stack supporting O(1) min retrieval using auxiliary stack
+ * @intuition Maintain parallel stack tracking minimum at each level
+ * @approach Push to min stack only when new min encountered
+ * @complexity Time: O(1) all operations, Space: O(n)
+ */
+
+#include <limits>
+#include <stack>
+
+using std::stack;
+
+class MinStack final {
+private:
+    stack<int> data_;
+    stack<int> minStack_;
+    
 public:
     MinStack() {
-        stk2.push(INT_MAX);
+        minStack_.push(std::numeric_limits<int>::max());
     }
-
-    void push(int val) {
-        stk1.push(val);
-        stk2.push(min(val, stk2.top()));
+    
+    auto push(int val) -> void {
+        data_.push(val);
+        minStack_.push(std::min(val, minStack_.top()));
     }
-
-    void pop() {
-        stk1.pop();
-        stk2.pop();
+    
+    auto pop() -> void {
+        data_.pop();
+        minStack_.pop();
     }
-
-    int top() {
-        return stk1.top();
+    
+    [[nodiscard]] auto top() const -> int {
+        return data_.top();
     }
-
-    int getMin() {
-        return stk2.top();
+    
+    [[nodiscard]] auto getMin() const -> int {
+        return minStack_.top();
     }
-
-private:
-    stack<int> stk1;
-    stack<int> stk2;
 };
 
 /**

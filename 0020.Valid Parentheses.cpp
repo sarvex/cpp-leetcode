@@ -1,22 +1,34 @@
+/**
+ * @brief Validate matching brackets using a stack
+ * @intuition Opening brackets push; closing brackets must match top of stack
+ * @approach Use a string as stack, push opens, pop and match closes
+ * @complexity Time: O(n), Space: O(n)
+ */
+
 #include <string>
 
 class Solution final {
 public:
-  bool isValid(std::string s) {
-    std::string stk;
-    for (char c : s) {
-      if (c == '(' || c == '{' || c == '[')
-        stk.push_back(c);
-      else if (stk.empty() || !match(stk.back(), c))
+  [[nodiscard]] static auto isValid(const std::string& s) -> bool {
+    std::string stack;
+
+    for (const char c : s) {
+      if (c == '(' || c == '{' || c == '[') {
+        stack.push_back(c);
+      } else if (stack.empty() || !matches(stack.back(), c)) {
         return false;
-      else
-        stk.pop_back();
+      } else {
+        stack.pop_back();
+      }
     }
-    return stk.empty();
+
+    return stack.empty();
   }
 
-  bool match(char l, char r) {
-    return (l == '(' && r == ')') || (l == '[' && r == ']') ||
-           (l == '{' && r == '}');
+private:
+  [[nodiscard]] static constexpr auto matches(char left, char right) noexcept
+      -> bool {
+    return (left == '(' && right == ')') || (left == '[' && right == ']') ||
+           (left == '{' && right == '}');
   }
 };

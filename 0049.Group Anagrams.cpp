@@ -1,3 +1,10 @@
+/**
+ * @brief Group strings by their anagram signature
+ * @intuition Anagrams have the same sorted character sequence
+ * @approach Use sorted string as key in hash map
+ * @complexity Time: O(n * k log k), Space: O(n * k) where k is max string length
+ */
+
 #include <algorithm>
 #include <string>
 #include <unordered_map>
@@ -5,17 +12,23 @@
 
 class Solution final {
 public:
-  std::vector<std::vector<std::string>>
-  groupAnagrams(std::vector<std::string> &strs) {
-    std::unordered_map<std::string, std::vector<std::string>> d;
-    for (auto &s : strs) {
-      std::string k = s;
-      std::sort(k.begin(), k.end());
-      d[k].emplace_back(s);
+  [[nodiscard]] auto groupAnagrams(std::vector<std::string>& strs) const
+      -> std::vector<std::vector<std::string>> {
+    std::unordered_map<std::string, std::vector<std::string>> groups;
+
+    for (auto& s : strs) {
+      std::string key = s;
+      std::sort(key.begin(), key.end());
+      groups[key].emplace_back(s);
     }
-    std::vector<std::vector<std::string>> ans;
-    for (auto &[_, v] : d)
-      ans.emplace_back(v);
-    return ans;
+
+    std::vector<std::vector<std::string>> result;
+    result.reserve(groups.size());
+
+    for (auto& [_, group] : groups) {
+      result.emplace_back(std::move(group));
+    }
+
+    return result;
   }
 };

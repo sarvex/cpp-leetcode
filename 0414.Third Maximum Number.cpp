@@ -1,9 +1,23 @@
-class Solution {
+/**
+ * @brief Find third distinct maximum, or maximum if fewer than 3 distinct
+ * @intuition Track top 3 distinct values while iterating
+ * @approach Use LONG_MIN as sentinel to detect unset values
+ * @complexity Time: O(n) Space: O(1)
+ */
+#include <climits>
+#include <vector>
+
+class Solution final {
 public:
-    int thirdMax(vector<int>& nums) {
-        long m1 = LONG_MIN, m2 = LONG_MIN, m3 = LONG_MIN;
-        for (int num : nums) {
-            if (num == m1 || num == m2 || num == m3) continue;
+    [[nodiscard]] auto thirdMax(const std::vector<int>& nums) const -> int {
+        long m1 = LONG_MIN;
+        long m2 = LONG_MIN;
+        long m3 = LONG_MIN;
+
+        for (const int num : nums) {
+            if (num == m1 || num == m2 || num == m3) {
+                continue;
+            }
             if (num > m1) {
                 m3 = m2;
                 m2 = m1;
@@ -15,6 +29,7 @@ public:
                 m3 = num;
             }
         }
-        return (int) (m3 != LONG_MIN ? m3 : m1);
+
+        return static_cast<int>(m3 != LONG_MIN ? m3 : m1);
     }
 };

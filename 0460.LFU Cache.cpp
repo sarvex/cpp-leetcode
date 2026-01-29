@@ -1,115 +1,124 @@
-class Node {
+/**
+ * @brief LFU Cache with O(1) get and put operations
+ * @intuition Track frequency and recency using doubly linked lists per frequency
+ * @approach Hash map for key->node, frequency->list mapping, track min frequency
+ * @complexity Time: O(1) for get/put Space: O(capacity)
+ */
+#include <unordered_map>
+
+class Node final {
 public:
     int key;
     int value;
     int freq;
     Node* prev;
     Node* next;
-    Node(int key, int value) {
-        this->key = key;
-        this->value = value;
-        this->freq = 1;
-        this->prev = nullptr;
-        this->next = nullptr;
-    }
+
+    Node(int k, int v) : key(k), value(v), freq(1), prev(nullptr), next(nullptr) {}
 };
 
-class DoublyLinkedList {
+class DoublyLinkedList final {
 public:
     Node* head;
     Node* tail;
+
     DoublyLinkedList() {
-        this->head = new Node(-1, -1);
-        this->tail = new Node(-1, -1);
-        this->head->next = this->tail;
-        this->tail->prev = this->head;
+        head = new Node(-1, -1);
+        tail = new Node(-1, -1);
+        head->next = tail;
+        tail->prev = head;
     }
-    void addFirst(Node* node) {
-        node->prev = this->head;
-        node->next = this->head->next;
-        this->head->next->prev = node;
-        this->head->next = node;
+
+    auto addFirst(Node* node) -> void {
+        node->prev = head;
+        node->next = head->next;
+        head->next->prev = node;
+        head->next = node;
     }
-    Node* remove(Node* node) {
+
+    auto remove(Node* node) -> Node* {
         node->next->prev = node->prev;
         node->prev->next = node->next;
         node->next = nullptr;
         node->prev = nullptr;
         return node;
     }
-    Node* removeLast() {
-        return remove(this->tail->prev);
+
+    [[nodiscard]] auto removeLast() -> Node* {
+        return remove(tail->prev);
     }
-    bool isEmpty() {
-        return this->head->next == this->tail;
+
+    [[nodiscard]] auto isEmpty() const -> bool {
+        return head->next == tail;
     }
 };
 
-class LFUCache {
+class LFUCache final {
 public:
-    LFUCache(int capacity) {
-        this->capacity = capacity;
-        this->minFreq = 0;
-    }
+    explicit LFUCache(int capacity) : capacity_(capacity), minFreq_(0) {}
 
-    int get(int key) {
-        if (capacity == 0 || map.find(key) == map.end()) {
+    [[nodiscard]] auto get(int key) -> int {
+        if (capacity_ == 0 || map_.find(key) == map_.end()) {
             return -1;
         }
-        Node* node = map[key];
+
+        Node* node = map_[key];
         incrFreq(node);
         return node->value;
     }
 
-    void put(int key, int value) {
-        if (capacity == 0) {
+    auto put(int key, int value) -> void {
+        if (capacity_ == 0) {
             return;
         }
-        if (map.find(key) != map.end()) {
-            Node* node = map[key];
+
+        if (map_.find(key) != map_.end()) {
+            Node* node = map_[key];
             node->value = value;
             incrFreq(node);
             return;
         }
-        if (map.size() == capacity) {
-            DoublyLinkedList* list = freqMap[minFreq];
+
+        if (static_cast<int>(map_.size()) == capacity_) {
+            DoublyLinkedList* list = freqMap_[minFreq_];
             Node* node = list->removeLast();
-            map.erase(node->key);
+            map_.erase(node->key);
         }
-        Node* node = new Node(key, value);
+
+        auto* node = new Node(key, value);
         addNode(node);
-        map[key] = node;
-        minFreq = 1;
+        map_[key] = node;
+        minFreq_ = 1;
     }
 
 private:
-    int capacity;
-    int minFreq;
-    unordered_map<int, Node*> map;
-    unordered_map<int, DoublyLinkedList*> freqMap;
+    int capacity_;
+    int minFreq_;
+    std::unordered_map<int, Node*> map_;
+    std::unordered_map<int, DoublyLinkedList*> freqMap_;
 
-    void incrFreq(Node* node) {
-        int freq = node->freq;
-        DoublyLinkedList* list = freqMap[freq];
+    auto incrFreq(Node* node) -> void {
+        const int freq = node->freq;
+        DoublyLinkedList* list = freqMap_[freq];
         list->remove(node);
+
         if (list->isEmpty()) {
-            freqMap.erase(freq);
-            if (freq == minFreq) {
-                minFreq++;
+            freqMap_.erase(freq);
+            if (freq == minFreq_) {
+                ++minFreq_;
             }
         }
-        node->freq++;
+
+        ++node->freq;
         addNode(node);
     }
 
-    void addNode(Node* node) {
-        int freq = node->freq;
-        if (freqMap.find(freq) == freqMap.end()) {
-            freqMap[freq] = new DoublyLinkedList();
+    auto addNode(Node* node) -> void {
+        const int freq = node->freq;
+        if (freqMap_.find(freq) == freqMap_.end()) {
+            freqMap_[freq] = new DoublyLinkedList();
         }
-        DoublyLinkedList* list = freqMap[freq];
-        list->addFirst(node);
-        freqMap[freq] = list;
+        freqMap_[freq]->addFirst(node);
     }
 };
 

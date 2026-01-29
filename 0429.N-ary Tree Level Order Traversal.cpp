@@ -1,3 +1,12 @@
+/**
+ * @brief Return level order traversal of n-ary tree
+ * @intuition BFS naturally processes nodes level by level
+ * @approach Use queue, process all nodes at current level before moving to next
+ * @complexity Time: O(n) Space: O(w) where w is max width
+ */
+#include <queue>
+#include <vector>
+
 /*
 // Definition for a Node.
 class Node {
@@ -18,26 +27,33 @@ public:
 };
 */
 
-class Solution {
+class Solution final {
 public:
-    vector<vector<int>> levelOrder(Node* root) {
-        vector<vector<int>> ans;
+    [[nodiscard]] auto levelOrder(Node* root) const -> std::vector<std::vector<int>> {
+        std::vector<std::vector<int>> ans;
+
         if (!root) {
             return ans;
         }
-        queue<Node*> q{{root}};
+
+        std::queue<Node*> q{{root}};
+
         while (!q.empty()) {
-            vector<int> t;
-            for (int n = q.size(); n; --n) {
-                root = q.front();
+            std::vector<int> level;
+
+            for (int n = static_cast<int>(q.size()); n > 0; --n) {
+                auto* node = q.front();
                 q.pop();
-                t.push_back(root->val);
-                for (auto& child : root->children) {
+                level.push_back(node->val);
+
+                for (auto* child : node->children) {
                     q.push(child);
                 }
             }
-            ans.push_back(t);
+
+            ans.push_back(std::move(level));
         }
+
         return ans;
     }
 };

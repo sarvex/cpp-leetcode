@@ -1,60 +1,73 @@
-class SnakeGame {
+/**
+ * @brief Design Snake game with food and collision detection
+ * @intuition Use deque for snake body, set for O(1) collision check
+ * @approach Track snake position with deque, check bounds and self-collision
+ * @complexity Time: O(1) per move, Space: O(snake length)
+ */
+#include <deque>
+#include <string>
+#include <unordered_set>
+#include <vector>
+
+class SnakeGame final {
 public:
-    SnakeGame(int width, int height, vector<vector<int>>& food) {
-        m = height;
-        n = width;
-        this->food = food;
-        score = 0;
-        idx = 0;
-        q.push_back(0);
-        vis.insert(0);
+    SnakeGame(int width, int height, std::vector<std::vector<int>>& food)
+        : width_(width), height_(height), food_(food) {
+        snake_.push_back(0);
+        occupied_.insert(0);
     }
 
-    int move(string direction) {
-        int p = q.front();
-        int i = p / n, j = p % n;
-        int x = i, y = j;
+    [[nodiscard]] int move(const std::string& direction) {
+        const int head = snake_.front();
+        int row = head / width_;
+        int col = head % width_;
+        
         if (direction == "U") {
-            --x;
+            --row;
         } else if (direction == "D") {
-            ++x;
+            ++row;
         } else if (direction == "L") {
-            --y;
+            --col;
         } else {
-            ++y;
+            ++col;
         }
-        if (x < 0 || x >= m || y < 0 || y >= n) {
+        
+        // Check boundaries
+        if (row < 0 || row >= height_ || col < 0 || col >= width_) {
             return -1;
         }
-        if (idx < food.size() && x == food[idx][0] && y == food[idx][1]) {
-            ++score;
-            ++idx;
+        
+        // Check if eating food
+        if (foodIndex_ < static_cast<int>(food_.size()) && 
+            row == food_[foodIndex_][0] && col == food_[foodIndex_][1]) {
+            ++score_;
+            ++foodIndex_;
         } else {
-            int tail = q.back();
-            q.pop_back();
-            vis.erase(tail);
+            // Remove tail
+            const int tail = snake_.back();
+            snake_.pop_back();
+            occupied_.erase(tail);
         }
-        int cur = f(x, y);
-        if (vis.count(cur)) {
+        
+        // Check self-collision
+        const int newHead = row * width_ + col;
+        if (occupied_.contains(newHead)) {
             return -1;
         }
-        q.push_front(cur);
-        vis.insert(cur);
-        return score;
+        
+        snake_.push_front(newHead);
+        occupied_.insert(newHead);
+        return score_;
     }
 
 private:
-    int m;
-    int n;
-    vector<vector<int>> food;
-    int score;
-    int idx;
-    deque<int> q;
-    unordered_set<int> vis;
-
-    int f(int i, int j) {
-        return i * n + j;
-    }
+    int width_;
+    int height_;
+    std::vector<std::vector<int>> food_;
+    int score_ = 0;
+    int foodIndex_ = 0;
+    std::deque<int> snake_;
+    std::unordered_set<int> occupied_;
 };
 
 /**

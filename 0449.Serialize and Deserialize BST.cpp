@@ -1,60 +1,78 @@
 /**
+ * @brief Serialize and deserialize binary search tree
+ * @intuition BST property allows reconstruction from preorder alone
+ * @approach Preorder serialization, reconstruct using value bounds
+ * @complexity Time: O(n) Space: O(n)
+ */
+#include <climits>
+#include <functional>
+#include <sstream>
+#include <string>
+#include <vector>
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
  * };
  */
-class Codec {
+class Codec final {
 public:
-    // Encodes a tree to a single string.
-    string serialize(TreeNode* root) {
+    [[nodiscard]] auto serialize(TreeNode* root) const -> std::string {
         if (!root) {
             return "";
         }
-        string data = "";
-        function<void(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+
+        std::string data;
+        std::function<void(TreeNode*)> dfs = [&](TreeNode* node) {
+            if (!node) {
                 return;
             }
-            data += to_string(root->val) + " ";
-            dfs(root->left);
-            dfs(root->right);
+            data += std::to_string(node->val) + " ";
+            dfs(node->left);
+            dfs(node->right);
         };
+
         dfs(root);
         data.pop_back();
         return data;
     }
 
-    // Decodes your encoded data to tree.
-    TreeNode* deserialize(string data) {
+    [[nodiscard]] auto deserialize(const std::string& data) const -> TreeNode* {
         if (data.empty()) {
             return nullptr;
         }
-        vector<int> nums = split(data, ' ');
-        int i = 0;
-        function<TreeNode*(int, int)> dfs = [&](int mi, int mx) -> TreeNode* {
+
+        std::vector<int> nums = split(data, ' ');
+        std::size_t i = 0;
+
+        std::function<TreeNode*(int, int)> dfs = [&](int mi, int mx) -> TreeNode* {
             if (i == nums.size() || nums[i] < mi || nums[i] > mx) {
                 return nullptr;
             }
-            int x = nums[i++];
-            TreeNode* root = new TreeNode(x);
+            const int x = nums[i++];
+            auto* root = new TreeNode(x);
             root->left = dfs(mi, x);
             root->right = dfs(x, mx);
             return root;
         };
+
         return dfs(INT_MIN, INT_MAX);
     }
 
-    vector<int> split(const string& s, char delim) {
-        vector<int> tokens;
-        stringstream ss(s);
-        string token;
-        while (getline(ss, token, delim)) {
-            tokens.push_back(stoi(token));
+private:
+    [[nodiscard]] static auto split(const std::string& s, char delim) -> std::vector<int> {
+        std::vector<int> tokens;
+        std::stringstream ss(s);
+        std::string token;
+
+        while (std::getline(ss, token, delim)) {
+            tokens.push_back(std::stoi(token));
         }
+
         return tokens;
     }
 };

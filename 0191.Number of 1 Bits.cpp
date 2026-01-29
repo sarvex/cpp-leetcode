@@ -1,11 +1,22 @@
-class Solution {
+/**
+ * @brief Count number of 1 bits (Hamming weight) using Brian Kernighan's algorithm
+ * @intuition n & (n-1) clears the lowest set bit
+ * @approach Repeatedly clear lowest set bit and count iterations
+ * @complexity Time: O(k) where k is number of 1 bits, Space: O(1)
+ */
+
+#include <cstdint>
+
+class Solution final {
 public:
-    int hammingWeight(uint32_t n) {
-        int ans = 0;
-        while (n) {
-            n &= n - 1;
-            ++ans;
+    [[nodiscard]] auto hammingWeight(uint32_t n) const -> int {
+        int count = 0;
+        
+        while (n != 0) {
+            n &= n - 1;  // Clear lowest set bit
+            ++count;
         }
-        return ans;
+        
+        return count;
     }
 };

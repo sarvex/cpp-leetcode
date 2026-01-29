@@ -1,30 +1,49 @@
-class SummaryRanges {
-private:
-    map<int, vector<int>> mp;
+/**
+ * @brief Maintain disjoint intervals from data stream
+ * @intuition Use ordered map to track intervals, merge adjacent ones
+ * @approach Find neighbors using upper_bound, merge if adjacent
+ * @complexity Time: O(log n) addNum, O(n) getIntervals, Space: O(n)
+ */
+#include <algorithm>
+#include <map>
+#include <vector>
 
+class SummaryRanges final {
 public:
-    SummaryRanges() {
-    }
+    SummaryRanges() = default;
 
     void addNum(int val) {
-        auto r = mp.upper_bound(val);
-        auto l = r == mp.begin() ? mp.end() : prev(r);
-        if (l != mp.end() && r != mp.end() && l->second[1] + 1 == val && r->second[0] - 1 == val) {
-            l->second[1] = r->second[1];
-            mp.erase(r);
-        } else if (l != mp.end() && val <= l->second[1] + 1)
-            l->second[1] = max(val, l->second[1]);
-        else if (r != mp.end() && val >= r->second[0] - 1)
-            r->second[0] = min(val, r->second[0]);
-        else
-            mp[val] = {val, val};
+        auto right = intervals_.upper_bound(val);
+        auto left = right == intervals_.begin() ? intervals_.end() : std::prev(right);
+        
+        if (left != intervals_.end() && right != intervals_.end() && 
+            left->second[1] + 1 == val && right->second[0] - 1 == val) {
+            // Merge both intervals
+            left->second[1] = right->second[1];
+            intervals_.erase(right);
+        } else if (left != intervals_.end() && val <= left->second[1] + 1) {
+            // Extend left interval
+            left->second[1] = std::max(val, left->second[1]);
+        } else if (right != intervals_.end() && val >= right->second[0] - 1) {
+            // Extend right interval
+            right->second[0] = std::min(val, right->second[0]);
+        } else {
+            // Create new interval
+            intervals_[val] = {val, val};
+        }
     }
 
-    vector<vector<int>> getIntervals() {
-        vector<vector<int>> res;
-        for (auto& range : mp) res.push_back(range.second);
-        return res;
+    [[nodiscard]] std::vector<std::vector<int>> getIntervals() const {
+        std::vector<std::vector<int>> result;
+        result.reserve(intervals_.size());
+        for (const auto& [key, interval] : intervals_) {
+            result.push_back(interval);
+        }
+        return result;
     }
+
+private:
+    std::map<int, std::vector<int>> intervals_;
 };
 
 /**

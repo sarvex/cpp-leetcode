@@ -1,30 +1,28 @@
 /**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
+ * @brief Remove all nodes with duplicate values from sorted linked list
+ * @intuition Use dummy head and skip all nodes with duplicate values
+ * @approach Track previous node; when duplicates found, skip entire group
+ * @complexity Time: O(n), Space: O(1)
  */
-class Solution {
+class Solution final {
 public:
-    ListNode* deleteDuplicates(ListNode* head) {
-        ListNode* dummy = new ListNode(0, head);
-        ListNode* pre = dummy;
-        ListNode* cur = head;
-        while (cur) {
-            while (cur->next && cur->next->val == cur->val) {
-                cur = cur->next;
+    [[nodiscard]] static auto deleteDuplicates(ListNode* head) -> ListNode* {
+        auto dummy = new ListNode(0, head);
+        auto prev = dummy;
+        auto curr = head;
+        
+        while (curr != nullptr) {
+            while (curr->next != nullptr && curr->next->val == curr->val) {
+                curr = curr->next;
             }
-            if (pre->next == cur) {
-                pre = cur;
+            if (prev->next == curr) {
+                prev = curr;
             } else {
-                pre->next = cur->next;
+                prev->next = curr->next;
             }
-            cur = cur->next;
+            curr = curr->next;
         }
+        
         return dummy->next;
     }
 };

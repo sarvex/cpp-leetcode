@@ -1,14 +1,27 @@
-class Solution {
+/**
+ * @brief Find minimum path sum in triangle using bottom-up DP
+ * @intuition Work from bottom, each cell becomes min of two below plus itself
+ * @approach 1D DP array updated from bottom row to top
+ * @complexity Time: O(n^2), Space: O(n)
+ */
+
+#include <algorithm>
+#include <vector>
+
+using std::vector;
+
+class Solution final {
 public:
-    int minimumTotal(vector<vector<int>>& triangle) {
-        int n = triangle.size();
-        int f[n + 1];
-        memset(f, 0, sizeof(f));
-        for (int i = n - 1; ~i; --i) {
+    [[nodiscard]] auto minimumTotal(vector<vector<int>>& triangle) const -> int {
+        const int n = static_cast<int>(triangle.size());
+        vector<int> dp(n + 1, 0);
+        
+        for (int i = n - 1; i >= 0; --i) {
             for (int j = 0; j <= i; ++j) {
-                f[j] = min(f[j], f[j + 1]) + triangle[i][j];
+                dp[j] = std::min(dp[j], dp[j + 1]) + triangle[i][j];
             }
         }
-        return f[0];
+        
+        return dp[0];
     }
 };

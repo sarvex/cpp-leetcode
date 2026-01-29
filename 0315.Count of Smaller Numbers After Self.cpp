@@ -1,48 +1,63 @@
-class BinaryIndexedTree {
-public:
-    int n;
-    vector<int> c;
+/**
+ * @brief Binary Indexed Tree to count smaller numbers after self
+ * @intuition Process from right to left, use BIT to count smaller elements seen
+ * @approach Coordinate compress, then use BIT for range counting
+ * @complexity Time: O(n log n), Space: O(n)
+ */
+#include <algorithm>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
 
-    BinaryIndexedTree(int _n)
-        : n(_n)
-        , c(_n + 1) {}
+class BinaryIndexedTree final {
+public:
+    explicit BinaryIndexedTree(int n) : n_(n), tree_(n + 1) {}
 
     void update(int x, int delta) {
-        while (x <= n) {
-            c[x] += delta;
+        while (x <= n_) {
+            tree_[x] += delta;
             x += lowbit(x);
         }
     }
 
-    int query(int x) {
-        int s = 0;
+    [[nodiscard]] int query(int x) const {
+        int sum = 0;
         while (x > 0) {
-            s += c[x];
+            sum += tree_[x];
             x -= lowbit(x);
         }
-        return s;
+        return sum;
     }
 
-    int lowbit(int x) {
-        return x & -x;
+private:
+    [[nodiscard]] static constexpr int lowbit(int x) {
+        return x & (-x);
     }
+    
+    int n_;
+    std::vector<int> tree_;
 };
 
-class Solution {
+class Solution final {
 public:
-    vector<int> countSmaller(vector<int>& nums) {
-        unordered_set<int> s(nums.begin(), nums.end());
-        vector<int> alls(s.begin(), s.end());
-        sort(alls.begin(), alls.end());
-        unordered_map<int, int> m;
-        int n = alls.size();
-        for (int i = 0; i < n; ++i) m[alls[i]] = i + 1;
-        BinaryIndexedTree* tree = new BinaryIndexedTree(n);
-        vector<int> ans(nums.size());
-        for (int i = nums.size() - 1; i >= 0; --i) {
-            int x = m[nums[i]];
-            tree->update(x, 1);
-            ans[i] = tree->query(x - 1);
+    [[nodiscard]] std::vector<int> countSmaller(std::vector<int>& nums) const {
+        std::unordered_set<int> unique(nums.begin(), nums.end());
+        std::vector<int> sorted(unique.begin(), unique.end());
+        std::sort(sorted.begin(), sorted.end());
+        
+        std::unordered_map<int, int> rank;
+        const int n = static_cast<int>(sorted.size());
+        for (int i = 0; i < n; ++i) {
+            rank[sorted[i]] = i + 1;
+        }
+        
+        BinaryIndexedTree tree(n);
+        std::vector<int> ans(nums.size());
+        
+        for (int i = static_cast<int>(nums.size()) - 1; i >= 0; --i) {
+            const int x = rank[nums[i]];
+            tree.update(x, 1);
+            ans[i] = tree.query(x - 1);
         }
         return ans;
     }

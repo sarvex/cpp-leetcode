@@ -1,14 +1,24 @@
-class Solution {
+/**
+ * @brief Character frequency counting for anagram validation
+ * @intuition Anagrams have identical character frequencies
+ * @approach Count characters, increment for s, decrement for t, all should be zero
+ * @complexity Time: O(n), Space: O(1) - fixed 26 characters
+ */
+#include <algorithm>
+#include <array>
+#include <string>
+
+class Solution final {
 public:
-    bool isAnagram(string s, string t) {
-        if (s.size() != t.size()) {
-            return false;
-        }
-        vector<int> cnt(26);
-        for (int i = 0; i < s.size(); ++i) {
-            ++cnt[s[i] - 'a'];
-            --cnt[t[i] - 'a'];
-        }
-        return all_of(cnt.begin(), cnt.end(), [](int x) { return x == 0; });
+  [[nodiscard]] auto isAnagram(const std::string& s, const std::string& t) const -> bool {
+    if (s.size() != t.size()) {
+      return false;
     }
+    std::array<int, 26> count{};
+    for (std::size_t i = 0; i < s.size(); ++i) {
+      ++count[s[i] - 'a'];
+      --count[t[i] - 'a'];
+    }
+    return std::all_of(count.begin(), count.end(), [](int x) { return x == 0; });
+  }
 };

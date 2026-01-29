@@ -1,21 +1,35 @@
-class Solution {
+/**
+ * @brief DP for painting houses with k colors
+ * @intuition Each house uses minimum cost from different color of previous house
+ * @approach Track DP state, find minimum excluding current color
+ * @complexity Time: O(n * k^2), Space: O(k)
+ */
+#include <algorithm>
+#include <climits>
+#include <utility>
+#include <vector>
+
+class Solution final {
 public:
-    int minCostII(vector<vector<int>>& costs) {
-        int n = costs.size(), k = costs[0].size();
-        vector<int> f = costs[0];
-        for (int i = 1; i < n; ++i) {
-            vector<int> g = costs[i];
-            for (int j = 0; j < k; ++j) {
-                int t = INT_MAX;
-                for (int h = 0; h < k; ++h) {
-                    if (h != j) {
-                        t = min(t, f[h]);
-                    }
-                }
-                g[j] += t;
-            }
-            f = move(g);
+  [[nodiscard]] auto minCostII(const std::vector<std::vector<int>>& costs) const -> int {
+    const auto n = costs.size();
+    const auto k = costs[0].size();
+    
+    std::vector<int> dp = costs[0];
+    
+    for (std::size_t i = 1; i < n; ++i) {
+      std::vector<int> newDp = costs[i];
+      for (std::size_t j = 0; j < k; ++j) {
+        int minPrev = INT_MAX;
+        for (std::size_t h = 0; h < k; ++h) {
+          if (h != j) {
+            minPrev = std::min(minPrev, dp[h]);
+          }
         }
-        return *min_element(f.begin(), f.end());
+        newDp[j] += minPrev;
+      }
+      dp = std::move(newDp);
     }
+    return *std::min_element(dp.begin(), dp.end());
+  }
 };

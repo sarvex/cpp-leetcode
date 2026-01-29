@@ -1,31 +1,58 @@
-using pii = pair<int, int>;
+/**
+ * @brief Find maximum gap using bucket sort (Pigeonhole principle)
+ * @intuition Max gap >= (max-min)/(n-1), so bucket by this size to find gap between buckets
+ * @approach Create buckets, track min/max in each, max gap is between adjacent non-empty buckets
+ * @complexity Time: O(n), Space: O(n)
+ */
 
-class Solution {
+#include <algorithm>
+#include <limits>
+#include <utility>
+#include <vector>
+
+using std::pair;
+using std::vector;
+
+class Solution final {
 public:
-    const int inf = 0x3f3f3f3f;
-    int maximumGap(vector<int>& nums) {
-        int n = nums.size();
-        if (n < 2) return 0;
-        int mi = inf, mx = -inf;
-        for (int v : nums) {
-            mi = min(mi, v);
-            mx = max(mx, v);
+    [[nodiscard]] auto maximumGap(vector<int>& nums) const -> int {
+        const int n = static_cast<int>(nums.size());
+        if (n < 2) {
+            return 0;
         }
-        int bucketSize = max(1, (mx - mi) / (n - 1));
-        int bucketCount = (mx - mi) / bucketSize + 1;
-        vector<pii> buckets(bucketCount, {inf, -inf});
-        for (int v : nums) {
-            int i = (v - mi) / bucketSize;
-            buckets[i].first = min(buckets[i].first, v);
-            buckets[i].second = max(buckets[i].second, v);
+        
+        constexpr int INF = std::numeric_limits<int>::max();
+        int minVal = INF;
+        int maxVal = -INF;
+        
+        for (const int v : nums) {
+            minVal = std::min(minVal, v);
+            maxVal = std::max(maxVal, v);
         }
-        int ans = 0;
-        int prev = inf;
-        for (auto [curmin, curmax] : buckets) {
-            if (curmin > curmax) continue;
-            ans = max(ans, curmin - prev);
-            prev = curmax;
+        
+        const int bucketSize = std::max(1, (maxVal - minVal) / (n - 1));
+        const int bucketCount = (maxVal - minVal) / bucketSize + 1;
+        
+        // Each bucket stores (min, max) values
+        vector<pair<int, int>> buckets(bucketCount, {INF, -INF});
+        
+        for (const int v : nums) {
+            const int idx = (v - minVal) / bucketSize;
+            buckets[idx].first = std::min(buckets[idx].first, v);
+            buckets[idx].second = std::max(buckets[idx].second, v);
         }
-        return ans;
+        
+        int maxGap = 0;
+        int prevMax = INF;
+        
+        for (const auto& [curMin, curMax] : buckets) {
+            if (curMin > curMax) {
+                continue;  // Empty bucket
+            }
+            maxGap = std::max(maxGap, curMin - prevMax);
+            prevMax = curMax;
+        }
+        
+        return maxGap;
     }
 };

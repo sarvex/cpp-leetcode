@@ -1,57 +1,72 @@
-class UnionFind {
+/**
+ * @brief Union-Find to count islands after adding land
+ * @intuition Track connected components using Union-Find with path compression
+ * @approach For each new land, check and union with adjacent lands
+ * @complexity Time: O(k * alpha(mn)) where k is number of operations, Space: O(mn)
+ */
+#include <array>
+#include <numeric>
+#include <vector>
+
+class UnionFind final {
 public:
-    UnionFind(int n) {
-        p = vector<int>(n);
-        size = vector<int>(n, 1);
-        iota(p.begin(), p.end(), 0);
+    explicit UnionFind(int n) : parent_(n), size_(n, 1) {
+        std::iota(parent_.begin(), parent_.end(), 0);
     }
 
-    bool unite(int a, int b) {
-        int pa = find(a), pb = find(b);
+    [[nodiscard]] bool unite(int a, int b) {
+        const int pa = find(a);
+        const int pb = find(b);
         if (pa == pb) {
             return false;
         }
-        if (size[pa] > size[pb]) {
-            p[pb] = pa;
-            size[pa] += size[pb];
+        if (size_[pa] > size_[pb]) {
+            parent_[pb] = pa;
+            size_[pa] += size_[pb];
         } else {
-            p[pa] = pb;
-            size[pb] += size[pa];
+            parent_[pa] = pb;
+            size_[pb] += size_[pa];
         }
         return true;
     }
 
-    int find(int x) {
-        if (p[x] != x) {
-            p[x] = find(p[x]);
+    [[nodiscard]] int find(int x) {
+        if (parent_[x] != x) {
+            parent_[x] = find(parent_[x]);
         }
-        return p[x];
+        return parent_[x];
     }
 
 private:
-    vector<int> p, size;
+    std::vector<int> parent_;
+    std::vector<int> size_;
 };
 
-class Solution {
+class Solution final {
 public:
-    vector<int> numIslands2(int m, int n, vector<vector<int>>& positions) {
-        int grid[m][n];
-        memset(grid, 0, sizeof(grid));
+    [[nodiscard]] std::vector<int> numIslands2(int m, int n, 
+                                                std::vector<std::vector<int>>& positions) const {
+        std::vector<std::vector<int>> grid(m, std::vector<int>(n, 0));
         UnionFind uf(m * n);
-        int dirs[5] = {-1, 0, 1, 0, -1};
+        constexpr std::array<int, 5> dirs = {-1, 0, 1, 0, -1};
         int cnt = 0;
-        vector<int> ans;
-        for (auto& p : positions) {
-            int i = p[0], j = p[1];
-            if (grid[i][j]) {
+        std::vector<int> ans;
+        
+        for (const auto& pos : positions) {
+            const int i = pos[0];
+            const int j = pos[1];
+            if (grid[i][j] != 0) {
                 ans.push_back(cnt);
                 continue;
             }
             grid[i][j] = 1;
             ++cnt;
+            
             for (int k = 0; k < 4; ++k) {
-                int x = i + dirs[k], y = j + dirs[k + 1];
-                if (x >= 0 && x < m && y >= 0 && y < n && grid[x][y] && uf.unite(i * n + j, x * n + y)) {
+                const int x = i + dirs[k];
+                const int y = j + dirs[k + 1];
+                if (x >= 0 && x < m && y >= 0 && y < n && 
+                    grid[x][y] != 0 && uf.unite(i * n + j, x * n + y)) {
                     --cnt;
                 }
             }

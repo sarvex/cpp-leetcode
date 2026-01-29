@@ -1,18 +1,35 @@
-class Solution {
+/**
+ * @brief Track last positions for shortest word distance
+ * @intuition Update positions when words found, compute distance when both seen
+ * @approach Single pass tracking indices of word1 and word2
+ * @complexity Time: O(n), Space: O(1)
+ */
+#include <algorithm>
+#include <climits>
+#include <cmath>
+#include <string>
+#include <vector>
+
+class Solution final {
 public:
-    int shortestDistance(vector<string>& wordsDict, string word1, string word2) {
-        int ans = INT_MAX;
-        for (int k = 0, i = -1, j = -1; k < wordsDict.size(); ++k) {
-            if (wordsDict[k] == word1) {
-                i = k;
-            }
-            if (wordsDict[k] == word2) {
-                j = k;
-            }
-            if (i != -1 && j != -1) {
-                ans = min(ans, abs(i - j));
-            }
-        }
-        return ans;
+  [[nodiscard]] auto shortestDistance(const std::vector<std::string>& wordsDict, 
+                                       const std::string& word1, 
+                                       const std::string& word2) const -> int {
+    int minDistance = INT_MAX;
+    int idx1 = -1;
+    int idx2 = -1;
+    
+    for (int k = 0; k < static_cast<int>(wordsDict.size()); ++k) {
+      if (wordsDict[k] == word1) {
+        idx1 = k;
+      }
+      if (wordsDict[k] == word2) {
+        idx2 = k;
+      }
+      if (idx1 != -1 && idx2 != -1) {
+        minDistance = std::min(minDistance, std::abs(idx1 - idx2));
+      }
     }
+    return minDistance;
+  }
 };

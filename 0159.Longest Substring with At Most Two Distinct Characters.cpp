@@ -1,20 +1,37 @@
-class Solution {
+/**
+ * @brief Find longest substring with at most two distinct characters using sliding window
+ * @intuition Sliding window expands right, contracts left when exceeding 2 distinct chars
+ * @approach Use hash map to track character counts in current window
+ * @complexity Time: O(n), Space: O(1) since at most 3 entries in map
+ */
+
+#include <algorithm>
+#include <string>
+#include <unordered_map>
+
+using std::string;
+using std::unordered_map;
+
+class Solution final {
 public:
-    int lengthOfLongestSubstringTwoDistinct(string s) {
-        unordered_map<char, int> cnt;
-        int n = s.size();
-        int ans = 0;
-        for (int i = 0, j = 0; i < n; ++i) {
-            cnt[s[i]]++;
-            while (cnt.size() > 2) {
-                cnt[s[j]]--;
-                if (cnt[s[j]] == 0) {
-                    cnt.erase(s[j]);
+    [[nodiscard]] auto lengthOfLongestSubstringTwoDistinct(const string& s) const -> int {
+        unordered_map<char, int> charCount;
+        const int n = static_cast<int>(s.size());
+        int maxLen = 0;
+        
+        for (int left = 0, right = 0; right < n; ++right) {
+            ++charCount[s[right]];
+            
+            while (charCount.size() > 2) {
+                if (--charCount[s[left]] == 0) {
+                    charCount.erase(s[left]);
                 }
-                ++j;
+                ++left;
             }
-            ans = max(ans, i - j + 1);
+            
+            maxLen = std::max(maxLen, right - left + 1);
         }
-        return ans;
+        
+        return maxLen;
     }
 };

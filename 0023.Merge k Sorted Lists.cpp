@@ -1,34 +1,53 @@
+/**
+ * @brief Merge k sorted linked lists using a min-heap
+ * @intuition Always pick the smallest head among all lists
+ * @approach Use a priority queue to efficiently get minimum element
+ * @complexity Time: O(N log k), Space: O(k) where N is total nodes
+ */
+
+#include <memory>
 #include <queue>
 #include <vector>
 
-struct ListNode final {
+struct ListNode {
   int val;
-  ListNode *next;
+  ListNode* next;
   ListNode() : val(0), next(nullptr) {}
   ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode *next) : val(x), next(next) {}
+  ListNode(int x, ListNode* next) : val(x), next(next) {}
 };
+
 class Solution final {
 public:
-  ListNode *mergeKLists(std::vector<ListNode *> &lists) {
-    auto cmp = [](ListNode *a, ListNode *b) { return a->val > b->val; };
-    std::priority_queue<ListNode *, std::vector<ListNode *>, decltype(cmp)> pq;
-    for (auto head : lists) {
-      if (head) {
+  [[nodiscard]] auto mergeKLists(std::vector<ListNode*>& lists) -> ListNode* {
+    auto cmp = [](const ListNode* a, const ListNode* b) {
+      return a->val > b->val;
+    };
+
+    std::priority_queue<ListNode*, std::vector<ListNode*>, decltype(cmp)> pq(
+        cmp);
+
+    for (auto* head : lists) {
+      if (head != nullptr) {
         pq.push(head);
       }
     }
-    ListNode *dummy = new ListNode();
-    ListNode *cur = dummy;
+
+    auto dummy = std::make_unique<ListNode>();
+    auto* current = dummy.get();
+
     while (!pq.empty()) {
-      ListNode *node = pq.top();
+      auto* node = pq.top();
       pq.pop();
-      if (node->next) {
+
+      if (node->next != nullptr) {
         pq.push(node->next);
       }
-      cur->next = node;
-      cur = cur->next;
+
+      current->next = node;
+      current = current->next;
     }
+
     return dummy->next;
   }
 };

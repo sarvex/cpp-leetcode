@@ -1,18 +1,27 @@
-class Solution {
+/**
+ * @brief XOR and bit manipulation for two single numbers
+ * @intuition XOR all gives a^b, isolate distinguishing bit to separate groups
+ * @approach Find lowest set bit in XOR result to partition numbers
+ * @complexity Time: O(n), Space: O(1)
+ */
+#include <vector>
+
+class Solution final {
 public:
-    vector<int> singleNumber(vector<int>& nums) {
-        long long xs = 0;
-        for (int& x : nums) {
-            xs ^= x;
-        }
-        int lb = xs & -xs;
-        int a = 0;
-        for (int& x : nums) {
-            if (x & lb) {
-                a ^= x;
-            }
-        }
-        int b = xs ^ a;
-        return {a, b};
+  [[nodiscard]] auto singleNumber(const std::vector<int>& nums) const -> std::vector<int> {
+    long long xorAll = 0;
+    for (const int num : nums) {
+      xorAll ^= num;
     }
+    
+    const auto lowestBit = xorAll & (-xorAll);
+    int a = 0;
+    for (const int num : nums) {
+      if (num & lowestBit) {
+        a ^= num;
+      }
+    }
+    const int b = static_cast<int>(xorAll) ^ a;
+    return {a, b};
+  }
 };

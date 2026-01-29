@@ -1,14 +1,41 @@
-class Solution {
+/**
+ * @brief Form largest number by custom string concatenation comparison
+ * @intuition Compare a+b vs b+a to determine ordering
+ * @approach Convert to strings, sort with custom comparator, concatenate
+ * @complexity Time: O(n log n * k) where k is avg number length, Space: O(n*k)
+ */
+
+#include <algorithm>
+#include <string>
+#include <vector>
+
+using std::string;
+using std::vector;
+
+class Solution final {
 public:
-    string largestNumber(vector<int>& nums) {
-        vector<string> vs;
-        for (int v : nums) vs.push_back(to_string(v));
-        sort(vs.begin(), vs.end(), [](string& a, string& b) {
+    [[nodiscard]] auto largestNumber(vector<int>& nums) const -> string {
+        vector<string> strs;
+        strs.reserve(nums.size());
+        
+        for (const int num : nums) {
+            strs.push_back(std::to_string(num));
+        }
+        
+        std::ranges::sort(strs, [](const string& a, const string& b) {
             return a + b > b + a;
         });
-        if (vs[0] == "0") return "0";
-        string ans;
-        for (string v : vs) ans += v;
-        return ans;
+        
+        // Handle all zeros case
+        if (strs[0] == "0") {
+            return "0";
+        }
+        
+        string result;
+        for (const auto& s : strs) {
+            result += s;
+        }
+        
+        return result;
     }
 };

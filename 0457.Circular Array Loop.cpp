@@ -1,29 +1,47 @@
-class Solution {
+/**
+ * @brief Detect cycle in circular array with all same direction moves
+ * @intuition Floyd's cycle detection, mark visited paths
+ * @approach For each start, use slow/fast pointers, validate cycle direction
+ * @complexity Time: O(n) Space: O(1)
+ */
+#include <vector>
+
+class Solution final {
 public:
-    bool circularArrayLoop(vector<int>& nums) {
-        int n = nums.size();
+    [[nodiscard]] auto circularArrayLoop(std::vector<int>& nums) const -> bool {
+        const int n = static_cast<int>(nums.size());
+
+        auto next = [&](int i) {
+            return ((i + nums[i]) % n + n) % n;
+        };
+
         for (int i = 0; i < n; ++i) {
-            if (!nums[i]) continue;
-            int slow = i, fast = next(nums, i);
-            while (nums[slow] * nums[fast] > 0 && nums[slow] * nums[next(nums, fast)] > 0) {
+            if (nums[i] == 0) {
+                continue;
+            }
+
+            int slow = i;
+            int fast = next(i);
+
+            while (nums[slow] * nums[fast] > 0 && nums[slow] * nums[next(fast)] > 0) {
                 if (slow == fast) {
-                    if (slow != next(nums, slow)) return true;
+                    if (slow != next(slow)) {
+                        return true;
+                    }
                     break;
                 }
-                slow = next(nums, slow);
-                fast = next(nums, next(nums, fast));
+                slow = next(slow);
+                fast = next(next(fast));
             }
+
             int j = i;
-            while (nums[j] * nums[next(nums, j)] > 0) {
-                nums[j] = 0;
-                j = next(nums, j);
+            while (nums[j] * nums[next(j)] > 0) {
+                const int tmp = j;
+                j = next(j);
+                nums[tmp] = 0;
             }
         }
-        return false;
-    }
 
-    int next(vector<int>& nums, int i) {
-        int n = nums.size();
-        return (i + nums[i] % n + n) % n;
+        return false;
     }
 };

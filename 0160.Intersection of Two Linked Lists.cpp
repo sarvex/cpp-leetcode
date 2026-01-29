@@ -1,19 +1,30 @@
 /**
+ * @brief Find intersection node using two-pointer technique
+ * @intuition Both pointers traverse combined length, meeting at intersection
+ * @approach When one reaches end, redirect to other list's head; they'll meet at intersection
+ * @complexity Time: O(m+n), Space: O(1)
+ */
+
+/**
  * Definition for singly-linked list.
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
-        ListNode *a = headA, *b = headB;
-        while (a != b) {
-            a = a ? a->next : headB;
-            b = b ? b->next : headA;
+    [[nodiscard]] auto getIntersectionNode(ListNode* headA, ListNode* headB) const -> ListNode* {
+        ListNode* ptrA = headA;
+        ListNode* ptrB = headB;
+        
+        while (ptrA != ptrB) {
+            ptrA = ptrA != nullptr ? ptrA->next : headB;
+            ptrB = ptrB != nullptr ? ptrB->next : headA;
         }
-        return a;
+        
+        return ptrA;
     }
 };

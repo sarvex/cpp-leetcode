@@ -1,31 +1,37 @@
-class Codec {
+/**
+ * @brief Length-prefixed encoding for string serialization
+ * @intuition Prefix each string with its length to enable unambiguous decoding
+ * @approach Store 4-byte length before each string content
+ * @complexity Time: O(n) where n is total characters, Space: O(1) extra
+ */
+#include <cstring>
+#include <string>
+#include <vector>
+
+class Codec final {
 public:
-    // Encodes a list of strings to a single string.
-    string encode(vector<string>& strs) {
-        string ans;
-        for (string s : strs) {
-            int size = s.size();
-            ans += string((const char*) &size, sizeof(size));
-            ans += s;
-        }
-        return ans;
+  [[nodiscard]] auto encode(const std::vector<std::string>& strs) const -> std::string {
+    std::string result;
+    for (const auto& s : strs) {
+      auto length = static_cast<int>(s.size());
+      result.append(reinterpret_cast<const char*>(&length), sizeof(length));
+      result.append(s);
     }
+    return result;
+  }
 
-    // Decodes a single string to a list of strings.
-    vector<string> decode(string s) {
-        vector<string> ans;
-        int i = 0, n = s.size();
-        int size = 0;
-        while (i < n) {
-            memcpy(&size, s.data() + i, sizeof(size));
-            i += sizeof(size);
-            ans.push_back(s.substr(i, size));
-            i += size;
-        }
-        return ans;
+  [[nodiscard]] auto decode(const std::string& s) const -> std::vector<std::string> {
+    std::vector<std::string> result;
+    std::size_t i = 0;
+    const auto n = s.size();
+    
+    while (i < n) {
+      int length = 0;
+      std::memcpy(&length, s.data() + i, sizeof(length));
+      i += sizeof(length);
+      result.push_back(s.substr(i, length));
+      i += length;
     }
+    return result;
+  }
 };
-
-// Your Codec object will be instantiated and called as such:
-// Codec codec;
-// codec.decode(codec.encode(strs));

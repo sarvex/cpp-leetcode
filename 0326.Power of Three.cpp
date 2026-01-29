@@ -1,8 +1,14 @@
-class Solution {
+/**
+ * @brief Check if number is a power of three
+ * @intuition Repeatedly divide by 3 while divisible
+ * @approach Loop dividing by 3, check if result is 1
+ * @complexity Time: O(log n), Space: O(1)
+ */
+class Solution final {
 public:
-    bool isPowerOfThree(int n) {
+    [[nodiscard]] constexpr bool isPowerOfThree(int n) const {
         while (n > 2) {
-            if (n % 3) {
+            if (n % 3 != 0) {
                 return false;
             }
             n /= 3;

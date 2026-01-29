@@ -1,15 +1,20 @@
 /**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
- * };
+ * @brief Delete node by copying next node's data
+ * @intuition Copy next node's value into current, then skip next node
+ * @approach Overwrite current node with next node's data
+ * @complexity Time: O(1), Space: O(1)
  */
-class Solution {
+
+struct ListNode {
+  int val;
+  ListNode* next;
+  ListNode(int x) : val(x), next(nullptr) {}
+};
+
+class Solution final {
 public:
-    void deleteNode(ListNode* node) {
-        node->val = node->next->val;
-        node->next = node->next->next;
-    }
+  auto deleteNode(ListNode* node) const -> void {
+    node->val = node->next->val;
+    node->next = node->next->next;
+  }
 };

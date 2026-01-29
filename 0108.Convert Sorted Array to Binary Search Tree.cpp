@@ -1,4 +1,15 @@
 /**
+ * @brief Build height-balanced BST from sorted array
+ * @intuition Middle element becomes root, recursively build left and right subtrees
+ * @approach Binary search style recursion selecting middle as root each time
+ * @complexity Time: O(n), Space: O(log n) for recursion stack
+ */
+
+#include <vector>
+
+using std::vector;
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,16 +20,17 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    TreeNode* sortedArrayToBST(vector<int>& nums) {
-        auto dfs = [&](this auto&& dfs, int l, int r) -> TreeNode* {
-            if (l > r) {
+    [[nodiscard]] auto sortedArrayToBST(vector<int>& nums) const -> TreeNode* {
+        auto dfs = [&](this auto&& dfs, int left, int right) -> TreeNode* {
+            if (left > right) {
                 return nullptr;
             }
-            int mid = (l + r) >> 1;
-            return new TreeNode(nums[mid], dfs(l, mid - 1), dfs(mid + 1, r));
+            const int mid = left + (right - left) / 2;
+            return new TreeNode(nums[mid], dfs(left, mid - 1), dfs(mid + 1, right));
         };
-        return dfs(0, nums.size() - 1);
+        return dfs(0, static_cast<int>(nums.size()) - 1);
     }
 };

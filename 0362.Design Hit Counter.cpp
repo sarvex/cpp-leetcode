@@ -1,18 +1,28 @@
-class HitCounter {
+/**
+ * @brief Design hit counter for last 300 seconds
+ * @intuition Store all timestamps, use binary search for range counting
+ * @approach Store timestamps in vector, binary search for window start
+ * @complexity Time: O(1) hit, O(log n) getHits, Space: O(n)
+ */
+#include <algorithm>
+#include <vector>
+
+class HitCounter final {
 public:
-    HitCounter() {
-    }
+    HitCounter() = default;
 
     void hit(int timestamp) {
-        ts.push_back(timestamp);
+        timestamps_.push_back(timestamp);
     }
 
-    int getHits(int timestamp) {
-        return ts.end() - lower_bound(ts.begin(), ts.end(), timestamp - 300 + 1);
+    [[nodiscard]] int getHits(int timestamp) const {
+        const auto it = std::lower_bound(timestamps_.begin(), timestamps_.end(), 
+                                          timestamp - 300 + 1);
+        return static_cast<int>(timestamps_.end() - it);
     }
 
 private:
-    vector<int> ts;
+    std::vector<int> timestamps_;
 };
 
 /**

@@ -1,36 +1,41 @@
+/**
+ * @brief Find median of two sorted arrays using binary search partitioning
+ * @intuition Median is the middle value(s) after merging two sorted arrays
+ * @approach Use an iterative k-th element search to avoid full merge
+ * @complexity Time: O(log(min(m, n))), Space: O(1)
+ */
+
 #include <algorithm>
 #include <limits>
 #include <vector>
 
 class Solution final {
 public:
-  /**
-   * Find the median of two sorted arrays using binary search partitioning.
-   * @intuition: Median is the middle value(s) after merging two sorted arrays.
-   * @approach: Use an iterative k-th element search to avoid full merge.
-   * @complexity: O(log(min(m, n))) time, O(1) space.
-   */
-  double findMedianSortedArrays(const std::vector<int> &first,
-                                const std::vector<int> &second) const {
-    const auto firstSize = std::ssize(first);
-    const auto secondSize = std::ssize(second);
+  [[nodiscard]] static auto findMedianSortedArrays(const std::vector<int>& first,
+                                                   const std::vector<int>& second)
+      -> double {
+    const auto firstSize = static_cast<int>(first.size());
+    const auto secondSize = static_cast<int>(second.size());
 
     const auto getKthSmallest = [&](int k) -> int {
-      int firstIndex = 0, secondIndex = 0, remaining = k;
+      int firstIndex = 0;
+      int secondIndex = 0;
+      int remaining = k;
 
       while (true) {
-        if (firstIndex == firstSize)
+        if (firstIndex == firstSize) {
           return second[secondIndex + remaining - 1];
-        if (secondIndex == secondSize)
+        }
+        if (secondIndex == secondSize) {
           return first[firstIndex + remaining - 1];
-        if (remaining == 1)
+        }
+        if (remaining == 1) {
           return std::min(first[firstIndex], second[secondIndex]);
+        }
 
         const int step = remaining / 2;
-        const int newFirstIndex =
-            std::min(firstIndex + step, static_cast<int>(firstSize));
-        const int newSecondIndex =
-            std::min(secondIndex + step, static_cast<int>(secondSize));
+        const int newFirstIndex = std::min(firstIndex + step, firstSize);
+        const int newSecondIndex = std::min(secondIndex + step, secondSize);
         const int firstValue = (newFirstIndex - 1 < firstSize)
                                    ? first[newFirstIndex - 1]
                                    : std::numeric_limits<int>::max();

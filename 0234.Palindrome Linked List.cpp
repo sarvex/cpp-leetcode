@@ -1,35 +1,50 @@
 /**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
+ * @brief Two-pointer with list reversal for palindrome check
+ * @intuition Find middle, reverse second half, compare both halves
+ * @approach Use slow/fast pointers to find middle, reverse in-place
+ * @complexity Time: O(n), Space: O(1)
  */
-class Solution {
+
+struct ListNode {
+  int val;
+  ListNode* next;
+  ListNode() : val(0), next(nullptr) {}
+  ListNode(int x) : val(x), next(nullptr) {}
+  ListNode(int x, ListNode* next) : val(x), next(next) {}
+};
+
+class Solution final {
 public:
-    bool isPalindrome(ListNode* head) {
-        ListNode* slow = head;
-        ListNode* fast = head->next;
-        while (fast && fast->next) {
-            slow = slow->next;
-            fast = fast->next->next;
-        }
-        ListNode* pre = nullptr;
-        ListNode* cur = slow->next;
-        while (cur) {
-            ListNode* t = cur->next;
-            cur->next = pre;
-            pre = cur;
-            cur = t;
-        }
-        while (pre) {
-            if (pre->val != head->val) return false;
-            pre = pre->next;
-            head = head->next;
-        }
-        return true;
+  [[nodiscard]] auto isPalindrome(ListNode* head) const -> bool {
+    if (head == nullptr || head->next == nullptr) {
+      return true;
     }
+    
+    auto* slow = head;
+    auto* fast = head->next;
+    while (fast != nullptr && fast->next != nullptr) {
+      slow = slow->next;
+      fast = fast->next->next;
+    }
+    
+    ListNode* prev = nullptr;
+    auto* current = slow->next;
+    while (current != nullptr) {
+      auto* next = current->next;
+      current->next = prev;
+      prev = current;
+      current = next;
+    }
+    
+    auto* left = head;
+    auto* right = prev;
+    while (right != nullptr) {
+      if (left->val != right->val) {
+        return false;
+      }
+      left = left->next;
+      right = right->next;
+    }
+    return true;
+  }
 };

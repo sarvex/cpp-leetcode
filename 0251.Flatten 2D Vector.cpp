@@ -1,35 +1,35 @@
-class Vector2D {
-public:
-    Vector2D(vector<vector<int>>& vec) {
-        this->vec = move(vec);
-    }
-
-    int next() {
-        forward();
-        return vec[i][j++];
-    }
-
-    bool hasNext() {
-        forward();
-        return i < vec.size();
-    }
-
-private:
-    int i = 0;
-    int j = 0;
-    vector<vector<int>> vec;
-
-    void forward() {
-        while (i < vec.size() && j >= vec[i].size()) {
-            ++i;
-            j = 0;
-        }
-    }
-};
-
 /**
- * Your Vector2D object will be instantiated and called as such:
- * Vector2D* obj = new Vector2D(vec);
- * int param_1 = obj->next();
- * bool param_2 = obj->hasNext();
+ * @brief Iterator for flattening 2D vector
+ * @intuition Maintain row and column indices, advance to next valid element
+ * @approach Skip empty rows lazily when accessing elements
+ * @complexity Time: O(1) amortized per operation, Space: O(1) extra
  */
+#include <utility>
+#include <vector>
+
+class Vector2D final {
+private:
+  std::vector<std::vector<int>> data;
+  std::size_t row = 0;
+  std::size_t col = 0;
+
+  auto advance() -> void {
+    while (row < data.size() && col >= data[row].size()) {
+      ++row;
+      col = 0;
+    }
+  }
+
+public:
+  explicit Vector2D(std::vector<std::vector<int>>& vec) : data(std::move(vec)) {}
+
+  [[nodiscard]] auto next() -> int {
+    advance();
+    return data[row][col++];
+  }
+
+  [[nodiscard]] auto hasNext() -> bool {
+    advance();
+    return row < data.size();
+  }
+};

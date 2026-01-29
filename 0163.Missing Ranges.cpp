@@ -1,22 +1,43 @@
-class Solution {
+/**
+ * @brief Find missing ranges in sorted array within given bounds
+ * @intuition Gap exists when consecutive elements differ by more than 1
+ * @approach Scan array checking gaps, including boundaries at start and end
+ * @complexity Time: O(n), Space: O(1) excluding output
+ */
+
+#include <vector>
+
+using std::vector;
+
+class Solution final {
 public:
-    vector<vector<int>> findMissingRanges(vector<int>& nums, int lower, int upper) {
-        int n = nums.size();
+    [[nodiscard]] auto findMissingRanges(vector<int>& nums, int lower, int upper) const 
+        -> vector<vector<int>> {
+        const int n = static_cast<int>(nums.size());
+        
         if (n == 0) {
             return {{lower, upper}};
         }
-        vector<vector<int>> ans;
+        
+        vector<vector<int>> result;
+        
+        // Check gap before first element
         if (nums[0] > lower) {
-            ans.push_back({lower, nums[0] - 1});
+            result.push_back({lower, nums[0] - 1});
         }
-        for (int i = 1; i < nums.size(); ++i) {
+        
+        // Check gaps between consecutive elements
+        for (int i = 1; i < n; ++i) {
             if (nums[i] - nums[i - 1] > 1) {
-                ans.push_back({nums[i - 1] + 1, nums[i] - 1});
+                result.push_back({nums[i - 1] + 1, nums[i] - 1});
             }
         }
+        
+        // Check gap after last element
         if (nums[n - 1] < upper) {
-            ans.push_back({nums[n - 1] + 1, upper});
+            result.push_back({nums[n - 1] + 1, upper});
         }
-        return ans;
+        
+        return result;
     }
 };

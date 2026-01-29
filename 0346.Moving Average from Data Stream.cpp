@@ -1,21 +1,28 @@
-class MovingAverage {
-public:
-    MovingAverage(int size) {
-        data.resize(size);
-    }
+/**
+ * @brief Calculate moving average from data stream
+ * @intuition Use circular buffer to maintain window of size k
+ * @approach Track sum and use modulo for circular indexing
+ * @complexity Time: O(1) per operation, Space: O(size)
+ */
+#include <algorithm>
+#include <vector>
 
-    double next(int val) {
-        int i = cnt % data.size();
-        s += val - data[i];
-        data[i] = val;
-        ++cnt;
-        return s * 1.0 / min(cnt, (int) data.size());
+class MovingAverage final {
+public:
+    explicit MovingAverage(int size) : data_(size) {}
+
+    [[nodiscard]] double next(int val) {
+        const int i = count_ % static_cast<int>(data_.size());
+        sum_ += val - data_[i];
+        data_[i] = val;
+        ++count_;
+        return static_cast<double>(sum_) / std::min(count_, static_cast<int>(data_.size()));
     }
 
 private:
-    int s = 0;
-    int cnt = 0;
-    vector<int> data;
+    int sum_ = 0;
+    int count_ = 0;
+    std::vector<int> data_;
 };
 
 /**

@@ -1,19 +1,35 @@
-class Solution {
+/**
+ * @brief Find k most frequent elements using min-heap
+ * @intuition Use hash map for frequency, min-heap to maintain top k
+ * @approach Count frequencies, use min-heap of size k for most frequent
+ * @complexity Time: O(n log k), Space: O(n + k)
+ */
+#include <functional>
+#include <queue>
+#include <unordered_map>
+#include <utility>
+#include <vector>
+
+class Solution final {
 public:
-    vector<int> topKFrequent(vector<int>& nums, int k) {
-        unordered_map<int, int> cnt;
-        using pii = pair<int, int>;
-        for (int x : nums) {
+    [[nodiscard]] std::vector<int> topKFrequent(const std::vector<int>& nums, int k) const {
+        std::unordered_map<int, int> cnt;
+        for (const int x : nums) {
             ++cnt[x];
         }
-        priority_queue<pii, vector<pii>, greater<pii>> pq;
-        for (auto& [x, c] : cnt) {
-            pq.push({c, x});
-            if (pq.size() > k) {
+        
+        using pii = std::pair<int, int>;
+        std::priority_queue<pii, std::vector<pii>, std::greater<>> pq;
+        
+        for (const auto& [num, freq] : cnt) {
+            pq.emplace(freq, num);
+            if (static_cast<int>(pq.size()) > k) {
                 pq.pop();
             }
         }
-        vector<int> ans;
+        
+        std::vector<int> ans;
+        ans.reserve(k);
         while (!pq.empty()) {
             ans.push_back(pq.top().second);
             pq.pop();

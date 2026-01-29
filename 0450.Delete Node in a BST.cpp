@@ -1,4 +1,11 @@
 /**
+ * @brief Delete node with given key from BST
+ * @intuition Replace with inorder successor (leftmost in right subtree)
+ * @approach Recursively find node, handle 0/1/2 children cases
+ * @complexity Time: O(h) Space: O(h) where h is tree height
+ */
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,24 +16,36 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* deleteNode(TreeNode* root, int key) {
-        if (!root) return root;
+    [[nodiscard]] auto deleteNode(TreeNode* root, int key) const -> TreeNode* {
+        if (!root) {
+            return root;
+        }
+
         if (root->val > key) {
             root->left = deleteNode(root->left, key);
             return root;
         }
+
         if (root->val < key) {
             root->right = deleteNode(root->right, key);
             return root;
         }
-        if (!root->left) return root->right;
-        if (!root->right) return root->left;
+
+        if (!root->left) {
+            return root->right;
+        }
+        if (!root->right) {
+            return root->left;
+        }
+
         TreeNode* node = root->right;
-        while (node->left) node = node->left;
+        while (node->left) {
+            node = node->left;
+        }
         node->left = root->left;
-        root = root->right;
-        return root;
+
+        return root->right;
     }
 };

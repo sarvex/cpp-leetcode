@@ -1,4 +1,18 @@
 /**
+ * @brief BFS with alternating direction for zigzag traversal
+ * @intuition Level order traversal but reverse alternate levels
+ * @approach Use BFS and flip direction flag each level, reverse when needed
+ * @complexity Time: O(n), Space: O(w) where w is max width of tree
+ */
+
+#include <algorithm>
+#include <queue>
+#include <vector>
+
+using std::queue;
+using std::vector;
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,21 +23,24 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+    [[nodiscard]] auto zigzagLevelOrder(TreeNode* root) const -> vector<vector<int>> {
         vector<vector<int>> ans;
         if (!root) {
             return ans;
         }
+        
         queue<TreeNode*> q{{root}};
-        int left = 1;
+        bool leftToRight = true;
+        
         while (!q.empty()) {
-            vector<int> t;
-            for (int n = q.size(); n; --n) {
-                auto node = q.front();
+            vector<int> level;
+            for (int n = q.size(); n > 0; --n) {
+                auto* node = q.front();
                 q.pop();
-                t.emplace_back(node->val);
+                level.emplace_back(node->val);
                 if (node->left) {
                     q.push(node->left);
                 }
@@ -31,11 +48,11 @@ public:
                     q.push(node->right);
                 }
             }
-            if (!left) {
-                reverse(t.begin(), t.end());
+            if (!leftToRight) {
+                std::ranges::reverse(level);
             }
-            ans.emplace_back(t);
-            left ^= 1;
+            ans.emplace_back(std::move(level));
+            leftToRight = !leftToRight;
         }
         return ans;
     }

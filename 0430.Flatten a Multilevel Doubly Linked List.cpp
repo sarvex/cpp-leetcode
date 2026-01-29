@@ -1,3 +1,10 @@
+/**
+ * @brief Flatten multilevel doubly linked list depth-first
+ * @intuition Insert child chain between current and next, recursively flatten
+ * @approach Return tail of flattened sublist to properly link next nodes
+ * @complexity Time: O(n) Space: O(d) where d is max depth
+ */
+
 /*
 // Definition for a Node.
 class Node {
@@ -9,19 +16,21 @@ public:
 };
 */
 
-class Solution {
+class Solution final {
 public:
-    Node* flatten(Node* head) {
+    [[nodiscard]] auto flatten(Node* head) -> Node* {
         flattenGetTail(head);
         return head;
     }
 
-    Node* flattenGetTail(Node* head) {
+private:
+    [[nodiscard]] auto flattenGetTail(Node* head) -> Node* {
         Node* cur = head;
         Node* tail = nullptr;
 
         while (cur) {
             Node* next = cur->next;
+
             if (cur->child) {
                 Node* child = cur->child;
                 Node* childTail = flattenGetTail(cur->child);
@@ -31,8 +40,9 @@ public:
                 child->prev = cur;
                 childTail->next = next;
 
-                if (next)
+                if (next) {
                     next->prev = childTail;
+                }
 
                 tail = childTail;
             } else {

@@ -1,44 +1,55 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief DFS to find all root-to-leaf paths
+ * @intuition Traverse tree, build path string, add to result at leaves
+ * @approach Backtracking with path construction
+ * @complexity Time: O(n^2), Space: O(n) for recursion and path storage
  */
-class Solution {
-public:
-    vector<string> binaryTreePaths(TreeNode* root) {
-        vector<string> ans;
-        vector<string> t;
-        function<void(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
-                return;
-            }
-            t.push_back(to_string(root->val));
-            if (!root->left && !root->right) {
-                ans.push_back(join(t));
-            } else {
-                dfs(root->left);
-                dfs(root->right);
-            }
-            t.pop_back();
-        };
-        dfs(root);
-        return ans;
-    }
+#include <functional>
+#include <string>
+#include <vector>
 
-    string join(vector<string>& t, string sep = "->") {
-        string ans;
-        for (int i = 0; i < t.size(); ++i) {
-            if (i > 0) {
-                ans += sep;
-            }
-            ans += t[i];
-        }
-        return ans;
+struct TreeNode {
+  int val;
+  TreeNode* left;
+  TreeNode* right;
+  TreeNode() : val(0), left(nullptr), right(nullptr) {}
+  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+  TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
+};
+
+class Solution final {
+private:
+  [[nodiscard]] static auto joinPath(const std::vector<std::string>& parts) -> std::string {
+    std::string result;
+    for (std::size_t i = 0; i < parts.size(); ++i) {
+      if (i > 0) {
+        result += "->";
+      }
+      result += parts[i];
     }
+    return result;
+  }
+
+public:
+  [[nodiscard]] auto binaryTreePaths(TreeNode* root) const -> std::vector<std::string> {
+    std::vector<std::string> result;
+    std::vector<std::string> path;
+    
+    std::function<void(TreeNode*)> dfs = [&](TreeNode* node) {
+      if (node == nullptr) {
+        return;
+      }
+      path.push_back(std::to_string(node->val));
+      if (node->left == nullptr && node->right == nullptr) {
+        result.push_back(joinPath(path));
+      } else {
+        dfs(node->left);
+        dfs(node->right);
+      }
+      path.pop_back();
+    };
+    
+    dfs(root);
+    return result;
+  }
 };

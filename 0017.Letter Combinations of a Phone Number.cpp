@@ -1,33 +1,40 @@
+/**
+ * @brief Generate all letter combinations for a phone number
+ * @intuition Map each digit to its corresponding letters and build combinations
+ * @approach Use a vector to store current combinations, updating for each digit
+ * @complexity Time: O(3^n * 4^m), Space: O(3^n * 4^m)
+ */
+
+#include <array>
 #include <string>
 #include <vector>
 
-class Solution {
+class Solution final {
 public:
-  /**
-   * Generate all possible letter combinations for a phone number using mapping.
-   * @intuition: Map each digit to its corresponding letters and build
-   * combinations iteratively.
-   * @approach: Use a vector to store current combinations, updating it for each
-   * digit using STL algorithms and lambdas.
-   * @complexity: Time O(3^n * 4^m), where n is the number of digits mapping to
-   * 3 letters, m to 4; Space O(3^n * 4^m).
-   */
-  std::vector<std::string> letterCombinations(const std::string &digits) const {
-    if (digits.empty())
+  [[nodiscard]] static auto letterCombinations(const std::string& digits)
+      -> std::vector<std::string> {
+    if (digits.empty()) {
       return {};
-    static constexpr std::array<std::string_view, 8> mapping = {
+    }
+
+    static constexpr std::array<const char*, 8> mapping = {
         "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+
     std::vector<std::string> result{""};
+
     for (const char digit : digits) {
-      const auto &letters = mapping[digit - '2'];
+      const char* letters = mapping[digit - '2'];
       std::vector<std::string> next;
-      for (const auto &prefix : result) {
-        for (char c : letters) {
-          next.push_back(prefix + c);
+
+      for (const auto& prefix : result) {
+        for (const char* p = letters; *p != '\0'; ++p) {
+          next.push_back(prefix + *p);
         }
       }
+
       result = std::move(next);
     }
+
     return result;
   }
 };

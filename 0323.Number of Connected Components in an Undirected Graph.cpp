@@ -1,23 +1,35 @@
-class Solution {
+/**
+ * @brief DFS to count connected components in undirected graph
+ * @intuition Each DFS from unvisited node discovers one component
+ * @approach Mark visited nodes during DFS, count starting points
+ * @complexity Time: O(V + E), Space: O(V + E)
+ */
+#include <functional>
+#include <vector>
+
+class Solution final {
 public:
-    int countComponents(int n, vector<vector<int>>& edges) {
-        vector<int> g[n];
-        for (auto& e : edges) {
-            int a = e[0], b = e[1];
-            g[a].push_back(b);
-            g[b].push_back(a);
+    [[nodiscard]] int countComponents(int n, std::vector<std::vector<int>>& edges) const {
+        std::vector<std::vector<int>> graph(n);
+        for (const auto& edge : edges) {
+            const int a = edge[0];
+            const int b = edge[1];
+            graph[a].push_back(b);
+            graph[b].push_back(a);
         }
-        vector<bool> vis(n);
-        function<int(int)> dfs = [&](int i) {
-            if (vis[i]) {
+        
+        std::vector<bool> visited(n);
+        std::function<int(int)> dfs = [&](int node) -> int {
+            if (visited[node]) {
                 return 0;
             }
-            vis[i] = true;
-            for (int j : g[i]) {
-                dfs(j);
+            visited[node] = true;
+            for (const int neighbor : graph[node]) {
+                dfs(neighbor);
             }
             return 1;
         };
+        
         int ans = 0;
         for (int i = 0; i < n; ++i) {
             ans += dfs(i);

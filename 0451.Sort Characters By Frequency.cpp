@@ -1,21 +1,36 @@
-class Solution {
+/**
+ * @brief Sort characters by decreasing frequency
+ * @intuition Count frequencies, sort characters by count
+ * @approach Use hash map for counts, sort unique chars, build result
+ * @complexity Time: O(n + k log k) where k is unique chars Space: O(k)
+ */
+#include <algorithm>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+class Solution final {
 public:
-    string frequencySort(string s) {
-        unordered_map<char, int> cnt;
-        for (char& c : s) {
+    [[nodiscard]] auto frequencySort(const std::string& s) const -> std::string {
+        std::unordered_map<char, int> cnt;
+        for (const char c : s) {
             ++cnt[c];
         }
-        vector<char> cs;
-        for (auto& [c, _] : cnt) {
+
+        std::vector<char> cs;
+        for (const auto& [c, _] : cnt) {
             cs.push_back(c);
         }
-        sort(cs.begin(), cs.end(), [&](char& a, char& b) {
+
+        std::sort(cs.begin(), cs.end(), [&](char a, char b) {
             return cnt[a] > cnt[b];
         });
-        string ans;
-        for (char& c : cs) {
-            ans += string(cnt[c], c);
+
+        std::string ans;
+        for (const char c : cs) {
+            ans += std::string(cnt[c], c);
         }
+
         return ans;
     }
 };

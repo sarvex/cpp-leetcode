@@ -1,27 +1,44 @@
-class Solution {
+/**
+ * @brief Reverse words in string using in-place reversal
+ * @intuition Reverse each word, then reverse entire string
+ * @approach Clean extra spaces, reverse words individually, reverse whole string
+ * @complexity Time: O(n), Space: O(1) in-place
+ */
+
+#include <algorithm>
+#include <string>
+
+using std::string;
+
+class Solution final {
 public:
-    string reverseWords(string s) {
-        int i = 0;
-        int j = 0;
-        int n = s.size();
-        while (i < n) {
-            while (i < n && s[i] == ' ') {
-                ++i;
+    [[nodiscard]] auto reverseWords(string s) const -> string {
+        int writeIdx = 0;
+        const int n = static_cast<int>(s.size());
+        
+        for (int readIdx = 0; readIdx < n; ++readIdx) {
+            // Skip leading/extra spaces
+            while (readIdx < n && s[readIdx] == ' ') {
+                ++readIdx;
             }
-            if (i < n) {
-                if (j != 0) {
-                    s[j++] = ' ';
+            
+            if (readIdx < n) {
+                // Add space between words
+                if (writeIdx != 0) {
+                    s[writeIdx++] = ' ';
                 }
-                int k = i;
-                while (k < n && s[k] != ' ') {
-                    s[j++] = s[k++];
+                
+                // Copy word and reverse it
+                const int wordStart = writeIdx;
+                while (readIdx < n && s[readIdx] != ' ') {
+                    s[writeIdx++] = s[readIdx++];
                 }
-                reverse(s.begin() + j - (k - i), s.begin() + j);
-                i = k;
+                std::reverse(s.begin() + wordStart, s.begin() + writeIdx);
             }
         }
-        s.erase(s.begin() + j, s.end());
-        reverse(s.begin(), s.end());
+        
+        s.erase(s.begin() + writeIdx, s.end());
+        std::reverse(s.begin(), s.end());
         return s;
     }
 };

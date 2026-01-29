@@ -1,35 +1,48 @@
-class Solution {
+/**
+ * @brief Apply quadratic function and return sorted result
+ * @intuition Quadratic function is parabola, extremes are at sorted array ends
+ * @approach Two pointers from ends, fill result based on coefficient sign
+ * @complexity Time: O(n), Space: O(n)
+ */
+#include <vector>
+
+class Solution final {
 public:
-    vector<int> sortTransformedArray(vector<int>& nums, int a, int b, int c) {
-        int n = nums.size();
-        int i = 0, j = n - 1, k = a < 0 ? 0 : n - 1;
-        vector<int> res(n);
+    [[nodiscard]] std::vector<int> sortTransformedArray(const std::vector<int>& nums, 
+                                                         int a, int b, int c) const {
+        const int n = static_cast<int>(nums.size());
+        int i = 0;
+        int j = n - 1;
+        int k = a < 0 ? 0 : n - 1;
+        std::vector<int> result(n);
+        
         while (i <= j) {
-            int v1 = f(a, b, c, nums[i]), v2 = f(a, b, c, nums[j]);
+            const int v1 = transform(a, b, c, nums[i]);
+            const int v2 = transform(a, b, c, nums[j]);
+            
             if (a < 0) {
                 if (v1 <= v2) {
-                    res[k] = v1;
+                    result[k++] = v1;
                     ++i;
                 } else {
-                    res[k] = v2;
+                    result[k++] = v2;
                     --j;
                 }
-                ++k;
             } else {
                 if (v1 >= v2) {
-                    res[k] = v1;
+                    result[k--] = v1;
                     ++i;
                 } else {
-                    res[k] = v2;
+                    result[k--] = v2;
                     --j;
                 }
-                --k;
             }
         }
-        return res;
+        return result;
     }
 
-    int f(int a, int b, int c, int x) {
+private:
+    [[nodiscard]] static constexpr int transform(int a, int b, int c, int x) {
         return a * x * x + b * x + c;
     }
 };

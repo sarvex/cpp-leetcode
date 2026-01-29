@@ -1,29 +1,44 @@
-#include <functional>
+/**
+ * @brief Wildcard pattern matching with '?' and '*' support
+ * @intuition Use memoization to avoid recomputing subproblems
+ * @approach DFS with memoization - '*' matches zero or more characters
+ * @complexity Time: O(m * n), Space: O(m * n)
+ */
+
+#include <cstring>
 #include <string>
 
 class Solution final {
 public:
-  bool isMatch(std::string s, std::string p) {
-    int m = s.size(), n = p.size();
-    int f[m + 1][n + 1];
-    memset(f, -1, sizeof(f));
-    std::function<bool(int, int)> dfs = [&](int i, int j) {
+  [[nodiscard]] auto isMatch(const std::string& s,
+                             const std::string& p) const -> bool {
+    const int m = static_cast<int>(s.size());
+    const int n = static_cast<int>(p.size());
+    int memo[m + 1][n + 1];
+    std::memset(memo, -1, sizeof(memo));
+
+    auto dfs = [&](auto&& self, int i, int j) -> bool {
       if (i >= m) {
-        return j >= n || (p[j] == '*' && dfs(i, j + 1));
+        return j >= n || (p[j] == '*' && self(self, i, j + 1));
       }
       if (j >= n) {
         return false;
       }
-      if (f[i][j] != -1) {
-        return f[i][j] == 1;
+      if (memo[i][j] != -1) {
+        return memo[i][j] == 1;
       }
+
+      bool result = false;
       if (p[j] == '*') {
-        f[i][j] = dfs(i + 1, j) || dfs(i, j + 1) ? 1 : 0;
+        result = self(self, i + 1, j) || self(self, i, j + 1);
       } else {
-        f[i][j] = (p[j] == '?' || s[i] == p[j]) && dfs(i + 1, j + 1) ? 1 : 0;
+        result = (p[j] == '?' || s[i] == p[j]) && self(self, i + 1, j + 1);
       }
-      return f[i][j] == 1;
+
+      memo[i][j] = result ? 1 : 0;
+      return result;
     };
-    return dfs(0, 0);
+
+    return dfs(dfs, 0, 0);
   }
 };

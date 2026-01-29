@@ -1,29 +1,36 @@
-#include <algorithm>
-#include <functional>
-#include <vector>
+/**
+ * @brief Find all combinations that sum to target (with repetition allowed)
+ * @intuition Use backtracking, allowing reuse of same element
+ * @approach DFS with sorted candidates, prune when exceeding target
+ * @complexity Time: O(n^(t/m)), Space: O(t/m) where t=target, m=min element
+ */
 
 class Solution final {
 public:
-  std::vector<std::vector<int>> combinationSum(std::vector<int> &candidates,
-                                               int target) {
-    sort(candidates.begin(), candidates.end());
-    std::vector<std::vector<int>> ans;
-    std::vector<int> t;
-    std::function<void(int, int)> dfs = [&](int i, int s) {
-      if (s == 0) {
-        ans.emplace_back(t);
+  [[nodiscard]] static auto combinationSum(std::vector<int>& candidates,
+                                           const int target)
+      -> std::vector<std::vector<int>> {
+    std::ranges::sort(candidates);
+    std::vector<std::vector<int>> result;
+    std::vector<int> current;
+
+    auto dfs = [&](auto&& self, int start, int remaining) -> void {
+      if (remaining == 0) {
+        result.emplace_back(current);
         return;
       }
-      if (s < candidates[i]) {
+      if (remaining < candidates[start]) {
         return;
       }
-      for (int j = i; j < candidates.size(); ++j) {
-        t.push_back(candidates[j]);
-        dfs(j, s - candidates[j]);
-        t.pop_back();
+
+      for (size_t j = start; j < candidates.size(); ++j) {
+        current.push_back(candidates[j]);
+        self(self, static_cast<int>(j), remaining - candidates[j]);
+        current.pop_back();
       }
     };
-    dfs(0, target);
-    return ans;
+
+    dfs(dfs, 0, target);
+    return result;
   }
 };

@@ -1,4 +1,11 @@
 /**
+ * @brief Reorder list by splitting, reversing second half, and merging
+ * @intuition Split at middle, reverse second half, interleave both halves
+ * @approach Find middle with slow/fast, reverse second half, merge alternately
+ * @complexity Time: O(n), Space: O(1)
+ */
+
+/**
  * Definition for singly-linked list.
  * struct ListNode {
  *     int val;
@@ -8,34 +15,38 @@
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    void reorderList(ListNode* head) {
-        ListNode* fast = head;
+    auto reorderList(ListNode* head) -> void {
+        // Find middle
         ListNode* slow = head;
-        while (fast->next && fast->next->next) {
+        ListNode* fast = head;
+        while (fast->next != nullptr && fast->next->next != nullptr) {
             slow = slow->next;
             fast = fast->next->next;
         }
-
-        ListNode* cur = slow->next;
+        
+        // Reverse second half
+        ListNode* curr = slow->next;
         slow->next = nullptr;
-
-        ListNode* pre = nullptr;
-        while (cur) {
-            ListNode* t = cur->next;
-            cur->next = pre;
-            pre = cur;
-            cur = t;
+        ListNode* prev = nullptr;
+        
+        while (curr != nullptr) {
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
         }
-        cur = head;
-
-        while (pre) {
-            ListNode* t = pre->next;
-            pre->next = cur->next;
-            cur->next = pre;
-            cur = pre->next;
-            pre = t;
+        
+        // Merge two halves
+        curr = head;
+        while (prev != nullptr) {
+            ListNode* nextPrev = prev->next;
+            prev->next = curr->next;
+            curr->next = prev;
+            curr = prev->next;
+            prev = nextPrev;
         }
     }
 };

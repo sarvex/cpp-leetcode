@@ -1,51 +1,63 @@
-#include <string>
-#include <vector>
+/**
+ * @brief Find first occurrence of needle in haystack using KMP algorithm
+ * @intuition Use failure function to avoid redundant comparisons
+ * @approach Build failure array, then search with backtracking on mismatch
+ * @complexity Time: O(m + n), Space: O(n)
+ */
 
 class Solution final {
-private:
-  std::vector<int> Next(std::string str) {
-    std::vector<int> n(str.length());
-    n[0] = -1;
-    int i = 0, pre = -1;
-    int len = str.length();
-    while (i < len) {
-      while (pre >= 0 && str[i] != str[pre])
-        pre = n[pre];
-      ++i, ++pre;
-      if (i >= len)
-        break;
-      if (str[i] == str[pre])
-        n[i] = n[pre];
-      else
-        n[i] = pre;
-    }
-    return n;
-  }
-
 public:
-  int strStr(std::string haystack, std::string needle) {
-    if (0 == needle.length())
+  [[nodiscard]] static auto strStr(const std::string& haystack,
+                                   const std::string& needle) -> int {
+    if (needle.empty()) {
       return 0;
+    }
 
-    std::vector<int> n(Next(needle));
+    const auto failure = buildFailure(needle);
+    const int hLen = static_cast<int>(haystack.length());
+    const int nLen = static_cast<int>(needle.length());
 
-    int len = haystack.length() - needle.length() + 1;
-    for (int i = 0; i < len; ++i) {
-      int j = 0, k = i;
-      while (j < needle.length() && k < haystack.length()) {
+    for (int i = 0; i <= hLen - nLen; ++i) {
+      int j = 0;
+      int k = i;
+
+      while (j < nLen && k < hLen) {
         if (haystack[k] != needle[j]) {
-          if (n[j] >= 0) {
-            j = n[j];
+          if (failure[j] >= 0) {
+            j = failure[j];
             continue;
-          } else
-            break;
+          }
+          break;
         }
-        ++k, ++j;
+        ++k;
+        ++j;
       }
-      if (j >= needle.length())
+
+      if (j >= nLen) {
         return k - j;
+      }
     }
 
     return -1;
+  }
+
+private:
+  [[nodiscard]] static auto buildFailure(const std::string& pattern)
+      -> std::vector<int> {
+    const int len = static_cast<int>(pattern.length());
+    std::vector<int> failure(len);
+    failure[0] = -1;
+    int pre = -1;
+
+    for (int i = 0; i < len - 1;) {
+      while (pre >= 0 && pattern[i] != pattern[pre]) {
+        pre = failure[pre];
+      }
+      ++i;
+      ++pre;
+      failure[i] = (pattern[i] == pattern[pre]) ? failure[pre] : pre;
+    }
+
+    return failure;
   }
 };

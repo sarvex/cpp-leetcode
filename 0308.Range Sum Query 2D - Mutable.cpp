@@ -1,62 +1,71 @@
-class BinaryIndexedTree {
-public:
-    int n;
-    vector<int> c;
+/**
+ * @brief Binary Indexed Trees for mutable 2D range sum queries
+ * @intuition Use one BIT per row for efficient updates and queries
+ * @approach Maintain BIT for each row, query by summing across rows
+ * @complexity Time: O(m log n) per sumRegion, O(log n) per update, Space: O(mn)
+ */
+#include <memory>
+#include <vector>
 
-    BinaryIndexedTree(int _n)
-        : n(_n)
-        , c(_n + 1) {}
+class BinaryIndexedTree final {
+public:
+    explicit BinaryIndexedTree(int n) : n_(n), tree_(n + 1) {}
 
     void update(int x, int delta) {
-        while (x <= n) {
-            c[x] += delta;
+        while (x <= n_) {
+            tree_[x] += delta;
             x += lowbit(x);
         }
     }
 
-    int query(int x) {
-        int s = 0;
+    [[nodiscard]] int query(int x) const {
+        int sum = 0;
         while (x > 0) {
-            s += c[x];
+            sum += tree_[x];
             x -= lowbit(x);
         }
-        return s;
+        return sum;
     }
 
-    int lowbit(int x) {
-        return x & -x;
+private:
+    [[nodiscard]] static constexpr int lowbit(int x) {
+        return x & (-x);
     }
+    
+    int n_;
+    std::vector<int> tree_;
 };
 
-class NumMatrix {
+class NumMatrix final {
 public:
-    vector<BinaryIndexedTree*> trees;
-
-    NumMatrix(vector<vector<int>>& matrix) {
-        int m = matrix.size();
-        int n = matrix[0].size();
-        trees.resize(m);
+    explicit NumMatrix(const std::vector<std::vector<int>>& matrix) {
+        const int m = static_cast<int>(matrix.size());
+        const int n = static_cast<int>(matrix[0].size());
+        trees_.reserve(m);
+        
         for (int i = 0; i < m; ++i) {
-            BinaryIndexedTree* tree = new BinaryIndexedTree(n);
-            for (int j = 0; j < n; ++j) tree->update(j + 1, matrix[i][j]);
-            trees[i] = tree;
+            trees_.push_back(std::make_unique<BinaryIndexedTree>(n));
+            for (int j = 0; j < n; ++j) {
+                trees_[i]->update(j + 1, matrix[i][j]);
+            }
         }
     }
 
     void update(int row, int col, int val) {
-        BinaryIndexedTree* tree = trees[row];
-        int prev = tree->query(col + 1) - tree->query(col);
-        tree->update(col + 1, val - prev);
+        const int prev = trees_[row]->query(col + 1) - trees_[row]->query(col);
+        trees_[row]->update(col + 1, val - prev);
     }
 
-    int sumRegion(int row1, int col1, int row2, int col2) {
-        int s = 0;
+    [[nodiscard]] int sumRegion(int row1, int col1, int row2, int col2) const {
+        int sum = 0;
         for (int i = row1; i <= row2; ++i) {
-            BinaryIndexedTree* tree = trees[i];
-            s += tree->query(col2 + 1) - tree->query(col1);
+            sum += trees_[i]->query(col2 + 1) - trees_[i]->query(col1);
         }
-        return s;
+        return sum;
     }
+
+private:
+    std::vector<std::unique_ptr<BinaryIndexedTree>> trees_;
 };
 
 /**

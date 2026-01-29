@@ -1,13 +1,31 @@
-class Solution {
+/**
+ * @brief Find max product subarray using DP tracking min and max
+ * @intuition Negative numbers can flip min to max, track both
+ * @approach Track current max and min products ending at each position
+ * @complexity Time: O(n), Space: O(1)
+ */
+
+#include <algorithm>
+#include <vector>
+
+using std::vector;
+
+class Solution final {
 public:
-    int maxProduct(vector<int>& nums) {
-        int f = nums[0], g = nums[0], ans = nums[0];
-        for (int i = 1; i < nums.size(); ++i) {
-            int ff = f, gg = g;
-            f = max({nums[i], ff * nums[i], gg * nums[i]});
-            g = min({nums[i], ff * nums[i], gg * nums[i]});
-            ans = max(ans, f);
+    [[nodiscard]] auto maxProduct(vector<int>& nums) const -> int {
+        int maxProd = nums[0];
+        int minProd = nums[0];
+        int result = nums[0];
+        
+        for (size_t i = 1; i < nums.size(); ++i) {
+            const int prevMax = maxProd;
+            const int prevMin = minProd;
+            
+            maxProd = std::max({nums[i], prevMax * nums[i], prevMin * nums[i]});
+            minProd = std::min({nums[i], prevMax * nums[i], prevMin * nums[i]});
+            result = std::max(result, maxProd);
         }
-        return ans;
+        
+        return result;
     }
 };

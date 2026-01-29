@@ -1,3 +1,11 @@
+/**
+ * @brief Encode n-ary tree to binary tree and decode back
+ * @intuition First child becomes left, siblings become right chain
+ * @approach Encode: left=first child, right=next sibling; Decode: reverse
+ * @complexity Time: O(n) Space: O(n)
+ */
+#include <vector>
+
 /*
 // Definition for a Node.
 class Node {
@@ -24,44 +32,51 @@ public:
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
  * };
  */
 
-class Codec {
+class Codec final {
 public:
-    // Encodes an n-ary tree to a binary tree.
-    TreeNode* encode(Node* root) {
-        if (root == nullptr) {
+    [[nodiscard]] auto encode(Node* root) const -> TreeNode* {
+        if (!root) {
             return nullptr;
         }
-        TreeNode* node = new TreeNode(root->val);
+
+        auto* node = new TreeNode(root->val);
+
         if (root->children.empty()) {
             return node;
         }
+
         TreeNode* left = encode(root->children[0]);
         node->left = left;
-        for (int i = 1; i < root->children.size(); i++) {
+
+        for (std::size_t i = 1; i < root->children.size(); ++i) {
             left->right = encode(root->children[i]);
             left = left->right;
         }
+
         return node;
     }
 
-    // Decodes your binary tree to an n-ary tree.
-    Node* decode(TreeNode* data) {
-        if (data == nullptr) {
+    [[nodiscard]] auto decode(TreeNode* data) const -> Node* {
+        if (!data) {
             return nullptr;
         }
-        Node* node = new Node(data->val, vector<Node*>());
-        if (data->left == nullptr) {
+
+        auto* node = new Node(data->val, std::vector<Node*>());
+
+        if (!data->left) {
             return node;
         }
+
         TreeNode* left = data->left;
-        while (left != nullptr) {
+        while (left) {
             node->children.push_back(decode(left));
             left = left->right;
         }
+
         return node;
     }
 };

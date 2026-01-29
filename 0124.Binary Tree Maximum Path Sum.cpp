@@ -1,4 +1,17 @@
 /**
+ * @brief Find max path sum in binary tree using post-order DFS
+ * @intuition Max path through node = node + max(0, left) + max(0, right)
+ * @approach DFS returns max single-branch sum, update global max for paths through node
+ * @complexity Time: O(n), Space: O(h) where h is tree height
+ */
+
+#include <algorithm>
+#include <functional>
+#include <limits>
+
+using std::function;
+
+/**
  * Definition for a binary tree node.
  * struct TreeNode {
  *     int val;
@@ -9,19 +22,22 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-class Solution {
+
+class Solution final {
 public:
-    int maxPathSum(TreeNode* root) {
-        int ans = -1001;
-        function<int(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+    [[nodiscard]] auto maxPathSum(TreeNode* root) const -> int {
+        int ans = std::numeric_limits<int>::min();
+        
+        function<int(TreeNode*)> dfs = [&](TreeNode* node) -> int {
+            if (!node) {
                 return 0;
             }
-            int left = max(0, dfs(root->left));
-            int right = max(0, dfs(root->right));
-            ans = max(ans, left + right + root->val);
-            return root->val + max(left, right);
+            const int leftMax = std::max(0, dfs(node->left));
+            const int rightMax = std::max(0, dfs(node->right));
+            ans = std::max(ans, leftMax + rightMax + node->val);
+            return node->val + std::max(leftMax, rightMax);
         };
+        
         dfs(root);
         return ans;
     }

@@ -1,47 +1,57 @@
-class BinaryIndexedTree {
-public:
-    int n;
-    vector<int> c;
+/**
+ * @brief Binary Indexed Tree for mutable range sum queries
+ * @intuition BIT allows efficient point updates and prefix sum queries
+ * @approach Use BIT to maintain prefix sums with O(log n) updates and queries
+ * @complexity Time: O(log n) per operation, Space: O(n)
+ */
+#include <vector>
 
-    BinaryIndexedTree(int _n)
-        : n(_n)
-        , c(_n + 1) {}
+class BinaryIndexedTree final {
+public:
+    explicit BinaryIndexedTree(int n) : n_(n), tree_(n + 1) {}
 
     void update(int x, int delta) {
-        while (x <= n) {
-            c[x] += delta;
-            x += x & -x;
+        while (x <= n_) {
+            tree_[x] += delta;
+            x += x & (-x);
         }
     }
 
-    int query(int x) {
-        int s = 0;
+    [[nodiscard]] int query(int x) const {
+        int sum = 0;
         while (x > 0) {
-            s += c[x];
-            x -= x & -x;
+            sum += tree_[x];
+            x -= x & (-x);
         }
-        return s;
+        return sum;
     }
+
+private:
+    int n_;
+    std::vector<int> tree_;
 };
 
-class NumArray {
+class NumArray final {
 public:
-    BinaryIndexedTree* tree;
-
-    NumArray(vector<int>& nums) {
-        int n = nums.size();
-        tree = new BinaryIndexedTree(n);
-        for (int i = 0; i < n; ++i) tree->update(i + 1, nums[i]);
+    explicit NumArray(const std::vector<int>& nums) 
+        : tree_(static_cast<int>(nums.size())) {
+        const int n = static_cast<int>(nums.size());
+        for (int i = 0; i < n; ++i) {
+            tree_.update(i + 1, nums[i]);
+        }
     }
 
     void update(int index, int val) {
-        int prev = sumRange(index, index);
-        tree->update(index + 1, val - prev);
+        const int prev = sumRange(index, index);
+        tree_.update(index + 1, val - prev);
     }
 
-    int sumRange(int left, int right) {
-        return tree->query(right + 1) - tree->query(left);
+    [[nodiscard]] int sumRange(int left, int right) const {
+        return tree_.query(right + 1) - tree_.query(left);
     }
+
+private:
+    BinaryIndexedTree tree_;
 };
 
 /**

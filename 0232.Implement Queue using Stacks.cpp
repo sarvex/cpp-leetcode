@@ -1,47 +1,45 @@
-class MyQueue {
-public:
-    MyQueue() {
-    }
-
-    void push(int x) {
-        stk1.push(x);
-    }
-
-    int pop() {
-        move();
-        int ans = stk2.top();
-        stk2.pop();
-        return ans;
-    }
-
-    int peek() {
-        move();
-        return stk2.top();
-    }
-
-    bool empty() {
-        return stk1.empty() && stk2.empty();
-    }
-
-private:
-    stack<int> stk1;
-    stack<int> stk2;
-
-    void move() {
-        if (stk2.empty()) {
-            while (!stk1.empty()) {
-                stk2.push(stk1.top());
-                stk1.pop();
-            }
-        }
-    }
-};
-
 /**
- * Your MyQueue object will be instantiated and called as such:
- * MyQueue* obj = new MyQueue();
- * obj->push(x);
- * int param_2 = obj->pop();
- * int param_3 = obj->peek();
- * bool param_4 = obj->empty();
+ * @brief Queue implementation using two stacks
+ * @intuition Move elements between stacks to reverse order
+ * @approach Use input stack for push, output stack for pop/peek with lazy transfer
+ * @complexity Time: O(1) amortized, Space: O(n)
  */
+#include <stack>
+
+class MyQueue final {
+private:
+  std::stack<int> inputStack;
+  std::stack<int> outputStack;
+
+  auto transfer() -> void {
+    if (outputStack.empty()) {
+      while (!inputStack.empty()) {
+        outputStack.push(inputStack.top());
+        inputStack.pop();
+      }
+    }
+  }
+
+public:
+  MyQueue() = default;
+
+  auto push(int x) -> void {
+    inputStack.push(x);
+  }
+
+  [[nodiscard]] auto pop() -> int {
+    transfer();
+    const int front = outputStack.top();
+    outputStack.pop();
+    return front;
+  }
+
+  [[nodiscard]] auto peek() -> int {
+    transfer();
+    return outputStack.top();
+  }
+
+  [[nodiscard]] auto empty() const -> bool {
+    return inputStack.empty() && outputStack.empty();
+  }
+};

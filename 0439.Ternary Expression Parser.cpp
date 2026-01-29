@@ -1,10 +1,21 @@
-class Solution {
+/**
+ * @brief Parse ternary expression string (a?b:c) to result
+ * @intuition Process right to left using stack, resolve ? when encountered
+ * @approach Reverse string, push operands, pop and evaluate on '?'
+ * @complexity Time: O(n) Space: O(n)
+ */
+#include <algorithm>
+#include <string>
+
+class Solution final {
 public:
-    string parseTernary(string expression) {
-        string stk;
+    [[nodiscard]] auto parseTernary(std::string expression) const -> std::string {
+        std::string stk;
         bool cond = false;
-        reverse(expression.begin(), expression.end());
-        for (char& c : expression) {
+
+        std::reverse(expression.begin(), expression.end());
+
+        for (const char c : expression) {
             if (c == ':') {
                 continue;
             }
@@ -13,7 +24,7 @@ public:
             } else {
                 if (cond) {
                     if (c == 'T') {
-                        char x = stk.back();
+                        const char x = stk.back();
                         stk.pop_back();
                         stk.pop_back();
                         stk.push_back(x);
@@ -26,6 +37,7 @@ public:
                 }
             }
         }
+
         return {stk[0]};
     }
 };

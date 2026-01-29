@@ -1,17 +1,27 @@
-class Solution {
+/**
+ * @brief Sliding window for longest substring with at most k distinct chars
+ * @intuition Expand window while <= k distinct, shrink when exceeding
+ * @approach Use hash map to track char counts, slide window
+ * @complexity Time: O(n), Space: O(k)
+ */
+#include <string>
+#include <unordered_map>
+
+class Solution final {
 public:
-    int lengthOfLongestSubstringKDistinct(string s, int k) {
-        unordered_map<char, int> cnt;
-        int l = 0;
-        for (char& c : s) {
+    [[nodiscard]] int lengthOfLongestSubstringKDistinct(const std::string& s, int k) const {
+        std::unordered_map<char, int> cnt;
+        int left = 0;
+        
+        for (const char c : s) {
             ++cnt[c];
-            if (cnt.size() > k) {
-                if (--cnt[s[l]] == 0) {
-                    cnt.erase(s[l]);
+            if (static_cast<int>(cnt.size()) > k) {
+                if (--cnt[s[left]] == 0) {
+                    cnt.erase(s[left]);
                 }
-                ++l;
+                ++left;
             }
         }
-        return s.size() - l;
+        return static_cast<int>(s.size()) - left;
     }
 };

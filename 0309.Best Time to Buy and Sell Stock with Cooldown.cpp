@@ -1,24 +1,36 @@
-class Solution {
+/**
+ * @brief DP with memoization for stock trading with cooldown
+ * @intuition Track states: holding stock or not, with cooldown after selling
+ * @approach DFS with memoization, state is (day, holding), skip one day after sell
+ * @complexity Time: O(n), Space: O(n)
+ */
+#include <algorithm>
+#include <cstring>
+#include <functional>
+#include <vector>
+
+class Solution final {
 public:
-    int maxProfit(vector<int>& prices) {
-        int n = prices.size();
-        int f[n][2];
-        memset(f, -1, sizeof(f));
-        function<int(int, int)> dfs = [&](int i, int j) {
+    [[nodiscard]] int maxProfit(const std::vector<int>& prices) const {
+        const int n = static_cast<int>(prices.size());
+        std::vector<std::vector<int>> memo(n, std::vector<int>(2, -1));
+        
+        std::function<int(int, int)> dfs = [&](int i, int holding) -> int {
             if (i >= n) {
                 return 0;
             }
-            if (f[i][j] != -1) {
-                return f[i][j];
+            if (memo[i][holding] != -1) {
+                return memo[i][holding];
             }
-            int ans = dfs(i + 1, j);
-            if (j) {
-                ans = max(ans, prices[i] + dfs(i + 2, 0));
+            int ans = dfs(i + 1, holding);
+            if (holding != 0) {
+                ans = std::max(ans, prices[i] + dfs(i + 2, 0));
             } else {
-                ans = max(ans, -prices[i] + dfs(i + 1, 1));
+                ans = std::max(ans, -prices[i] + dfs(i + 1, 1));
             }
-            return f[i][j] = ans;
+            return memo[i][holding] = ans;
         };
+        
         return dfs(0, 0);
     }
 };
