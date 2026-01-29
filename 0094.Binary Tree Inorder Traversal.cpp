@@ -1,27 +1,24 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Recursive inorder traversal of binary tree
+ * @intuition Inorder visits left subtree, root, then right subtree
+ * @approach DFS recursively traversing left, collecting value, then right
+ * @complexity Time: O(n), Space: O(h) where h is tree height
  */
-class Solution {
+class Solution final {
 public:
-    vector<int> inorderTraversal(TreeNode* root) {
-        vector<int> ans;
-        function<void(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+    [[nodiscard]] static auto inorderTraversal(TreeNode* root) -> vector<int> {
+        vector<int> result;
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> void {
+            if (node == nullptr) {
                 return;
             }
-            dfs(root->left);
-            ans.push_back(root->val);
-            dfs(root->right);
+            dfs(node->left);
+            result.push_back(node->val);
+            dfs(node->right);
         };
+        
         dfs(root);
-        return ans;
+        return result;
     }
 };

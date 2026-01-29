@@ -5,20 +5,13 @@
  * @complexity Time: O(m*n), Space: O(m*n)
  */
 
-#include <cstring>
-#include <string>
-#include <vector>
-
-using std::string;
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto numDistinct(const string& s, const string& t) const -> int {
+    [[nodiscard]] static auto numDistinct(const std::string& s, const std::string& t) -> int {
         const int m = static_cast<int>(s.size());
         const int n = static_cast<int>(t.size());
         
-        vector<vector<unsigned long long>> dp(m + 1, vector<unsigned long long>(n + 1, 0));
+        std::vector<std::vector<unsigned long long>> dp(m + 1, std::vector<unsigned long long>(n + 1, 0));
         
         for (int i = 0; i <= m; ++i) {
             dp[i][0] = 1;

@@ -15,9 +15,9 @@ using std::vector;
 
 class Solution final {
 public:
-    [[nodiscard]] auto minCut(const string& s) const -> int {
+    [[nodiscard]] static auto minCut(const string& s) -> int {
         const int n = static_cast<int>(s.size());
-        
+
         // Precompute palindrome table
         vector<vector<bool>> isPalin(n, vector<bool>(n, true));
         for (int i = n - 1; i >= 0; --i) {
@@ -25,11 +25,11 @@ public:
                 isPalin[i][j] = (s[i] == s[j]) && isPalin[i + 1][j - 1];
             }
         }
-        
+
         // DP for minimum cuts
         vector<int> dp(n);
         std::iota(dp.begin(), dp.end(), 0);
-        
+
         for (int i = 1; i < n; ++i) {
             for (int j = 0; j <= i; ++j) {
                 if (isPalin[j][i]) {
@@ -37,7 +37,7 @@ public:
                 }
             }
         }
-        
+
         return dp[n - 1];
     }
 };

@@ -5,13 +5,9 @@
  * @complexity Time: O(1) add, O(n) find, Space: O(n)
  */
 
-#include <unordered_map>
-
-using std::unordered_map;
-
 class TwoSum final {
 private:
-    unordered_map<int, int> counts_;
+    std::unordered_map<int, int> counts_;
     
 public:
     TwoSum() = default;
@@ -20,11 +16,11 @@ public:
         ++counts_[number];
     }
     
-    [[nodiscard]] auto find(int value) -> bool {
+    [[nodiscard]] auto find(int value) const -> bool {
         for (const auto& [num, count] : counts_) {
-            const long long complement = static_cast<long long>(value) - num;
+            const auto complement = static_cast<long long>(value) - num;
             
-            if (counts_.count(static_cast<int>(complement)) > 0) {
+            if (counts_.contains(static_cast<int>(complement))) {
                 if (num != complement || count > 1) {
                     return true;
                 }
@@ -33,10 +29,3 @@ public:
         return false;
     }
 };
-
-/**
- * Your TwoSum object will be instantiated and called as such:
- * TwoSum* obj = new TwoSum();
- * obj->add(number);
- * bool param_2 = obj->find(value);
- */

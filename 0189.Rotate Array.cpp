@@ -1,27 +1,20 @@
-#include <algorithm>
-#include <vector>
+/**
+ * @brief Rotate array using reversal algorithm
+ * @intuition Three reversals achieve rotation without extra space
+ * @approach Reverse entire array, reverse first k, reverse rest
+ * @complexity Time: O(n), Space: O(1)
+ */
 
-using std::reverse;
-using std::vector;
-
-class Solution {
+class Solution final {
 public:
-  /**
-   * Rotates the array to the right by k steps.
-   *
-   * @approach This operation is performed in-place using the reversal
-   * algorithm.
-   *
-   * @param nums Reference to the vector of integers to be rotated.
-   * @param k Number of steps to rotate the array to the right.
-   */
-  void rotate(vector<int> &nums, int k) {
-    const int n = nums.size();
-    if (n == 0 || k % n == 0)
-      return;  // No rotation needed
-    k = k % n; // Ensure k is within bounds
-    reverse(nums.begin(), nums.end());
-    reverse(nums.begin(), nums.begin() + k);
-    reverse(nums.begin() + k, nums.end());
-  }
+    static auto rotate(std::vector<int>& nums, int k) -> void {
+        const int n = static_cast<int>(nums.size());
+        if (n == 0 || k % n == 0) {
+            return;
+        }
+        k = k % n;
+        std::ranges::reverse(nums);
+        std::reverse(nums.begin(), nums.begin() + k);
+        std::reverse(nums.begin() + k, nums.end());
+    }
 };

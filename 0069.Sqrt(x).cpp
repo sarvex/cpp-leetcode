@@ -1,15 +1,25 @@
-class Solution {
+/**
+ * @brief Compute the integer square root of x
+ * @intuition Binary search for the largest number whose square is <= x
+ * @approach Use binary search with overflow-safe comparison mid > x / mid
+ * @complexity Time: O(log x), Space: O(1)
+ */
+
+class Solution final {
 public:
-    int mySqrt(int x) {
-        int l = 0, r = x;
-        while (l < r) {
-            int mid = (l + r + 1ll) >> 1;
-            if (mid > x / mid) {
-                r = mid - 1;
-            } else {
-                l = mid;
-            }
-        }
-        return l;
+  [[nodiscard]] static auto mySqrt(int const x) -> int {
+    int left = 0;
+    int right = x;
+
+    while (left < right) {
+      int const mid = left + (right - left + 1) / 2;
+      if (mid > x / mid) {
+        right = mid - 1;
+      } else {
+        left = mid;
+      }
     }
+
+    return left;
+  }
 };

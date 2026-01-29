@@ -10,7 +10,7 @@
 
 class Solution final {
 public:
-  [[nodiscard]] auto fourSum(std::vector<int>& nums, int target) const
+  [[nodiscard]] static auto fourSum(std::vector<int>& nums, const int target)
       -> std::vector<std::vector<int>> {
     const int n = static_cast<int>(nums.size());
     std::vector<std::vector<int>> result;
@@ -19,7 +19,7 @@ public:
       return result;
     }
 
-    std::sort(nums.begin(), nums.end());
+    std::ranges::sort(nums);
 
     for (int i = 0; i < n - 3; ++i) {
       if (i > 0 && nums[i] == nums[i - 1]) {
@@ -35,8 +35,8 @@ public:
         int right = n - 1;
 
         while (left < right) {
-          const long long sum = static_cast<long long>(nums[i]) + nums[j] +
-                                nums[left] + nums[right];
+          const auto sum = static_cast<long long>(nums[i]) + nums[j] +
+                           nums[left] + nums[right];
           if (sum < target) {
             ++left;
           } else if (sum > target) {

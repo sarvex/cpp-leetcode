@@ -5,25 +5,16 @@
  * @complexity Time: O(n), Space: O(1)
  */
 
-/**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode(int x) : val(x), next(nullptr) {}
- * };
- */
-
 class Solution final {
 public:
-    [[nodiscard]] auto detectCycle(ListNode* head) const -> ListNode* {
+    [[nodiscard]] static auto detectCycle(ListNode* head) -> ListNode* {
         ListNode* fast = head;
         ListNode* slow = head;
-        
+
         while (fast != nullptr && fast->next != nullptr) {
             slow = slow->next;
             fast = fast->next->next;
-            
+
             if (slow == fast) {
                 ListNode* entry = head;
                 while (entry != slow) {
@@ -33,7 +24,7 @@ public:
                 return entry;
             }
         }
-        
+
         return nullptr;
     }
 };

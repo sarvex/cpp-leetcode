@@ -5,27 +5,19 @@
  * @complexity Time: O(n), Space: O(n)
  */
 
-#include <string>
-#include <unordered_map>
-#include <vector>
-
-using std::string;
-using std::unordered_map;
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto findRepeatedDnaSequences(const string& s) const -> vector<string> {
+    [[nodiscard]] static auto findRepeatedDnaSequences(const std::string& s) -> std::vector<std::string> {
         if (s.size() < 10) {
             return {};
         }
         
-        unordered_map<string, int> counts;
-        vector<string> result;
+        std::unordered_map<std::string, int> counts;
+        std::vector<std::string> result;
         
         const int limit = static_cast<int>(s.size()) - 10 + 1;
         for (int i = 0; i < limit; ++i) {
-            string seq = s.substr(i, 10);
+            std::string seq = s.substr(i, 10);
             if (++counts[seq] == 2) {
                 result.emplace_back(std::move(seq));
             }

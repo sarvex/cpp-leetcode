@@ -17,18 +17,18 @@ using std::vector;
 
 class Solution final {
 public:
-    [[nodiscard]] auto ladderLength(const string& beginWord, const string& endWord, 
-                                     vector<string>& wordList) const -> int {
+    [[nodiscard]] static auto ladderLength(const string& beginWord, const string& endWord,
+                                           vector<string>& wordList) -> int {
         unordered_set<string> words(wordList.begin(), wordList.end());
         queue<string> q{{beginWord}};
         int steps = 1;
-        
+
         while (!q.empty()) {
             ++steps;
             for (int count = q.size(); count > 0; --count) {
                 string current = q.front();
                 q.pop();
-                
+
                 for (size_t j = 0; j < current.size(); ++j) {
                     const char original = current[j];
                     for (char c = 'a'; c <= 'z'; ++c) {

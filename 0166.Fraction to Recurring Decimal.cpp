@@ -5,28 +5,21 @@
  * @complexity Time: O(denominator), Space: O(denominator)
  */
 
-#include <cmath>
-#include <string>
-#include <unordered_map>
-
-using std::string;
-using std::unordered_map;
-
 class Solution final {
 public:
-    [[nodiscard]] auto fractionToDecimal(int numerator, int denominator) const -> string {
+    [[nodiscard]] static auto fractionToDecimal(int numerator, int denominator) -> std::string {
         if (numerator == 0) {
             return "0";
         }
         
-        string result;
+        std::string result;
         const bool negative = (numerator > 0) ^ (denominator > 0);
         if (negative) {
             result += '-';
         }
         
-        long long num = std::abs(static_cast<long long>(numerator));
-        long long den = std::abs(static_cast<long long>(denominator));
+        auto num = std::abs(static_cast<long long>(numerator));
+        auto den = std::abs(static_cast<long long>(denominator));
         
         result += std::to_string(num / den);
         num %= den;
@@ -36,7 +29,7 @@ public:
         }
         
         result += '.';
-        unordered_map<long long, int> remainderPos;
+        std::unordered_map<long long, int> remainderPos;
         
         while (num != 0) {
             remainderPos[num] = static_cast<int>(result.size());

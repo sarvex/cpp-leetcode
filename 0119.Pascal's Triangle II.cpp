@@ -5,14 +5,10 @@
  * @complexity Time: O(k^2), Space: O(k)
  */
 
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto getRow(int rowIndex) const -> vector<int> {
-        vector<int> row(rowIndex + 1, 1);
+    [[nodiscard]] static auto getRow(int rowIndex) -> std::vector<int> {
+        std::vector<int> row(rowIndex + 1, 1);
         
         for (int i = 2; i <= rowIndex; ++i) {
             for (int j = i - 1; j > 0; --j) {

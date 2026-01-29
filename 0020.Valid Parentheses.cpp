@@ -26,8 +26,8 @@ public:
   }
 
 private:
-  [[nodiscard]] static constexpr auto matches(char left, char right) noexcept
-      -> bool {
+  [[nodiscard]] static constexpr auto matches(const char left,
+                                              const char right) noexcept -> bool {
     return (left == '(' && right == ')') || (left == '[' && right == ']') ||
            (left == '{' && right == '}');
   }

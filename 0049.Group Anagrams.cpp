@@ -5,20 +5,15 @@
  * @complexity Time: O(n * k log k), Space: O(n * k) where k is max string length
  */
 
-#include <algorithm>
-#include <string>
-#include <unordered_map>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto groupAnagrams(std::vector<std::string>& strs) const
+  [[nodiscard]] static auto groupAnagrams(std::vector<std::string>& strs)
       -> std::vector<std::vector<std::string>> {
     std::unordered_map<std::string, std::vector<std::string>> groups;
 
     for (auto& s : strs) {
       std::string key = s;
-      std::sort(key.begin(), key.end());
+      std::ranges::sort(key);
       groups[key].emplace_back(s);
     }
 

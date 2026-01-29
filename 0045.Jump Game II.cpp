@@ -5,12 +5,9 @@
  * @complexity Time: O(n), Space: O(1)
  */
 
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto jump(const std::vector<int>& nums) const -> int {
+  [[nodiscard]] static auto jump(const std::vector<int>& nums) -> int {
     int jumpCount = 0;
     int currentJumpLimit = 0;
     int maxReachableIndex = 0;

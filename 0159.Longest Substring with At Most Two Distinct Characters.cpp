@@ -5,17 +5,10 @@
  * @complexity Time: O(n), Space: O(1) since at most 3 entries in map
  */
 
-#include <algorithm>
-#include <string>
-#include <unordered_map>
-
-using std::string;
-using std::unordered_map;
-
 class Solution final {
 public:
-    [[nodiscard]] auto lengthOfLongestSubstringTwoDistinct(const string& s) const -> int {
-        unordered_map<char, int> charCount;
+    [[nodiscard]] static auto lengthOfLongestSubstringTwoDistinct(const std::string& s) -> int {
+        std::unordered_map<char, int> charCount;
         const int n = static_cast<int>(s.size());
         int maxLen = 0;
         

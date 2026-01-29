@@ -5,15 +5,10 @@
  * @complexity Time: O(1) all operations, Space: O(n)
  */
 
-#include <limits>
-#include <stack>
-
-using std::stack;
-
 class MinStack final {
 private:
-    stack<int> data_;
-    stack<int> minStack_;
+    std::stack<int> data_;
+    std::stack<int> minStack_;
     
 public:
     MinStack() {
@@ -38,12 +33,3 @@ public:
         return minStack_.top();
     }
 };
-
-/**
- * Your MinStack object will be instantiated and called as such:
- * MinStack* obj = new MinStack();
- * obj->push(val);
- * obj->pop();
- * int param_3 = obj->top();
- * int param_4 = obj->getMin();
- */

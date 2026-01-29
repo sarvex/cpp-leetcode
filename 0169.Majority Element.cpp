@@ -1,22 +1,25 @@
+/**
+ * @brief Find majority element using Boyer-Moore voting algorithm
+ * @intuition Majority element count exceeds half, so it survives cancellation
+ * @approach Track candidate and count; switch candidate when count reaches zero
+ * @complexity Time: O(n), Space: O(1)
+ */
 
-#include <vector>
-using namespace std;
-
-class Solution {
+class Solution final {
 public:
-  // Uses Boyer-Moore Voting Algorithm to find the majority element in linear
-  // time and constant space.
-  int majorityElement(vector<int> &nums) {
-    int candidate = 0;
-    int count = 0;
-    for (int number : nums) {
-      if (count == 0) {
-        candidate = number;
-        count = 1;
-      } else {
-        count += (number == candidate) ? 1 : -1;
-      }
+    [[nodiscard]] static auto majorityElement(const std::vector<int>& nums) -> int {
+        int candidate = 0;
+        int count = 0;
+        
+        for (const int num : nums) {
+            if (count == 0) {
+                candidate = num;
+                count = 1;
+            } else {
+                count += (num == candidate) ? 1 : -1;
+            }
+        }
+        
+        return candidate;
     }
-    return candidate;
-  }
 };

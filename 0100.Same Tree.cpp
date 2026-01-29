@@ -1,19 +1,18 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Check if two binary trees are structurally identical
+ * @intuition Trees are same if roots match and subtrees recursively match
+ * @approach Recursive comparison of node values and structure
+ * @complexity Time: O(n), Space: O(h) where h is tree height
  */
-class Solution {
+class Solution final {
 public:
-    bool isSameTree(TreeNode* p, TreeNode* q) {
-        if (p == q) return true;
-        if (!p || !q || p->val != q->val) return false;
+    [[nodiscard]] static auto isSameTree(TreeNode* p, TreeNode* q) -> bool {
+        if (p == q) {
+            return true;
+        }
+        if (p == nullptr || q == nullptr || p->val != q->val) {
+            return false;
+        }
         return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
     }
 };

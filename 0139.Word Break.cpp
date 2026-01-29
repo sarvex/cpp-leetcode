@@ -15,13 +15,13 @@ using std::vector;
 
 class Solution final {
 public:
-    [[nodiscard]] auto wordBreak(const string& s, vector<string>& wordDict) const -> bool {
+    [[nodiscard]] static auto wordBreak(const string& s, vector<string>& wordDict) -> bool {
         unordered_set<string> words(wordDict.begin(), wordDict.end());
         const int n = static_cast<int>(s.size());
-        
+
         vector<bool> dp(n + 1, false);
         dp[0] = true;
-        
+
         for (int i = 1; i <= n; ++i) {
             for (int j = 0; j < i; ++j) {
                 if (dp[j] && words.contains(s.substr(j, i - j))) {
@@ -30,7 +30,7 @@ public:
                 }
             }
         }
-        
+
         return dp[n];
     }
 };

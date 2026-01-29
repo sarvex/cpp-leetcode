@@ -5,31 +5,13 @@
  * @complexity Time: O(n^2), Space: O(n) for path storage
  */
 
-#include <functional>
-#include <vector>
-
-using std::function;
-using std::vector;
-
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-
 class Solution final {
 public:
-    [[nodiscard]] auto pathSum(TreeNode* root, int targetSum) const -> vector<vector<int>> {
-        vector<vector<int>> ans;
-        vector<int> path;
+    [[nodiscard]] static auto pathSum(TreeNode* root, int targetSum) -> std::vector<std::vector<int>> {
+        std::vector<std::vector<int>> result;
+        std::vector<int> path;
         
-        function<void(TreeNode*, int)> dfs = [&](TreeNode* node, int remaining) {
+        auto dfs = [&](this auto&& self, TreeNode* node, int remaining) -> void {
             if (!node) {
                 return;
             }
@@ -37,15 +19,15 @@ public:
             path.emplace_back(node->val);
             
             if (!node->left && !node->right && remaining == 0) {
-                ans.emplace_back(path);
+                result.emplace_back(path);
             }
             
-            dfs(node->left, remaining);
-            dfs(node->right, remaining);
+            self(node->left, remaining);
+            self(node->right, remaining);
             path.pop_back();
         };
         
         dfs(root, targetSum);
-        return ans;
+        return result;
     }
 };

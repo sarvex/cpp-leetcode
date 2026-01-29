@@ -5,17 +5,9 @@
  * @complexity Time: O(n), Space: O(n) for recursion stack
  */
 
-struct ListNode {
-  int val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode* next) : val(x), next(next) {}
-};
-
 class Solution final {
 public:
-  [[nodiscard]] auto swapPairs(ListNode* head) -> ListNode* {
+  [[nodiscard]] static auto swapPairs(ListNode* head) -> ListNode* {
     if (head == nullptr || head->next == nullptr) {
       return head;
     }

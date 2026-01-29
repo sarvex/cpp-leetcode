@@ -5,15 +5,13 @@
  * @complexity Time: O(k) where k is number of 1 bits, Space: O(1)
  */
 
-#include <cstdint>
-
 class Solution final {
 public:
-    [[nodiscard]] auto hammingWeight(uint32_t n) const -> int {
+    [[nodiscard]] static auto hammingWeight(uint32_t n) -> int {
         int count = 0;
         
         while (n != 0) {
-            n &= n - 1;  // Clear lowest set bit
+            n &= n - 1;
             ++count;
         }
         

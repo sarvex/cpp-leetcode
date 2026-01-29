@@ -5,17 +5,9 @@
  * @complexity Time: O(n), Space: O(n)
  */
 
-#include <algorithm>
-#include <limits>
-#include <utility>
-#include <vector>
-
-using std::pair;
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto maximumGap(vector<int>& nums) const -> int {
+    [[nodiscard]] static auto maximumGap(const std::vector<int>& nums) -> int {
         const int n = static_cast<int>(nums.size());
         if (n < 2) {
             return 0;
@@ -33,8 +25,7 @@ public:
         const int bucketSize = std::max(1, (maxVal - minVal) / (n - 1));
         const int bucketCount = (maxVal - minVal) / bucketSize + 1;
         
-        // Each bucket stores (min, max) values
-        vector<pair<int, int>> buckets(bucketCount, {INF, -INF});
+        std::vector<std::pair<int, int>> buckets(bucketCount, {INF, -INF});
         
         for (const int v : nums) {
             const int idx = (v - minVal) / bucketSize;
@@ -47,7 +38,7 @@ public:
         
         for (const auto& [curMin, curMax] : buckets) {
             if (curMin > curMax) {
-                continue;  // Empty bucket
+                continue;
             }
             maxGap = std::max(maxGap, curMin - prevMax);
             prevMax = curMax;

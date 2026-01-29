@@ -5,20 +5,16 @@
  * @complexity Time: O(n^2), Space: O(n^2)
  */
 
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto generate(int numRows) const -> vector<vector<int>> {
-        vector<vector<int>> triangle;
+    [[nodiscard]] static auto generate(int numRows) -> std::vector<std::vector<int>> {
+        std::vector<std::vector<int>> triangle;
         triangle.push_back({1});
         
         for (int i = 1; i < numRows; ++i) {
-            vector<int> row;
+            std::vector<int> row;
             row.push_back(1);
-            for (size_t j = 0; j < triangle[i - 1].size() - 1; ++j) {
+            for (std::size_t j = 0; j < triangle[i - 1].size() - 1; ++j) {
                 row.push_back(triangle[i - 1][j] + triangle[i - 1][j + 1]);
             }
             row.push_back(1);

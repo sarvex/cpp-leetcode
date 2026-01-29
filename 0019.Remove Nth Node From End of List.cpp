@@ -5,22 +5,13 @@
  * @complexity Time: O(L), Space: O(1)
  */
 
-#include <memory>
-
-struct ListNode {
-  int val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode* next) : val(x), next(next) {}
-};
-
 class Solution final {
 public:
-  [[nodiscard]] auto removeNthFromEnd(ListNode* head, int n) -> ListNode* {
-    auto dummy = std::make_unique<ListNode>(0, head);
-    auto* fast = dummy.get();
-    auto* slow = dummy.get();
+  [[nodiscard]] static auto removeNthFromEnd(ListNode* head, const int n)
+      -> ListNode* {
+    ListNode dummy(0, head);
+    auto* fast = &dummy;
+    auto* slow = &dummy;
 
     for (int i = 0; i < n; ++i) {
       fast = fast->next;
@@ -35,6 +26,6 @@ public:
     slow->next = slow->next->next;
     delete toDelete;
 
-    return dummy->next;
+    return dummy.next;
   }
 };

@@ -5,12 +5,9 @@
  * @complexity Time: O(n), Space: O(n)
  */
 
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto trap(const std::vector<int>& height) const -> int {
+  [[nodiscard]] static auto trap(const std::vector<int>& height) -> int {
     const auto n = static_cast<int>(height.size());
     if (n == 0) {
       return 0;

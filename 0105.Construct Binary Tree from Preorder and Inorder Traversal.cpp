@@ -5,37 +5,18 @@
  * @complexity Time: O(n), Space: O(n)
  */
 
-#include <functional>
-#include <unordered_map>
-#include <vector>
-
-using std::function;
-using std::unordered_map;
-using std::vector;
-
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-
 class Solution final {
 public:
-    [[nodiscard]] auto buildTree(vector<int>& preorder, vector<int>& inorder) const -> TreeNode* {
+    [[nodiscard]] static auto buildTree(const std::vector<int>& preorder, 
+                                        const std::vector<int>& inorder) -> TreeNode* {
         const int n = static_cast<int>(preorder.size());
-        unordered_map<int, int> indexMap;
+        std::unordered_map<int, int> indexMap;
         
         for (int i = 0; i < n; ++i) {
             indexMap[inorder[i]] = i;
         }
         
-        function<TreeNode*(int, int, int)> dfs = [&](int preIdx, int inStart, int count) -> TreeNode* {
+        auto dfs = [&](this auto&& self, int preIdx, int inStart, int count) -> TreeNode* {
             if (count <= 0) {
                 return nullptr;
             }
@@ -43,8 +24,8 @@ public:
             const int inIdx = indexMap[rootVal];
             const int leftCount = inIdx - inStart;
             
-            auto* left = dfs(preIdx + 1, inStart, leftCount);
-            auto* right = dfs(preIdx + 1 + leftCount, inIdx + 1, count - 1 - leftCount);
+            auto* left = self(preIdx + 1, inStart, leftCount);
+            auto* right = self(preIdx + 1 + leftCount, inIdx + 1, count - 1 - leftCount);
             return new TreeNode(rootVal, left, right);
         };
         

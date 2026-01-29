@@ -11,7 +11,7 @@ using std::vector;
 
 class Solution final {
 public:
-    [[nodiscard]] auto singleNumber(vector<int>& nums) const -> int {
+    [[nodiscard]] static auto singleNumber(vector<int>& nums) -> int {
         int result = 0;
         for (const int num : nums) {
             result ^= num;

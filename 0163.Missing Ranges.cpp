@@ -5,35 +5,28 @@
  * @complexity Time: O(n), Space: O(1) excluding output
  */
 
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto findMissingRanges(vector<int>& nums, int lower, int upper) const 
-        -> vector<vector<int>> {
+    [[nodiscard]] static auto findMissingRanges(const std::vector<int>& nums, int lower, int upper)
+        -> std::vector<std::vector<int>> {
         const int n = static_cast<int>(nums.size());
         
         if (n == 0) {
             return {{lower, upper}};
         }
         
-        vector<vector<int>> result;
+        std::vector<std::vector<int>> result;
         
-        // Check gap before first element
         if (nums[0] > lower) {
             result.push_back({lower, nums[0] - 1});
         }
         
-        // Check gaps between consecutive elements
         for (int i = 1; i < n; ++i) {
             if (nums[i] - nums[i - 1] > 1) {
                 result.push_back({nums[i - 1] + 1, nums[i] - 1});
             }
         }
         
-        // Check gap after last element
         if (nums[n - 1] < upper) {
             result.push_back({nums[n - 1] + 1, upper});
         }

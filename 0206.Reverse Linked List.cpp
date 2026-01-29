@@ -5,25 +5,19 @@
  * @complexity Time: O(n), Space: O(1)
  */
 
-struct ListNode {
-  int val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode* next) : val(x), next(next) {}
-};
-
 class Solution final {
 public:
-  [[nodiscard]] auto reverseList(ListNode* head) const -> ListNode* {
-    ListNode dummy;
-    auto* current = head;
-    while (current != nullptr) {
-      auto* next = current->next;
-      current->next = dummy.next;
-      dummy.next = current;
-      current = next;
+    [[nodiscard]] static auto reverseList(ListNode* head) -> ListNode* {
+        ListNode dummy;
+        auto* current = head;
+        
+        while (current != nullptr) {
+            auto* next = current->next;
+            current->next = dummy.next;
+            dummy.next = current;
+            current = next;
+        }
+        
+        return dummy.next;
     }
-    return dummy.next;
-  }
 };

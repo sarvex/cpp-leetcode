@@ -5,28 +5,19 @@
  * @complexity Time: O(n), Space: O(1)
  */
 
-#include <memory>
-
-struct ListNode {
-  int val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode* next) : val(x), next(next) {}
-};
-
 class Solution final {
 public:
-  [[nodiscard]] auto reverseKGroup(ListNode* head, int k) -> ListNode* {
-    auto dummy = std::make_unique<ListNode>(0, head);
-    auto* pre = dummy.get();
+  [[nodiscard]] static auto reverseKGroup(ListNode* head, const int k)
+      -> ListNode* {
+    ListNode dummy(0, head);
+    auto* pre = &dummy;
 
     while (pre != nullptr) {
       auto* cur = pre;
       for (int i = 0; i < k; ++i) {
         cur = cur->next;
         if (cur == nullptr) {
-          return dummy->next;
+          return dummy.next;
         }
       }
 
@@ -38,7 +29,7 @@ public:
       pre = node;
     }
 
-    return dummy->next;
+    return dummy.next;
   }
 
 private:

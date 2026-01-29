@@ -16,11 +16,11 @@ using std::vector;
 
 class Solution final {
 public:
-    [[nodiscard]] auto longestConsecutive(vector<int>& nums) const -> int {
+    [[nodiscard]] static auto longestConsecutive(vector<int>& nums) -> int {
         unordered_set<int> remaining(nums.begin(), nums.end());
         int ans = 0;
         unordered_map<int, int> cache;
-        
+
         for (const int x : nums) {
             int y = x;
             while (remaining.contains(y)) {
@@ -29,7 +29,7 @@ public:
             cache[x] = (cache.contains(y) ? cache[y] : 0) + y - x;
             ans = std::max(ans, cache[x]);
         }
-        
+
         return ans;
     }
 };

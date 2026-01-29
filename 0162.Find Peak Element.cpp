@@ -5,13 +5,9 @@
  * @complexity Time: O(log n), Space: O(1)
  */
 
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto findPeakElement(vector<int>& nums) const -> int {
+    [[nodiscard]] static auto findPeakElement(const std::vector<int>& nums) -> int {
         int left = 0;
         int right = static_cast<int>(nums.size()) - 1;
         
@@ -19,10 +15,8 @@ public:
             const int mid = left + (right - left) / 2;
             
             if (nums[mid] > nums[mid + 1]) {
-                // Descending, peak is at mid or left
                 right = mid;
             } else {
-                // Ascending, peak is to the right
                 left = mid + 1;
             }
         }

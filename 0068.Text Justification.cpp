@@ -1,34 +1,49 @@
-class Solution {
+/**
+ * @brief Justify text to a given width with proper spacing
+ * @intuition Pack words into lines, distribute spaces evenly, handle last line specially
+ * @approach Greedily pack words, calculate space distribution, left-justify last line
+ * @complexity Time: O(n), Space: O(n) where n is total characters
+ */
+
+class Solution final {
 public:
-    vector<string> fullJustify(vector<string>& words, int maxWidth) {
-        vector<string> ans;
-        for (int i = 0, n = words.size(); i < n;) {
-            vector<string> t = {words[i]};
-            int cnt = words[i].size();
-            ++i;
-            while (i < n && cnt + 1 + words[i].size() <= maxWidth) {
-                cnt += 1 + words[i].size();
-                t.emplace_back(words[i++]);
-            }
-            if (i == n || t.size() == 1) {
-                string left = t[0];
-                for (int j = 1; j < t.size(); ++j) {
-                    left += " " + t[j];
-                }
-                string right = string(maxWidth - left.size(), ' ');
-                ans.emplace_back(left + right);
-                continue;
-            }
-            int spaceWidth = maxWidth - (cnt - t.size() + 1);
-            int w = spaceWidth / (t.size() - 1);
-            int m = spaceWidth % (t.size() - 1);
-            string row;
-            for (int j = 0; j < t.size() - 1; ++j) {
-                row += t[j] + string(w + (j < m ? 1 : 0), ' ');
-            }
-            row += t.back();
-            ans.emplace_back(row);
+  [[nodiscard]] static auto fullJustify(std::vector<std::string>& words, int const maxWidth)
+      -> std::vector<std::string> {
+    std::vector<std::string> ans;
+    int const n = static_cast<int>(words.size());
+
+    for (int i = 0; i < n;) {
+      std::vector<std::string> line = {words[i]};
+      int cnt = static_cast<int>(words[i].size());
+      ++i;
+
+      while (i < n && cnt + 1 + static_cast<int>(words[i].size()) <= maxWidth) {
+        cnt += 1 + static_cast<int>(words[i].size());
+        line.emplace_back(words[i++]);
+      }
+
+      if (i == n || line.size() == 1) {
+        std::string left = line[0];
+        for (std::size_t j = 1; j < line.size(); ++j) {
+          left += " " + line[j];
         }
-        return ans;
+        std::string right(maxWidth - static_cast<int>(left.size()), ' ');
+        ans.emplace_back(left + right);
+        continue;
+      }
+
+      int const spaceWidth = maxWidth - (cnt - static_cast<int>(line.size()) + 1);
+      int const w = spaceWidth / (static_cast<int>(line.size()) - 1);
+      int const m = spaceWidth % (static_cast<int>(line.size()) - 1);
+      std::string row;
+
+      for (std::size_t j = 0; j < line.size() - 1; ++j) {
+        row += line[j] + std::string(w + (static_cast<int>(j) < m ? 1 : 0), ' ');
+      }
+      row += line.back();
+      ans.emplace_back(row);
     }
+
+    return ans;
+  }
 };

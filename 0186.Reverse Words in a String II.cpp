@@ -5,14 +5,9 @@
  * @complexity Time: O(n), Space: O(1)
  */
 
-#include <algorithm>
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    auto reverseWords(vector<char>& s) -> void {
+    static auto reverseWords(std::vector<char>& s) -> void {
         auto reverseRange = [&](int start, int end) {
             while (start < end) {
                 std::swap(s[start++], s[end--]);
@@ -21,7 +16,6 @@ public:
         
         const int n = static_cast<int>(s.size());
         
-        // Reverse each word
         for (int wordStart = 0, i = 0; i <= n; ++i) {
             if (i == n || s[i] == ' ') {
                 reverseRange(wordStart, i - 1);
@@ -29,7 +23,6 @@ public:
             }
         }
         
-        // Reverse entire string
         reverseRange(0, n - 1);
     }
 };

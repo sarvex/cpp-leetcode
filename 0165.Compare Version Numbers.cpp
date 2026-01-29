@@ -5,13 +5,9 @@
  * @complexity Time: O(m+n), Space: O(1)
  */
 
-#include <string>
-
-using std::string;
-
 class Solution final {
 public:
-    [[nodiscard]] auto compareVersion(const string& version1, const string& version2) const -> int {
+    [[nodiscard]] static auto compareVersion(const std::string& version1, const std::string& version2) -> int {
         const int m = static_cast<int>(version1.size());
         const int n = static_cast<int>(version2.size());
         

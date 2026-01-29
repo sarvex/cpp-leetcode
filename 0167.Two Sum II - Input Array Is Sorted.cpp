@@ -5,14 +5,9 @@
  * @complexity Time: O(n log n), Space: O(1)
  */
 
-#include <algorithm>
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto twoSum(vector<int>& numbers, int target) const -> vector<int> {
+    [[nodiscard]] static auto twoSum(const std::vector<int>& numbers, int target) -> std::vector<int> {
         const int n = static_cast<int>(numbers.size());
         
         for (int i = 0; ; ++i) {
@@ -21,7 +16,7 @@ public:
             const int j = static_cast<int>(it - numbers.begin());
             
             if (j < n && numbers[j] == complement) {
-                return {i + 1, j + 1};  // 1-indexed
+                return {i + 1, j + 1};
             }
         }
     }

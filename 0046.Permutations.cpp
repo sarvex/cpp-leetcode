@@ -5,11 +5,9 @@
  * @complexity Time: O(n * n!), Space: O(n)
  */
 
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto permute(std::vector<int>& nums) const
+  [[nodiscard]] static auto permute(std::vector<int>& nums)
       -> std::vector<std::vector<int>> {
     const int n = static_cast<int>(nums.size());
     std::vector<std::vector<int>> result;

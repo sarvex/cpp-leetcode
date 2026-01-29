@@ -7,7 +7,7 @@
 
 class Solution final {
 public:
-  [[nodiscard]] static auto myPow(double x, int n) -> double {
+  [[nodiscard]] static auto myPow(const double x, const int n) -> double {
     auto qpow = [](double base, long long exp) -> double {
       double result = 1.0;
       while (exp != 0) {

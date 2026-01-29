@@ -1,33 +1,31 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Generate all structurally unique BSTs with values 1 to n
+ * @intuition Each value can be root; recursively build left/right subtrees
+ * @approach For each root value, combine all left subtrees with all right subtrees
+ * @complexity Time: O(n * Catalan(n)), Space: O(n * Catalan(n))
  */
-class Solution {
+class Solution final {
 public:
-    vector<TreeNode*> generateTrees(int n) {
-        function<vector<TreeNode*>(int, int)> dfs = [&](int i, int j) {
-            if (i > j) {
-                return vector<TreeNode*>{nullptr};
+    [[nodiscard]] static auto generateTrees(const int n) -> vector<TreeNode*> {
+        auto dfs = [&](this auto&& dfs, const int start, const int end) -> vector<TreeNode*> {
+            if (start > end) {
+                return {nullptr};
             }
-            vector<TreeNode*> ans;
-            for (int v = i; v <= j; ++v) {
-                auto left = dfs(i, v - 1);
-                auto right = dfs(v + 1, j);
-                for (auto l : left) {
-                    for (auto r : right) {
-                        ans.push_back(new TreeNode(v, l, r));
+            
+            vector<TreeNode*> result;
+            for (int val = start; val <= end; ++val) {
+                auto leftTrees = dfs(start, val - 1);
+                auto rightTrees = dfs(val + 1, end);
+                
+                for (auto* left : leftTrees) {
+                    for (auto* right : rightTrees) {
+                        result.push_back(new TreeNode(val, left, right));
                     }
                 }
             }
-            return ans;
+            return result;
         };
+        
         return dfs(1, n);
     }
 };

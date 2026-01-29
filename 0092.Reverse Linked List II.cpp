@@ -1,34 +1,37 @@
 /**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
+ * @brief Reverse linked list nodes between positions left and right
+ * @intuition Isolate the sublist to reverse, then reconnect
+ * @approach Find node before left, reverse sublist, reconnect ends
+ * @complexity Time: O(n), Space: O(1)
  */
-class Solution {
+class Solution final {
 public:
-    ListNode* reverseBetween(ListNode* head, int left, int right) {
-        if (!head->next || left == right) {
+    [[nodiscard]] static auto reverseBetween(ListNode* head, const int left, const int right) -> ListNode* {
+        if (head->next == nullptr || left == right) {
             return head;
         }
-        ListNode* dummy = new ListNode(0, head);
-        ListNode* pre = dummy;
+        
+        auto dummy = new ListNode(0, head);
+        auto prev = dummy;
+        
         for (int i = 0; i < left - 1; ++i) {
-            pre = pre->next;
+            prev = prev->next;
         }
-        ListNode *p = pre, *q = pre->next;
-        ListNode* cur = q;
+        
+        auto beforeReverse = prev;
+        auto reverseEnd = prev->next;
+        auto curr = reverseEnd;
+        
         for (int i = 0; i < right - left + 1; ++i) {
-            ListNode* t = cur->next;
-            cur->next = pre;
-            pre = cur;
-            cur = t;
+            auto next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
         }
-        p->next = pre;
-        q->next = cur;
+        
+        beforeReverse->next = prev;
+        reverseEnd->next = curr;
+        
         return dummy->next;
     }
 };

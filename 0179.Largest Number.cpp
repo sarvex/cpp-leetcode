@@ -5,33 +5,25 @@
  * @complexity Time: O(n log n * k) where k is avg number length, Space: O(n*k)
  */
 
-#include <algorithm>
-#include <string>
-#include <vector>
-
-using std::string;
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto largestNumber(vector<int>& nums) const -> string {
-        vector<string> strs;
+    [[nodiscard]] static auto largestNumber(std::vector<int>& nums) -> std::string {
+        std::vector<std::string> strs;
         strs.reserve(nums.size());
         
         for (const int num : nums) {
             strs.push_back(std::to_string(num));
         }
         
-        std::ranges::sort(strs, [](const string& a, const string& b) {
+        std::ranges::sort(strs, [](const std::string& a, const std::string& b) {
             return a + b > b + a;
         });
         
-        // Handle all zeros case
         if (strs[0] == "0") {
             return "0";
         }
         
-        string result;
+        std::string result;
         for (const auto& s : strs) {
             result += s;
         }

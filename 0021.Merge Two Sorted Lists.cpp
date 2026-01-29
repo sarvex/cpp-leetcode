@@ -5,17 +5,9 @@
  * @complexity Time: O(n + m), Space: O(n + m) for recursion stack
  */
 
-struct ListNode {
-  int val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode* next) : val(x), next(next) {}
-};
-
 class Solution final {
 public:
-  [[nodiscard]] auto mergeTwoLists(ListNode* list1, ListNode* list2)
+  [[nodiscard]] static auto mergeTwoLists(ListNode* list1, ListNode* list2)
       -> ListNode* {
     if (list1 == nullptr) {
       return list2;

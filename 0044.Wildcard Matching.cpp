@@ -5,17 +5,13 @@
  * @complexity Time: O(m * n), Space: O(m * n)
  */
 
-#include <cstring>
-#include <string>
-
 class Solution final {
 public:
-  [[nodiscard]] auto isMatch(const std::string& s,
-                             const std::string& p) const -> bool {
+  [[nodiscard]] static auto isMatch(const std::string& s,
+                                    const std::string& p) -> bool {
     const int m = static_cast<int>(s.size());
     const int n = static_cast<int>(p.size());
-    int memo[m + 1][n + 1];
-    std::memset(memo, -1, sizeof(memo));
+    std::vector<std::vector<int>> memo(m + 1, std::vector<int>(n + 1, -1));
 
     auto dfs = [&](auto&& self, int i, int j) -> bool {
       if (i >= m) {

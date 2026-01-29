@@ -5,13 +5,10 @@
  * @complexity Time: O(m * n), Space: O(m + n)
  */
 
-#include <string>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto multiply(const std::string& num1,
-                              const std::string& num2) const -> std::string {
+  [[nodiscard]] static auto multiply(const std::string& num1,
+                                     const std::string& num2) -> std::string {
     if (num1 == "0" || num2 == "0") {
       return "0";
     }
@@ -28,13 +25,11 @@ public:
       }
     }
 
-    // Handle carries
     for (int i = static_cast<int>(result.size()) - 1; i > 0; --i) {
       result[i - 1] += result[i] / 10;
       result[i] %= 10;
     }
 
-    // Build result string, skip leading zeros
     std::string answer;
     size_t start = (result[0] != 0) ? 0 : 1;
     for (size_t i = start; i < result.size(); ++i) {

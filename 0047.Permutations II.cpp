@@ -5,14 +5,11 @@
  * @complexity Time: O(n * n!), Space: O(n)
  */
 
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto permuteUnique(std::vector<int>& nums) const
+  [[nodiscard]] static auto permuteUnique(std::vector<int>& nums)
       -> std::vector<std::vector<int>> {
-    std::sort(nums.begin(), nums.end());
+    std::ranges::sort(nums);
     const int n = static_cast<int>(nums.size());
     std::vector<std::vector<int>> result;
     std::vector<int> current(n);

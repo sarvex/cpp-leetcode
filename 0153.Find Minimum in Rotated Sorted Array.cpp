@@ -5,16 +5,11 @@
  * @complexity Time: O(log n), Space: O(1)
  */
 
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto findMin(vector<int>& nums) const -> int {
+    [[nodiscard]] static auto findMin(const std::vector<int>& nums) -> int {
         const int n = static_cast<int>(nums.size());
         
-        // Array not rotated
         if (nums[0] <= nums[n - 1]) {
             return nums[0];
         }
@@ -26,10 +21,8 @@ public:
             const int mid = left + (right - left) / 2;
             
             if (nums[0] <= nums[mid]) {
-                // Left half is sorted, min is in right half
                 left = mid + 1;
             } else {
-                // Min is in left half including mid
                 right = mid;
             }
         }

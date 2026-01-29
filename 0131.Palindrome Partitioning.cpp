@@ -13,9 +13,9 @@ using std::vector;
 
 class Solution final {
 public:
-    [[nodiscard]] auto partition(const string& s) const -> vector<vector<string>> {
+    [[nodiscard]] static auto partition(const string& s) -> vector<vector<string>> {
         const int n = static_cast<int>(s.size());
-        
+
         // Precompute palindrome table
         vector<vector<bool>> isPalin(n, vector<bool>(n, true));
         for (int i = n - 1; i >= 0; --i) {
@@ -23,10 +23,10 @@ public:
                 isPalin[i][j] = (s[i] == s[j]) && isPalin[i + 1][j - 1];
             }
         }
-        
+
         vector<vector<string>> ans;
         vector<string> current;
-        
+
         auto dfs = [&](this auto&& dfs, int start) -> void {
             if (start == n) {
                 ans.emplace_back(current);
@@ -40,7 +40,7 @@ public:
                 }
             }
         };
-        
+
         dfs(0);
         return ans;
     }

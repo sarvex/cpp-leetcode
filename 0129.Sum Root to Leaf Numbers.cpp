@@ -5,26 +5,10 @@
  * @complexity Time: O(n), Space: O(h) where h is tree height
  */
 
-#include <functional>
-
-using std::function;
-
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-
 class Solution final {
 public:
-    [[nodiscard]] auto sumNumbers(TreeNode* root) const -> int {
-        function<int(TreeNode*, int)> dfs = [&](TreeNode* node, int currentSum) -> int {
+    [[nodiscard]] static auto sumNumbers(TreeNode* root) -> int {
+        auto dfs = [](this auto&& dfs, TreeNode* node, int currentSum) -> int {
             if (!node) {
                 return 0;
             }

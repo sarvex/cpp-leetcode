@@ -1,31 +1,28 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Validate BST using inorder traversal
+ * @intuition Inorder traversal of valid BST produces strictly increasing sequence
+ * @approach DFS inorder tracking previous node; validate current > previous
+ * @complexity Time: O(n), Space: O(h) where h is tree height
  */
-class Solution {
+class Solution final {
 public:
-    bool isValidBST(TreeNode* root) {
+    [[nodiscard]] static auto isValidBST(TreeNode* root) -> bool {
         TreeNode* prev = nullptr;
-        function<bool(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> bool {
+            if (node == nullptr) {
                 return true;
             }
-            if (!dfs(root->left)) {
+            if (!dfs(node->left)) {
                 return false;
             }
-            if (prev && prev->val >= root->val) {
+            if (prev != nullptr && prev->val >= node->val) {
                 return false;
             }
-            prev = root;
-            return dfs(root->right);
+            prev = node;
+            return dfs(node->right);
         };
+        
         return dfs(root);
     }
 };

@@ -10,12 +10,12 @@
 
 class Solution final {
 public:
-  [[nodiscard]] auto generateParenthesis(int n) const
+  [[nodiscard]] static auto generateParenthesis(const int n)
       -> std::vector<std::string> {
     std::vector<std::string> result;
     std::string current;
 
-    auto dfs = [&](auto&& self, int open, int close) -> void {
+    auto dfs = [&](auto&& self, const int open, const int close) -> void {
       if (open > n || close > n || close > open) {
         return;
       }

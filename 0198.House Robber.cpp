@@ -5,16 +5,11 @@
  * @complexity Time: O(n), Space: O(n)
  */
 
-#include <algorithm>
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto rob(vector<int>& nums) const -> int {
+    [[nodiscard]] static auto rob(std::vector<int>& nums) -> int {
         const int n = static_cast<int>(nums.size());
-        vector<int> memo(n, -1);
+        std::vector<int> memo(n, -1);
         
         auto dfs = [&](this auto&& dfs, int i) -> int {
             if (i >= n) {
