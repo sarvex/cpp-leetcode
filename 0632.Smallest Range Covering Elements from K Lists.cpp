@@ -1,27 +1,36 @@
-class Solution {
+/**
+ * @brief Find smallest range containing at least one element from each list
+ * @intuition Use sliding window on merged sorted list, track list representation
+ * @approach Merge all elements with list index, slide window maintaining all lists covered
+ * @complexity Time: O(n log n) where n is total elements, Space: O(n)
+ */
+class Solution final {
 public:
-    vector<int> smallestRange(vector<vector<int>>& nums) {
+    [[nodiscard]] static vector<int> smallestRange(const vector<vector<int>>& nums) {
         int n = 0;
-        for (auto& v : nums) n += v.size();
+        for (const auto& v : nums) {
+            n += v.size();
+        }
+        
         vector<pair<int, int>> t(n);
-        int k = nums.size();
+        const int k = nums.size();
         for (int i = 0, j = 0; i < k; ++i) {
-            for (int v : nums[i]) {
+            for (const int v : nums[i]) {
                 t[j++] = {v, i};
             }
         }
-        sort(t.begin(), t.end());
+        ranges::sort(t);
+        
         int j = 0;
         unordered_map<int, int> cnt;
         vector<int> ans = {-1000000, 1000000};
+        
         for (int i = 0; i < n; ++i) {
-            int b = t[i].first;
-            int v = t[i].second;
+            const auto [b, v] = t[i];
             ++cnt[v];
-            while (cnt.size() == k) {
-                int a = t[j].first;
-                int w = t[j].second;
-                int x = b - a - (ans[1] - ans[0]);
+            while (static_cast<int>(cnt.size()) == k) {
+                const auto [a, w] = t[j];
+                const int x = b - a - (ans[1] - ans[0]);
                 if (x < 0 || (x == 0 && a < ans[0])) {
                     ans[0] = a;
                     ans[1] = b;

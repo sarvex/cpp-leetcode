@@ -1,60 +1,85 @@
-class Trie {
+/**
+ * @brief Add bold tags around substrings matching dictionary words
+ * @intuition Use Trie to find all matching intervals, merge overlapping intervals
+ * @approach Build Trie from words, find all match intervals, merge and wrap with tags
+ * @complexity Time: O(n^2 + m*k) where m is number of words, k is word length, Space: O(m*k)
+ */
+class Trie final {
 public:
-    vector<Trie*> children;
-    bool isEnd;
-
     Trie() {
-        children.resize(128);
-        isEnd = false;
+        children_.resize(128);
     }
 
-    void insert(string word) {
+    void insert(const string& word) {
         Trie* node = this;
-        for (char c : word) {
-            if (!node->children[c]) node->children[c] = new Trie();
-            node = node->children[c];
+        for (const char c : word) {
+            if (!node->children_[c]) {
+                node->children_[c] = new Trie();
+            }
+            node = node->children_[c];
         }
-        node->isEnd = true;
+        node->isEnd_ = true;
     }
+
+    vector<Trie*> children_;
+    bool isEnd_ = false;
 };
 
-class Solution {
+class Solution final {
 public:
-    string addBoldTag(string s, vector<string>& words) {
-        Trie* trie = new Trie();
-        for (string w : words) trie->insert(w);
-        int n = s.size();
+    [[nodiscard]] static string addBoldTag(const string& s, const vector<string>& words) {
+        auto* trie = new Trie();
+        for (const auto& w : words) {
+            trie->insert(w);
+        }
+        
+        const int n = s.size();
         vector<pair<int, int>> pairs;
         for (int i = 0; i < n; ++i) {
             Trie* node = trie;
             for (int j = i; j < n; ++j) {
-                int idx = s[j];
-                if (!node->children[idx]) break;
-                node = node->children[idx];
-                if (node->isEnd) pairs.push_back({i, j});
+                const int idx = s[j];
+                if (!node->children_[idx]) {
+                    break;
+                }
+                node = node->children_[idx];
+                if (node->isEnd_) {
+                    pairs.emplace_back(i, j);
+                }
             }
         }
-        if (pairs.empty()) return s;
+        
+        if (pairs.empty()) {
+            return s;
+        }
+        
         vector<pair<int, int>> t;
         int st = pairs[0].first, ed = pairs[0].second;
-        for (int i = 1; i < pairs.size(); ++i) {
-            int a = pairs[i].first, b = pairs[i].second;
+        for (size_t i = 1; i < pairs.size(); ++i) {
+            const auto [a, b] = pairs[i];
             if (ed + 1 < a) {
-                t.push_back({st, ed});
-                st = a, ed = b;
-            } else
+                t.emplace_back(st, ed);
+                st = a;
+                ed = b;
+            } else {
                 ed = max(ed, b);
+            }
         }
-        t.push_back({st, ed});
-        string ans = "";
-        int i = 0, j = 0;
+        t.emplace_back(st, ed);
+        
+        string ans;
+        int i = 0;
+        size_t j = 0;
         while (i < n) {
             if (j == t.size()) {
                 ans += s.substr(i);
                 break;
             }
-            st = t[j].first, ed = t[j].second;
-            if (i < st) ans += s.substr(i, st - i);
+            st = t[j].first;
+            ed = t[j].second;
+            if (i < st) {
+                ans += s.substr(i, st - i);
+            }
             ans += "<b>";
             ans += s.substr(st, ed - st + 1);
             ans += "</b>";

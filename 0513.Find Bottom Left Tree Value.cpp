@@ -1,23 +1,20 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find leftmost value in last row using BFS
+ * @intuition BFS level by level; first node of each level is the leftmost, last level gives answer
+ * @approach Level-order traversal storing first node's value of each level.
+ *           After traversal completes, ans holds the leftmost value of the bottom row.
+ * @complexity Time: O(n), Space: O(w) where w is max tree width
  */
-class Solution {
+class Solution final {
 public:
-    int findBottomLeftValue(TreeNode* root) {
+    [[nodiscard]] static auto findBottomLeftValue(TreeNode* root) -> int {
         queue<TreeNode*> q{{root}};
         int ans = 0;
+        
         while (!q.empty()) {
             ans = q.front()->val;
-            for (int i = q.size(); i; --i) {
-                TreeNode* node = q.front();
+            for (int i = static_cast<int>(q.size()); i > 0; --i) {
+                auto* node = q.front();
                 q.pop();
                 if (node->left) q.push(node->left);
                 if (node->right) q.push(node->right);

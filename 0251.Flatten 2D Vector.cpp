@@ -4,9 +4,6 @@
  * @approach Skip empty rows lazily when accessing elements
  * @complexity Time: O(1) amortized per operation, Space: O(1) extra
  */
-#include <utility>
-#include <vector>
-
 class Vector2D final {
 private:
   std::vector<std::vector<int>> data;

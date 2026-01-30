@@ -4,31 +4,24 @@
  * @approach BFS from each building, accumulate distances, check all buildings reachable
  * @complexity Time: O(m^2 * n^2), Space: O(mn)
  */
-#include <array>
-#include <climits>
-#include <queue>
-#include <utility>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int shortestDistance(std::vector<std::vector<int>>& grid) const {
+    [[nodiscard]] static int shortestDistance(vector<vector<int>>& grid) {
         const int m = static_cast<int>(grid.size());
         const int n = static_cast<int>(grid[0].size());
         
-        using pii = std::pair<int, int>;
-        std::queue<pii> q;
+        queue<pair<int, int>> q;
         int totalBuildings = 0;
-        std::vector<std::vector<int>> cnt(m, std::vector<int>(n));
-        std::vector<std::vector<int>> dist(m, std::vector<int>(n));
-        constexpr std::array<int, 5> dirs = {-1, 0, 1, 0, -1};
+        vector<vector<int>> cnt(m, vector<int>(n));
+        vector<vector<int>> dist(m, vector<int>(n));
+        constexpr array<int, 5> dirs = {-1, 0, 1, 0, -1};
         
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (grid[i][j] == 1) {
                     ++totalBuildings;
                     q.emplace(i, j);
-                    std::vector<std::vector<bool>> vis(m, std::vector<bool>(n));
+                    vector<vector<bool>> vis(m, vector<bool>(n));
                     int d = 0;
                     
                     while (!q.empty()) {
@@ -58,7 +51,7 @@ public:
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (grid[i][j] == 0 && cnt[i][j] == totalBuildings) {
-                    ans = std::min(ans, dist[i][j]);
+                    ans = min(ans, dist[i][j]);
                 }
             }
         }

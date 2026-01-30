@@ -1,20 +1,29 @@
-class Solution {
+/**
+ * @brief Generate all letter case permutations
+ * @intuition Each letter can be upper or lower; digits stay same
+ * @approach DFS: at each letter, branch into both cases
+ * @complexity Time: O(2^L * n) where L is letter count, Space: O(n)
+ */
+class Solution final {
 public:
-    vector<string> letterCasePermutation(string s) {
-        string t = s;
-        vector<string> ans;
-        auto dfs = [&](this auto&& dfs, int i) -> void {
-            if (i >= t.size()) {
-                ans.push_back(t);
+    [[nodiscard]] static std::vector<std::string> letterCasePermutation(const std::string& s) {
+        std::string current = s;
+        std::vector<std::string> result;
+        
+        auto dfs = [&](auto&& self, const int idx) -> void {
+            if (idx >= static_cast<int>(current.size())) {
+                result.push_back(current);
                 return;
             }
-            dfs(i + 1);
-            if (isalpha(t[i])) {
-                t[i] ^= 32;
-                dfs(i + 1);
+            self(self, idx + 1);
+            if (std::isalpha(current[idx])) {
+                current[idx] ^= 32;
+                self(self, idx + 1);
+                current[idx] ^= 32;
             }
         };
-        dfs(0);
-        return ans;
+        
+        dfs(dfs, 0);
+        return result;
     }
 };

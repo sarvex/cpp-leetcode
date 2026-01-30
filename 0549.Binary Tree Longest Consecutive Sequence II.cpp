@@ -1,38 +1,46 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief DFS tracking both increasing and decreasing paths through each node
+ * @intuition Longest path can go up then down (or vice versa) through any node
+ * @approach Return pair (incr, decr) from each node; combine children paths at parent
+ * @complexity Time: O(n), Space: O(h) where h is tree height
  */
-class Solution {
+class Solution final {
 public:
-    int ans;
-
-    int longestConsecutive(TreeNode* root) {
-        ans = 0;
+    [[nodiscard]] static int longestConsecutive(TreeNode* root) {
+        int ans = 0;
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> pair<int, int> {
+            if (!node) {
+                return {0, 0};
+            }
+            
+            int incr = 1, decr = 1;
+            auto [leftIncr, leftDecr] = dfs(node->left);
+            auto [rightIncr, rightDecr] = dfs(node->right);
+            
+            if (node->left) {
+                if (node->left->val + 1 == node->val) {
+                    incr = leftIncr + 1;
+                }
+                if (node->left->val - 1 == node->val) {
+                    decr = leftDecr + 1;
+                }
+            }
+            
+            if (node->right) {
+                if (node->right->val + 1 == node->val) {
+                    incr = max(incr, rightIncr + 1);
+                }
+                if (node->right->val - 1 == node->val) {
+                    decr = max(decr, rightDecr + 1);
+                }
+            }
+            
+            ans = max(ans, incr + decr - 1);
+            return {incr, decr};
+        };
+        
         dfs(root);
         return ans;
-    }
-
-    vector<int> dfs(TreeNode* root) {
-        if (!root) return {0, 0};
-        int incr = 1, decr = 1;
-        auto left = dfs(root->left);
-        auto right = dfs(root->right);
-        if (root->left) {
-            if (root->left->val + 1 == root->val) incr = left[0] + 1;
-            if (root->left->val - 1 == root->val) decr = left[1] + 1;
-        }
-        if (root->right) {
-            if (root->right->val + 1 == root->val) incr = max(incr, right[0] + 1);
-            if (root->right->val - 1 == root->val) decr = max(decr, right[1] + 1);
-        }
-        ans = max(ans, incr + decr - 1);
-        return {incr, decr};
     }
 };

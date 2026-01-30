@@ -1,33 +1,21 @@
-/*
-// Definition for a Node.
-class Node {
+/**
+ * @brief Find maximum depth of N-ary tree using DFS
+ * @intuition Depth is 1 plus maximum depth among all children
+ * @approach Recursively compute max child depth, add 1 for current node
+ * @complexity Time: O(n), Space: O(h) where h is tree height
+ */
+class Solution final {
 public:
-    int val;
-    vector<Node*> children;
-
-    Node() {}
-
-    Node(int _val) {
-        val = _val;
-    }
-
-    Node(int _val, vector<Node*> _children) {
-        val = _val;
-        children = _children;
-    }
-};
-*/
-
-class Solution {
-public:
-    int maxDepth(Node* root) {
+    [[nodiscard]] static int maxDepth(Node* root) {
         if (!root) {
             return 0;
         }
-        int mx = 0;
+        
+        int maxChildDepth = 0;
         for (Node* child : root->children) {
-            mx = max(mx, maxDepth(child));
+            maxChildDepth = max(maxChildDepth, maxDepth(child));
         }
-        return mx + 1;
+        
+        return maxChildDepth + 1;
     }
 };

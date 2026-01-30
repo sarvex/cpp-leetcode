@@ -1,8 +1,13 @@
-class DinnerPlates {
+/**
+ * @brief Multiple stacks with fixed capacity and efficient push/pop operations
+ * @intuition Track non-full stacks in sorted set for O(log n) push to leftmost available
+ * @approach Use vector of stacks. Maintain set of indices with available capacity.
+ *           Push to leftmost non-full stack, pop from specific index or rightmost non-empty.
+ * @complexity Time: O(log n) per operation, Space: O(total elements)
+ */
+class DinnerPlates final {
 public:
-    DinnerPlates(int capacity) {
-        this->capacity = capacity;
-    }
+    DinnerPlates(int capacity) : capacity(capacity) {}
 
     void push(int val) {
         if (notFull.empty()) {
@@ -20,11 +25,11 @@ public:
         }
     }
 
-    int pop() {
+    [[nodiscard]] int pop() {
         return popAtStack(stacks.size() - 1);
     }
 
-    int popAtStack(int index) {
+    [[nodiscard]] int popAtStack(int index) {
         if (index < 0 || index >= stacks.size() || stacks[index].empty()) {
             return -1;
         }
@@ -42,15 +47,7 @@ public:
     }
 
 private:
-    int capacity;
+    size_t capacity;
     vector<stack<int>> stacks;
     set<int> notFull;
 };
-
-/**
- * Your DinnerPlates object will be instantiated and called as such:
- * DinnerPlates* obj = new DinnerPlates(capacity);
- * obj->push(val);
- * int param_2 = obj->pop();
- * int param_3 = obj->popAtStack(index);
- */

@@ -2,13 +2,11 @@
  * @brief Remove k digits from number to get smallest possible result
  * @intuition Remove larger digits when followed by smaller ones (monotonic stack)
  * @approach Use stack to maintain increasing sequence, remove from end if k remains
- * @complexity Time: O(n) Space: O(n)
+ * @complexity Time: O(n), Space: O(n)
  */
-#include <string>
-
 class Solution final {
 public:
-    [[nodiscard]] auto removeKdigits(std::string num, int k) const -> std::string {
+    [[nodiscard]] static auto removeKdigits(const std::string& num, int k) -> std::string {
         std::string stk;
 
         for (const char c : num) {

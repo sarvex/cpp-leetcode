@@ -4,14 +4,12 @@
  * @approach Build 2D prefix sum matrix, then query using inclusion-exclusion formula
  * @complexity Time: O(mn) build, O(1) query, Space: O(mn)
  */
-#include <vector>
-
 class NumMatrix final {
 public:
-    explicit NumMatrix(const std::vector<std::vector<int>>& matrix) {
+    explicit NumMatrix(const vector<vector<int>>& matrix) {
         const int m = static_cast<int>(matrix.size());
         const int n = static_cast<int>(matrix[0].size());
-        prefix_sum_.resize(m + 1, std::vector<int>(n + 1));
+        prefix_sum_.resize(m + 1, vector<int>(n + 1));
         
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
@@ -27,11 +25,5 @@ public:
     }
 
 private:
-    std::vector<std::vector<int>> prefix_sum_;
+    vector<vector<int>> prefix_sum_;
 };
-
-/**
- * Your NumMatrix object will be instantiated and called as such:
- * NumMatrix* obj = new NumMatrix(matrix);
- * int param_1 = obj->sumRegion(row1,col1,row2,col2);
- */

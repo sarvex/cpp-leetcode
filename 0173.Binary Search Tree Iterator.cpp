@@ -5,38 +5,22 @@
  * @complexity Time: O(1) per operation, Space: O(n) for storage
  */
 
-#include <vector>
-
-using std::vector;
-
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-
 class BSTIterator final {
 private:
-    vector<int> values_;
-    size_t index_;
+    std::vector<int> values_;
+    std::size_t index_ = 0;
     
-    auto inorder(TreeNode* node) -> void {
+    static auto inorder(TreeNode* node, std::vector<int>& result) -> void {
         if (node != nullptr) {
-            inorder(node->left);
-            values_.push_back(node->val);
-            inorder(node->right);
+            inorder(node->left, result);
+            result.push_back(node->val);
+            inorder(node->right, result);
         }
     }
     
 public:
-    explicit BSTIterator(TreeNode* root) : index_(0) {
-        inorder(root);
+    explicit BSTIterator(TreeNode* root) {
+        inorder(root, values_);
     }
     
     [[nodiscard]] auto next() -> int {
@@ -47,10 +31,3 @@ public:
         return index_ < values_.size();
     }
 };
-
-/**
- * Your BSTIterator object will be instantiated and called as such:
- * BSTIterator* obj = new BSTIterator(root);
- * int param_1 = obj->next();
- * bool param_2 = obj->hasNext();
- */

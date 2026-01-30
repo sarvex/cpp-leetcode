@@ -1,25 +1,35 @@
-class Solution {
+/**
+ * @brief Count valid attendance records using memoized DP
+ * @intuition State: position, absence count, consecutive late count
+ * @approach DFS with memo tracking (day, absences, consecutive_lates); try P, A (if <1), L (if <2)
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    int checkRecord(int n) {
-        int f[n][2][3];
-        memset(f, -1, sizeof(f));
-        const int mod = 1e9 + 7;
-        auto dfs = [&](this auto&& dfs, int i, int j, int k) -> int {
+    [[nodiscard]] static int checkRecord(const int n) {
+        int memo[n][2][3];
+        memset(memo, -1, sizeof(memo));
+        constexpr int mod = 1e9 + 7;
+        
+        auto dfs = [&](this auto&& dfs, int i, int absences, int lates) -> int {
             if (i >= n) {
                 return 1;
             }
-            if (f[i][j][k] != -1) {
-                return f[i][j][k];
+            if (memo[i][absences][lates] != -1) {
+                return memo[i][absences][lates];
             }
-            int ans = dfs(i + 1, j, 0);
-            if (j == 0) {
-                ans = (ans + dfs(i + 1, j + 1, 0)) % mod;
+            
+            int ans = dfs(i + 1, absences, 0);
+            if (absences == 0) {
+                ans = (ans + dfs(i + 1, absences + 1, 0)) % mod;
             }
-            if (k < 2) {
-                ans = (ans + dfs(i + 1, j, k + 1)) % mod;
+            if (lates < 2) {
+                ans = (ans + dfs(i + 1, absences, lates + 1)) % mod;
             }
-            return f[i][j][k] = ans;
+            
+            return memo[i][absences][lates] = ans;
         };
+        
         return dfs(0, 0, 0);
     }
 };

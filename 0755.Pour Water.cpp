@@ -1,22 +1,32 @@
-class Solution {
+/**
+ * @brief Simulate pouring water droplets
+ * @intuition Water flows left first, then right, then stays at k
+ * @approach For each drop, find lowest position left of k, else right, else k
+ * @complexity Time: O(volume * n), Space: O(1)
+ */
+class Solution final {
 public:
-    vector<int> pourWater(vector<int>& heights, int volume, int k) {
+    [[nodiscard]] static std::vector<int> pourWater(std::vector<int>& heights, 
+                                                     int volume, const int k) {
+        const int n = static_cast<int>(heights.size());
+        
         while (volume--) {
-            bool find = false;
-            for (int d = -1; d < 2 && !find; d += 2) {
-                int i = k, j = k;
-                while (i + d >= 0 && i + d < heights.size() && heights[i + d] <= heights[i]) {
-                    if (heights[i + d] < heights[i]) {
-                        j = i + d;
+            bool placed = false;
+            for (int dir = -1; dir <= 1 && !placed; dir += 2) {
+                int i = k;
+                int lowestPos = k;
+                while (i + dir >= 0 && i + dir < n && heights[i + dir] <= heights[i]) {
+                    if (heights[i + dir] < heights[i]) {
+                        lowestPos = i + dir;
                     }
-                    i += d;
+                    i += dir;
                 }
-                if (j != k) {
-                    find = true;
-                    ++heights[j];
+                if (lowestPos != k) {
+                    placed = true;
+                    ++heights[lowestPos];
                 }
             }
-            if (!find) {
+            if (!placed) {
                 ++heights[k];
             }
         }

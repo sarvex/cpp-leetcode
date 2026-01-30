@@ -1,6 +1,16 @@
-class Solution {
+/**
+ * @brief Sliding window to maximize saved customers
+ * @intuition Owner can suppress grumpiness for 'minutes' window; maximize grumpy customers saved
+ * @approach Compute base satisfied, slide window to find best grumpy period to suppress
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    int maxSatisfied(vector<int>& customers, vector<int>& grumpy, int minutes) {
+    [[nodiscard]] static int maxSatisfied(
+        const vector<int>& customers,
+        const vector<int>& grumpy,
+        const int minutes) {
+        
         int cnt = 0;
         int tot = 0;
         for (int i = 0; i < minutes; ++i) {
@@ -8,7 +18,7 @@ public:
             tot += customers[i] * (grumpy[i] ^ 1);
         }
         int mx = cnt;
-        int n = customers.size();
+        const int n = customers.size();
         for (int i = minutes; i < n; ++i) {
             cnt += customers[i] * grumpy[i];
             cnt -= customers[i - minutes] * grumpy[i - minutes];

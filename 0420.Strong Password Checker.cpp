@@ -2,17 +2,13 @@
  * @brief Find minimum operations to make password strong
  * @intuition Balance insertions, deletions, and replacements for length and rules
  * @approach Handle short (<6), valid (6-20), and long (>20) passwords separately
- * @complexity Time: O(n) Space: O(1)
+ * @complexity Time: O(n), Space: O(1)
  */
-#include <algorithm>
-#include <cctype>
-#include <string>
-
 class Solution final {
 public:
-    [[nodiscard]] auto strongPasswordChecker(const std::string& password) const -> int {
+    [[nodiscard]] static auto strongPasswordChecker(const std::string& password) -> int {
         const int types = countTypes(password);
-        const int n = static_cast<int>(password.size());
+        const auto n = static_cast<int>(password.size());
 
         if (n < 6) {
             return std::max(6 - n, 3 - types);

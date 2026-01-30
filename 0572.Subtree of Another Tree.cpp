@@ -1,27 +1,27 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Check if subRoot is structurally identical subtree of root
+ * @intuition Either root matches subRoot exactly, or recurse into children
+ * @approach Use helper to check tree equality; main function tries all subtrees
+ * @complexity Time: O(m*n), Space: O(h) where h is height of root
  */
-class Solution {
+class Solution final {
 public:
-    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+    [[nodiscard]] static bool isSubtree(TreeNode* root, TreeNode* subRoot) {
         if (!root) {
             return false;
         }
-        return same(root, subRoot) || isSubtree(root->left, subRoot) || isSubtree(root->right, subRoot);
+        return isSameTree(root, subRoot) || 
+               isSubtree(root->left, subRoot) || 
+               isSubtree(root->right, subRoot);
     }
 
-    bool same(TreeNode* p, TreeNode* q) {
+private:
+    [[nodiscard]] static bool isSameTree(TreeNode* p, TreeNode* q) {
         if (!p || !q) {
             return p == q;
         }
-        return p->val == q->val && same(p->left, q->left) && same(p->right, q->right);
+        return p->val == q->val && 
+               isSameTree(p->left, q->left) && 
+               isSameTree(p->right, q->right);
     }
 };

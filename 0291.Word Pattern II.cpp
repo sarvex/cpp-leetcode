@@ -1,27 +1,47 @@
-class Solution {
+/**
+ * @brief Backtracking to match pattern with string
+ * @intuition Try all possible substrings for each pattern char
+ * @approach DFS with backtracking, track char->string and used strings
+ * @complexity Time: O(n^m) where m is pattern length, Space: O(m)
+ */
+class Solution final {
 public:
-    bool wordPatternMatch(string pattern, string s) {
-        unordered_set<string> vis;
-        unordered_map<char, string> d;
-        return dfs(0, 0, pattern, s, vis, d);
+    [[nodiscard]] static bool wordPatternMatch(const string& pattern, const string& s) {
+        unordered_set<string> used;
+        unordered_map<char, string> mapping;
+        return dfs(0, 0, pattern, s, used, mapping);
     }
 
-    bool dfs(int i, int j, string& p, string& s, unordered_set<string>& vis, unordered_map<char, string>& d) {
-        int m = p.size(), n = s.size();
-        if (i == m && j == n) return true;
-        if (i == m || j == n || m - i > n - j) return false;
-        char c = p[i];
+private:
+    [[nodiscard]] static bool dfs(int i, int j, const string& p, const string& s,
+                                   unordered_set<string>& used,
+                                   unordered_map<char, string>& mapping) {
+        const int m = static_cast<int>(p.size());
+        const int n = static_cast<int>(s.size());
+        
+        if (i == m && j == n) {
+            return true;
+        }
+        if (i == m || j == n || m - i > n - j) {
+            return false;
+        }
+        
+        const char c = p[i];
         for (int k = j + 1; k <= n; ++k) {
-            string t = s.substr(j, k - j);
-            if (d.count(c) && d[c] == t) {
-                if (dfs(i + 1, k, p, s, vis, d)) return true;
+            const string t = s.substr(j, k - j);
+            if (mapping.contains(c) && mapping[c] == t) {
+                if (dfs(i + 1, k, p, s, used, mapping)) {
+                    return true;
+                }
             }
-            if (!d.count(c) && !vis.count(t)) {
-                d[c] = t;
-                vis.insert(t);
-                if (dfs(i + 1, k, p, s, vis, d)) return true;
-                vis.erase(t);
-                d.erase(c);
+            if (!mapping.contains(c) && !used.contains(t)) {
+                mapping[c] = t;
+                used.insert(t);
+                if (dfs(i + 1, k, p, s, used, mapping)) {
+                    return true;
+                }
+                used.erase(t);
+                mapping.erase(c);
             }
         }
         return false;

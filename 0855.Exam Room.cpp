@@ -1,28 +1,46 @@
-int N;
+/**
+ * @brief Ordered set with custom comparator for exam room seating
+ * @intuition Track intervals between seated students; always choose interval with max distance
+ * @approach Maintain intervals sorted by distance (max first). When seating, split the best
+ *           interval. When leaving, merge adjacent intervals.
+ * @complexity Time: O(log n) per operation, Space: O(n)
+ */
+class ExamRoom final {
+    int n;
+    std::set<std::pair<int, int>, std::function<bool(const std::pair<int, int>&, 
+                                                      const std::pair<int, int>&)>> ts;
+    std::unordered_map<int, int> left;
+    std::unordered_map<int, int> right;
 
-int dist(const pair<int, int>& p) {
-    auto [l, r] = p;
-    if (l == -1 || r == N) return r - l - 1;
-    return (r - l) >> 1;
-}
+    [[nodiscard]] auto dist(const std::pair<int, int>& p) const -> int {
+        const auto [l, r] = p;
+        if (l == -1 || r == n) return r - l - 1;
+        return (r - l) >> 1;
+    }
 
-struct cmp {
-    bool operator()(const pair<int, int>& a, const pair<int, int>& b) const {
-        int d1 = dist(a), d2 = dist(b);
-        return d1 == d2 ? a.first < b.first : d1 > d2;
-    };
-};
+    auto add(std::pair<int, int> s) -> void {
+        ts.insert(s);
+        left[s.second] = s.first;
+        right[s.first] = s.second;
+    }
 
-class ExamRoom {
+    auto del(std::pair<int, int> s) -> void {
+        ts.erase(s);
+        left.erase(s.second);
+        right.erase(s.first);
+    }
+
 public:
-    ExamRoom(int n) {
-        N = n;
-        this->n = n;
+    explicit ExamRoom(int n) : n(n), ts([this](const std::pair<int, int>& a, 
+                                                const std::pair<int, int>& b) {
+        const int d1 = dist(a), d2 = dist(b);
+        return d1 == d2 ? a.first < b.first : d1 > d2;
+    }) {
         add({-1, n});
     }
 
-    int seat() {
-        auto s = *ts.begin();
+    [[nodiscard]] auto seat() -> int {
+        const auto s = *ts.begin();
         int p = (s.first + s.second) >> 1;
         if (s.first == -1) {
             p = 0;
@@ -35,35 +53,10 @@ public:
         return p;
     }
 
-    void leave(int p) {
-        int l = left[p], r = right[p];
+    auto leave(int p) -> void {
+        const int l = left[p], r = right[p];
         del({l, p});
         del({p, r});
         add({l, r});
     }
-
-private:
-    set<pair<int, int>, cmp> ts;
-    unordered_map<int, int> left;
-    unordered_map<int, int> right;
-    int n;
-
-    void add(pair<int, int> s) {
-        ts.insert(s);
-        left[s.second] = s.first;
-        right[s.first] = s.second;
-    }
-
-    void del(pair<int, int> s) {
-        ts.erase(s);
-        left.erase(s.second);
-        right.erase(s.first);
-    }
 };
-
-/**
- * Your ExamRoom object will be instantiated and called as such:
- * ExamRoom* obj = new ExamRoom(n);
- * int param_1 = obj->seat();
- * obj->leave(p);
- */

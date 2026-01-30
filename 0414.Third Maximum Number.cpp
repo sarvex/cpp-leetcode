@@ -2,14 +2,11 @@
  * @brief Find third distinct maximum, or maximum if fewer than 3 distinct
  * @intuition Track top 3 distinct values while iterating
  * @approach Use LONG_MIN as sentinel to detect unset values
- * @complexity Time: O(n) Space: O(1)
+ * @complexity Time: O(n), Space: O(1)
  */
-#include <climits>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] auto thirdMax(const std::vector<int>& nums) const -> int {
+    [[nodiscard]] static auto thirdMax(const std::vector<int>& nums) -> int {
         long m1 = LONG_MIN;
         long m2 = LONG_MIN;
         long m3 = LONG_MIN;

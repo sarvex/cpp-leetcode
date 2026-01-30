@@ -1,26 +1,29 @@
-class Solution {
+/**
+ * @brief DP with hash map for longest Fibonacci-like subsequence
+ * @intuition f[i][j] = length of Fibonacci sequence ending at (arr[j], arr[i])
+ * @approach For each pair (j, i), check if arr[i] - arr[j] exists earlier in array.
+ *           If found at index k, f[i][j] = f[j][k] + 1. Track maximum length.
+ * @complexity Time: O(n^2), Space: O(n^2)
+ */
+class Solution final {
 public:
-    int lenLongestFibSubseq(vector<int>& arr) {
-        int n = arr.size();
-        int f[n][n];
-        memset(f, 0, sizeof(f));
-        unordered_map<int, int> d;
+    [[nodiscard]] static auto lenLongestFibSubseq(const std::vector<int>& arr) -> int {
+        const int n = static_cast<int>(arr.size());
+        std::vector<std::vector<int>> f(n, std::vector<int>(n, 2));
+        std::unordered_map<int, int> idx;
+        
         for (int i = 0; i < n; ++i) {
-            d[arr[i]] = i;
-            for (int j = 0; j < i; ++j) {
-                f[i][j] = 2;
-            }
+            idx[arr[i]] = i;
         }
-
+        
         int ans = 0;
         for (int i = 2; i < n; ++i) {
             for (int j = 1; j < i; ++j) {
-                int t = arr[i] - arr[j];
-                auto it = d.find(t);
-                if (it != d.end() && it->second < j) {
-                    int k = it->second;
-                    f[i][j] = max(f[i][j], f[j][k] + 1);
-                    ans = max(ans, f[i][j]);
+                const int t = arr[i] - arr[j];
+                if (auto it = idx.find(t); it != idx.end() && it->second < j) {
+                    const int k = it->second;
+                    f[i][j] = std::max(f[i][j], f[j][k] + 1);
+                    ans = std::max(ans, f[i][j]);
                 }
             }
         }

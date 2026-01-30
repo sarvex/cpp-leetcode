@@ -1,6 +1,12 @@
-class Solution {
+/**
+ * @brief Convert to negabinary representation
+ * @intuition Negabinary uses -2 as base; handle alternating sign during division
+ * @approach Process bits from LSB, adjust remainder when odd using alternating sign
+ * @complexity Time: O(log n), Space: O(log n)
+ */
+class Solution final {
 public:
-    string baseNeg2(int n) {
+    [[nodiscard]] static string baseNeg2(int n) {
         if (n == 0) {
             return "0";
         }

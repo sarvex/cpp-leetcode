@@ -1,22 +1,33 @@
-class Solution {
+/**
+ * @brief Find k-th smallest prime fraction using min-heap
+ * @intuition Fractions form sorted matrix; use heap to extract k-th smallest
+ * @approach Min-heap of (numerator_idx, denominator_idx), expand on pop
+ * @complexity Time: O(k log n), Space: O(n)
+ */
+class Solution final {
 public:
-    vector<int> kthSmallestPrimeFraction(vector<int>& arr, int k) {
-        using pii = pair<int, int>;
-        int n = arr.size();
-        auto cmp = [&](const pii& a, const pii& b) {
+    [[nodiscard]] static std::vector<int> kthSmallestPrimeFraction(
+            const std::vector<int>& arr, const int k) {
+        using PII = std::pair<int, int>;
+        const int n = static_cast<int>(arr.size());
+        
+        auto cmp = [&](const PII& a, const PII& b) {
             return arr[a.first] * arr[b.second] > arr[b.first] * arr[a.second];
         };
-        priority_queue<pii, vector<pii>, decltype(cmp)> pq(cmp);
+        
+        std::priority_queue<PII, std::vector<PII>, decltype(cmp)> minHeap(cmp);
         for (int i = 1; i < n; ++i) {
-            pq.push({0, i});
+            minHeap.push({0, i});
         }
+        
         for (int i = 1; i < k; ++i) {
-            pii f = pq.top();
-            pq.pop();
-            if (f.first + 1 < f.second) {
-                pq.push({f.first + 1, f.second});
+            auto [num, den] = minHeap.top();
+            minHeap.pop();
+            if (num + 1 < den) {
+                minHeap.push({num + 1, den});
             }
         }
-        return {arr[pq.top().first], arr[pq.top().second]};
+        
+        return {arr[minHeap.top().first], arr[minHeap.top().second]};
     }
 };

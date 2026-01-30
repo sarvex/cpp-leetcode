@@ -1,3 +1,10 @@
+/**
+ * @brief Peeking iterator with cached next element
+ * @intuition Cache the next element when peek is called
+ * @approach Store peeked element and flag, return cached value on next()
+ * @complexity Time: O(1) per operation, Space: O(1)
+ */
+
 /*
  * Below is the interface for Iterator, which is already defined for you.
  * **DO NOT** modify the interface for Iterator.
@@ -17,38 +24,32 @@
  *	};
  */
 
-class PeekingIterator : public Iterator {
+class PeekingIterator final : public Iterator {
 public:
-    PeekingIterator(const vector<int>& nums)
-        : Iterator(nums) {
-        // Initialize any member here.
-        // **DO NOT** save a copy of nums and manipulate it directly.
-        // You should only use the Iterator interface methods.
-        hasPeeked = false;
-    }
+    explicit PeekingIterator(const vector<int>& nums)
+        : Iterator(nums), hasPeeked_(false), peekedElement_(0) {}
 
-    // Returns the next element in the iteration without advancing the iterator.
-    int peek() {
-        if (!hasPeeked) {
-            peekedElement = Iterator::next();
-            hasPeeked = true;
+    [[nodiscard]] int peek() {
+        if (!hasPeeked_) {
+            peekedElement_ = Iterator::next();
+            hasPeeked_ = true;
         }
-        return peekedElement;
+        return peekedElement_;
     }
 
-    // hasNext() and next() should behave the same as in the Iterator interface.
-    // Override them if needed.
     int next() {
-        if (!hasPeeked) return Iterator::next();
-        hasPeeked = false;
-        return peekedElement;
+        if (!hasPeeked_) {
+            return Iterator::next();
+        }
+        hasPeeked_ = false;
+        return peekedElement_;
     }
 
-    bool hasNext() const {
-        return hasPeeked || Iterator::hasNext();
+    [[nodiscard]] bool hasNext() const {
+        return hasPeeked_ || Iterator::hasNext();
     }
 
 private:
-    bool hasPeeked;
-    int peekedElement;
+    bool hasPeeked_;
+    int peekedElement_;
 };

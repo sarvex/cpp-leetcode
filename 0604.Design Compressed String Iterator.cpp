@@ -1,39 +1,40 @@
-class StringIterator {
+/**
+ * @brief Iterator for compressed string with run-length encoding
+ * @intuition Parse compressed string into character-count pairs, then iterate
+ * @approach Store pairs of (character, count), decrement count on each next() call
+ * @complexity Time: O(n) for construction, O(1) per operation, Space: O(n)
+ */
+class StringIterator final {
 public:
-    StringIterator(string compressedString) {
-        int n = compressedString.size();
+    explicit StringIterator(const string& compressedString) {
+        const int n = compressedString.size();
         int i = 0;
         while (i < n) {
-            char c = compressedString[i];
+            const char c = compressedString[i];
             int x = 0;
             while (++i < n && isdigit(compressedString[i])) {
                 x = x * 10 + (compressedString[i] - '0');
             }
-            d.push_back({c, x});
+            d_.emplace_back(c, x);
         }
     }
 
-    char next() {
-        if (!hasNext()) return ' ';
-        char ans = d[p].first;
-        if (--d[p].second == 0) {
-            ++p;
+    [[nodiscard]] char next() {
+        if (!hasNext()) {
+            return ' ';
+        }
+        const char ans = d_[p_].first;
+        if (--d_[p_].second == 0) {
+            ++p_;
         }
         return ans;
     }
 
-    bool hasNext() {
-        return p < d.size() && d[p].second > 0;
+    [[nodiscard]] bool hasNext() const {
+        return p_ < d_.size() && d_[p_].second > 0;
     }
 
 private:
-    vector<pair<char, int>> d;
-    int p = 0;
+    vector<pair<char, int>> d_;
+    size_t p_ = 0;
 };
-
-/**
- * Your StringIterator object will be instantiated and called as such:
- * StringIterator* obj = new StringIterator(compressedString);
- * char param_1 = obj->next();
- * bool param_2 = obj->hasNext();
- */

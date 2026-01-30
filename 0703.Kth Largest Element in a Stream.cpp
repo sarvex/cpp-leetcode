@@ -1,27 +1,26 @@
-class KthLargest {
+/**
+ * @brief Min-heap to maintain k largest elements
+ * @intuition Keep only k largest elements; smallest of these is kth largest
+ * @approach Use min-heap of size k, evict smallest when exceeding k elements
+ * @complexity Time: O(n log k) for init, O(log k) per add, Space: O(k)
+ */
+class KthLargest final {
 public:
-    KthLargest(int k, vector<int>& nums) {
-        this->k = k;
-        for (int x : nums) {
+    KthLargest(const int k, const std::vector<int>& nums) : k_(k) {
+        for (const int x : nums) {
             add(x);
         }
     }
 
-    int add(int val) {
-        minQ.push(val);
-        if (minQ.size() > k) {
-            minQ.pop();
+    [[nodiscard]] int add(const int val) {
+        minHeap_.push(val);
+        if (minHeap_.size() > k_) {
+            minHeap_.pop();
         }
-        return minQ.top();
+        return minHeap_.top();
     }
 
 private:
-    int k;
-    priority_queue<int, vector<int>, greater<int>> minQ;
+    size_t k_;
+    std::priority_queue<int, std::vector<int>, std::greater<>> minHeap_;
 };
-
-/**
- * Your KthLargest object will be instantiated and called as such:
- * KthLargest* obj = new KthLargest(k, nums);
- * int param_1 = obj->add(val);
- */

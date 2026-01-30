@@ -4,13 +4,10 @@
  * @approach Track running sum and sign, push state on '(', restore on ')'
  * @complexity Time: O(n), Space: O(n)
  */
-#include <cctype>
-#include <stack>
-#include <string>
 
 class Solution final {
 public:
-  [[nodiscard]] auto calculate(const std::string& s) const -> int {
+  [[nodiscard]] static auto calculate(const std::string& s) -> int {
     std::stack<int> stk;
     int result = 0;
     int sign = 1;

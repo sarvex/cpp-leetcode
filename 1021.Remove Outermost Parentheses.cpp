@@ -1,9 +1,15 @@
-class Solution {
+/**
+ * @brief Track depth to skip outermost parentheses
+ * @intuition Outermost parens are at depth 0 going in and depth 1 going out
+ * @approach Count depth, include character only when depth > 0 for '(' and depth > 1 for ')'
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    string removeOuterParentheses(string s) {
+    [[nodiscard]] static string removeOuterParentheses(const string& s) {
         string ans;
         int cnt = 0;
-        for (char& c : s) {
+        for (const char c : s) {
             if (c == '(') {
                 if (++cnt > 1) {
                     ans.push_back(c);

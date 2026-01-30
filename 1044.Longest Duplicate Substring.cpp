@@ -1,40 +1,47 @@
-typedef unsigned long long ULL;
+/**
+ * @brief Binary search on length with rolling hash verification
+ * @intuition Binary search for longest duplicate; use rolling hash to find duplicates
+ * @approach Rabin-Karp rolling hash with binary search on substring length
+ * @complexity Time: O(n log n), Space: O(n)
+ */
+using ULL = unsigned long long;
 
-class Solution {
+class Solution final {
 public:
-    ULL p[30010];
-    ULL h[30010];
-    string longestDupSubstring(string s) {
-        int base = 131, n = s.size();
+    [[nodiscard]] static string longestDupSubstring(const string& s) {
+        const int n = s.size();
+        constexpr int base = 131;
+        
+        vector<ULL> p(n + 1), h(n + 1);
         p[0] = 1;
         for (int i = 0; i < n; ++i) {
             p[i + 1] = p[i] * base;
             h[i + 1] = h[i] * base + s[i];
         }
+        
+        auto check = [&](const int len) -> string {
+            unordered_set<ULL> vis;
+            for (int i = 1; i + len - 1 <= n; ++i) {
+                const int j = i + len - 1;
+                const ULL t = h[j] - h[i - 1] * p[j - i + 1];
+                if (vis.contains(t)) return s.substr(i - 1, len);
+                vis.insert(t);
+            }
+            return "";
+        };
+        
         int left = 0, right = n;
-        string ans = "";
+        string ans;
         while (left < right) {
-            int mid = (left + right + 1) >> 1;
-            string t = check(s, mid);
-            if (t.empty())
+            const int mid = (left + right + 1) >> 1;
+            string t = check(mid);
+            if (t.empty()) {
                 right = mid - 1;
-            else {
+            } else {
                 left = mid;
                 ans = t;
             }
         }
         return ans;
-    }
-
-    string check(string& s, int len) {
-        int n = s.size();
-        unordered_set<ULL> vis;
-        for (int i = 1; i + len - 1 <= n; ++i) {
-            int j = i + len - 1;
-            ULL t = h[j] - h[i - 1] * p[j - i + 1];
-            if (vis.count(t)) return s.substr(i - 1, len);
-            vis.insert(t);
-        }
-        return "";
     }
 };

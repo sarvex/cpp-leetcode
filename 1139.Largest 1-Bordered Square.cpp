@@ -1,11 +1,16 @@
-class Solution {
+/**
+ * @brief Find largest square with all 1s on its border
+ * @intuition Precompute continuous 1s going down and right from each cell
+ * @approach Build arrays for consecutive 1s extending down and right. For each possible
+ *           square size, check if all four borders have enough consecutive 1s.
+ * @complexity Time: O(m * n * min(m,n)), Space: O(m * n)
+ */
+class Solution final {
 public:
-    int largest1BorderedSquare(vector<vector<int>>& grid) {
-        int m = grid.size(), n = grid[0].size();
-        int down[m][n];
-        int right[m][n];
-        memset(down, 0, sizeof down);
-        memset(right, 0, sizeof right);
+    [[nodiscard]] static int largest1BorderedSquare(const vector<vector<int>>& grid) {
+        const int m = grid.size(), n = grid[0].size();
+        vector<vector<int>> down(m, vector<int>(n, 0));
+        vector<vector<int>> right(m, vector<int>(n, 0));
         for (int i = m - 1; i >= 0; --i) {
             for (int j = n - 1; j >= 0; --j) {
                 if (grid[i][j] == 1) {

@@ -1,6 +1,13 @@
+/**
+ * @brief Synchronize two threads to alternately print "foo" and "bar" using semaphores
+ * @intuition Use semaphores to enforce alternating execution between foo and bar
+ * @approach Initialize foo semaphore to 1 (can start), bar to 0. After printing foo, signal bar.
+ *           After printing bar, signal foo. Repeat n times.
+ * @complexity Time: O(n), Space: O(1)
+ */
 #include <semaphore.h>
 
-class FooBar {
+class FooBar final {
 private:
     int n;
     sem_t f, b;
@@ -15,7 +22,6 @@ public:
     void foo(function<void()> printFoo) {
         for (int i = 0; i < n; i++) {
             sem_wait(&f);
-            // printFoo() outputs "foo". Do not change or remove this line.
             printFoo();
             sem_post(&b);
         }
@@ -24,7 +30,6 @@ public:
     void bar(function<void()> printBar) {
         for (int i = 0; i < n; i++) {
             sem_wait(&b);
-            // printBar() outputs "bar". Do not change or remove this line.
             printBar();
             sem_post(&f);
         }

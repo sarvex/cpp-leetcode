@@ -2,13 +2,11 @@
  * @brief Find length of longest palindrome that can be built from letters
  * @intuition Palindrome uses pairs of characters, plus one odd character in center
  * @approach Count character frequencies, sum pairs, add 1 if any odd count exists
- * @complexity Time: O(n) Space: O(1)
+ * @complexity Time: O(n), Space: O(1)
  */
-#include <string>
-
 class Solution final {
 public:
-    [[nodiscard]] auto longestPalindrome(const std::string& s) const -> int {
+    [[nodiscard]] static auto longestPalindrome(const std::string& s) -> int {
         int cnt[128]{};
 
         for (const char c : s) {

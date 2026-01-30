@@ -4,12 +4,6 @@
  * @approach Build index map, merge sorted indices to find minimum distance
  * @complexity Time: O(n) build, O(a + b) query, Space: O(n)
  */
-#include <algorithm>
-#include <climits>
-#include <cmath>
-#include <string>
-#include <unordered_map>
-#include <vector>
 
 class WordDistance final {
 private:

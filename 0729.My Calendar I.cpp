@@ -1,23 +1,22 @@
-class MyCalendar {
+/**
+ * @brief Calendar booking without double-booking using ordered map
+ * @intuition Store intervals sorted by end time, check overlap with predecessor
+ * @approach Use map with end time as key, start time as value for efficient lookup
+ * @complexity Time: O(log n) per booking, Space: O(n)
+ */
+class MyCalendar final {
 public:
-    MyCalendar() {
-    }
+    MyCalendar() = default;
 
-    bool book(int startTime, int endTime) {
-        auto e = m.lower_bound(startTime + 1);
-        if (e != m.end() && e->second < endTime) {
+    [[nodiscard]] bool book(const int startTime, const int endTime) {
+        auto it = calendar_.lower_bound(startTime + 1);
+        if (it != calendar_.end() && it->second < endTime) {
             return false;
         }
-        m[endTime] = startTime;
+        calendar_[endTime] = startTime;
         return true;
     }
 
 private:
-    map<int, int> m;
+    std::map<int, int> calendar_;
 };
-
-/**
- * Your MyCalendar object will be instantiated and called as such:
- * MyCalendar* obj = new MyCalendar();
- * bool param_1 = obj->book(startTime,endTime);
- */

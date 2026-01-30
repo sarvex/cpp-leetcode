@@ -4,7 +4,6 @@
  * @approach Use boolean array or in-place marking to track seen numbers
  * @complexity Time: O(n) Space: O(n)
  */
-#include <cstring>
 #include <vector>
 
 class Solution final {

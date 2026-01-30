@@ -4,13 +4,10 @@
  * @approach Sort specially to reduce to 1D LIS problem, use binary search
  * @complexity Time: O(n log n), Space: O(n)
  */
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int maxEnvelopes(std::vector<std::vector<int>>& envelopes) const {
-        std::sort(envelopes.begin(), envelopes.end(), [](const auto& a, const auto& b) {
+    [[nodiscard]] static int maxEnvelopes(std::vector<std::vector<int>>& envelopes) {
+        std::ranges::sort(envelopes, [](const auto& a, const auto& b) {
             return a[0] < b[0] || (a[0] == b[0] && a[1] > b[1]);
         });
         
@@ -22,7 +19,7 @@ public:
             if (h > dp.back()) {
                 dp.push_back(h);
             } else {
-                auto it = std::lower_bound(dp.begin(), dp.end(), h);
+                auto it = std::ranges::lower_bound(dp, h);
                 *it = h;
             }
         }

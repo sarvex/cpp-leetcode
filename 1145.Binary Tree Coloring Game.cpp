@@ -1,34 +1,28 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Determine if second player can win by blocking first player's expansion
+ * @intuition Second player should choose adjacent node that gives access to most nodes
+ * @approach Find node x and count nodes in its left subtree, right subtree, and parent's side.
+ *           Second player wins if any of these three regions has more than half the nodes.
+ * @complexity Time: O(n), Space: O(h) where h is tree height
  */
-class Solution {
+class Solution final {
 public:
-    bool btreeGameWinningMove(TreeNode* root, int n, int x) {
-        auto node = dfs(root, x);
-        int l = count(node->left), r = count(node->right);
+    [[nodiscard]] static bool btreeGameWinningMove(TreeNode* root, const int n, const int x) {
+        auto findNode = [](this auto&& findNode, TreeNode* root, int x) -> TreeNode* {
+            if (!root || root->val == x) {
+                return root;
+            }
+            auto node = findNode(root->left, x);
+            return node ? node : findNode(root->right, x);
+        };
+        auto countNodes = [](this auto&& countNodes, TreeNode* root) -> int {
+            if (!root) {
+                return 0;
+            }
+            return 1 + countNodes(root->left) + countNodes(root->right);
+        };
+        auto node = findNode(root, x);
+        int l = countNodes(node->left), r = countNodes(node->right);
         return max({l, r, n - l - r - 1}) > n / 2;
-    }
-
-    TreeNode* dfs(TreeNode* root, int x) {
-        if (!root || root->val == x) {
-            return root;
-        }
-        auto node = dfs(root->left, x);
-        return node ? node : dfs(root->right, x);
-    }
-
-    int count(TreeNode* root) {
-        if (!root) {
-            return 0;
-        }
-        return 1 + count(root->left) + count(root->right);
     }
 };

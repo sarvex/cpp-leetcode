@@ -1,17 +1,12 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Recursive BST search
+ * @intuition BST property allows O(log n) search by comparing node values
+ * @approach Recursively search left or right subtree based on value comparison
+ * @complexity Time: O(h) where h is tree height, Space: O(h) for recursion stack
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* searchBST(TreeNode* root, int val) {
+    [[nodiscard]] static TreeNode* searchBST(TreeNode* root, const int val) {
         if (!root || root->val == val) {
             return root;
         }

@@ -1,27 +1,40 @@
-using ll = long long;
-
-class Solution {
+/**
+ * @brief Game theory with memoization for flip game
+ * @intuition Use bitmask to represent state, memoize results
+ * @approach DFS: win if any move leads to opponent losing
+ * @complexity Time: O(2^n), Space: O(2^n)
+ */
+class Solution final {
 public:
-    int n;
-    unordered_map<ll, bool> memo;
-
-    bool canWin(string currentState) {
-        n = currentState.size();
-        ll mask = 0;
-        for (int i = 0; i < n; ++i)
-            if (currentState[i] == '+') mask |= 1ll << i;
+    [[nodiscard]] bool canWin(const string& currentState) {
+        n_ = static_cast<int>(currentState.size());
+        long long mask = 0;
+        for (int i = 0; i < n_; ++i) {
+            if (currentState[i] == '+') {
+                mask |= 1LL << i;
+            }
+        }
         return dfs(mask);
     }
 
-    bool dfs(ll mask) {
-        if (memo.count(mask)) return memo[mask];
-        for (int i = 0; i < n - 1; ++i) {
-            if ((mask & (1ll << i)) == 0 || (mask & (1ll << (i + 1))) == 0) continue;
-            if (dfs(mask ^ (1ll << i) ^ (1ll << (i + 1)))) continue;
-            memo[mask] = true;
-            return true;
+private:
+    int n_ = 0;
+    unordered_map<long long, bool> memo_;
+
+    [[nodiscard]] bool dfs(long long mask) {
+        if (memo_.contains(mask)) {
+            return memo_[mask];
         }
-        memo[mask] = false;
+        for (int i = 0; i < n_ - 1; ++i) {
+            if ((mask & (1LL << i)) == 0 || (mask & (1LL << (i + 1))) == 0) {
+                continue;
+            }
+            if (!dfs(mask ^ (1LL << i) ^ (1LL << (i + 1)))) {
+                memo_[mask] = true;
+                return true;
+            }
+        }
+        memo_[mask] = false;
         return false;
     }
 };

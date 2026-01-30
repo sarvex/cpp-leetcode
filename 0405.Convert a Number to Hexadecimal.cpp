@@ -2,13 +2,11 @@
  * @brief Convert integer to hexadecimal string (two's complement for negatives)
  * @intuition Extract 4 bits at a time from most significant to least significant
  * @approach Process each nibble, skip leading zeros
- * @complexity Time: O(1) - fixed 8 iterations Space: O(1)
+ * @complexity Time: O(1) - fixed 8 iterations, Space: O(1)
  */
-#include <string>
-
 class Solution final {
 public:
-    [[nodiscard]] auto toHex(int num) const -> std::string {
+    [[nodiscard]] static auto toHex(int num) -> std::string {
         if (num == 0) {
             return "0";
         }

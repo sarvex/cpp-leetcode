@@ -1,15 +1,28 @@
-class Solution {
+/**
+ * @brief Count ways to assign +/- signs to reach target sum
+ * @intuition Transform to subset sum: find subset with sum (total - target) / 2
+ * @approach DP: f[i][j] = ways to get sum j using first i elements
+ * @complexity Time: O(n * sum), Space: O(n * sum)
+ */
+#include <cstring>
+#include <numeric>
+#include <vector>
+
+class Solution final {
 public:
-    int findTargetSumWays(vector<int>& nums, int target) {
-        int s = accumulate(nums.begin(), nums.end(), 0);
-        if (s < target || (s - target) % 2) {
+    [[nodiscard]] auto findTargetSumWays(const std::vector<int>& nums, int target) const -> int {
+        const int sum = std::accumulate(nums.begin(), nums.end(), 0);
+
+        if (sum < target || (sum - target) % 2 != 0) {
             return 0;
         }
-        int m = nums.size();
-        int n = (s - target) / 2;
-        int f[m + 1][n + 1];
-        memset(f, 0, sizeof(f));
+
+        const int m = static_cast<int>(nums.size());
+        const int n = (sum - target) / 2;
+
+        std::vector<std::vector<int>> f(m + 1, std::vector<int>(n + 1, 0));
         f[0][0] = 1;
+
         for (int i = 1; i <= m; ++i) {
             for (int j = 0; j <= n; ++j) {
                 f[i][j] = f[i - 1][j];
@@ -18,6 +31,7 @@ public:
                 }
             }
         }
+
         return f[m][n];
     }
 };

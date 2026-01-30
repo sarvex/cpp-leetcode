@@ -4,12 +4,10 @@
  * @approach Use lookup table for valid 180-degree rotations
  * @complexity Time: O(n), Space: O(1)
  */
-#include <array>
-#include <string>
 
 class Solution final {
 public:
-  [[nodiscard]] auto isStrobogrammatic(const std::string& num) const -> bool {
+  [[nodiscard]] static auto isStrobogrammatic(const std::string& num) -> bool {
     constexpr std::array<int, 10> rotation = {0, 1, -1, -1, -1, -1, 9, -1, 8, 6};
     
     for (std::size_t i = 0, j = num.size() - 1; i <= j; ++i, --j) {

@@ -1,39 +1,63 @@
-class Solution {
+/**
+ * @brief Evaluate division queries given variable equations
+ * @intuition Model as weighted graph, use Union-Find with path compression
+ * @approach Union-Find where weight represents ratio to root
+ * @complexity Time: O(n * alpha(n)) per query, Space: O(n)
+ */
+class Solution final {
 public:
-    unordered_map<string, string> p;
-    unordered_map<string, double> w;
+    [[nodiscard]] auto calcEquation(std::vector<std::vector<std::string>>& equations,
+                                     std::vector<double>& values,
+                                     std::vector<std::vector<std::string>>& queries)
+        -> std::vector<double> {
+        std::unordered_map<std::string, std::string> parent;
+        std::unordered_map<std::string, double> weight;
 
-    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
-        int n = equations.size();
-        for (auto e : equations) {
-            p[e[0]] = e[0];
-            p[e[1]] = e[1];
-            w[e[0]] = 1.0;
-            w[e[1]] = 1.0;
+        for (const auto& e : equations) {
+            parent[e[0]] = e[0];
+            parent[e[1]] = e[1];
+            weight[e[0]] = 1.0;
+            weight[e[1]] = 1.0;
         }
+
+        const auto n = static_cast<int>(equations.size());
         for (int i = 0; i < n; ++i) {
-            vector<string> e = equations[i];
-            string a = e[0], b = e[1];
-            string pa = find(a), pb = find(b);
-            if (pa == pb) continue;
-            p[pa] = pb;
-            w[pa] = w[b] * values[i] / w[a];
+            const auto& a = equations[i][0];
+            const auto& b = equations[i][1];
+            auto pa = find(a, parent, weight);
+            auto pb = find(b, parent, weight);
+            if (pa == pb) {
+                continue;
+            }
+            parent[pa] = pb;
+            weight[pa] = weight[b] * values[i] / weight[a];
         }
-        int m = queries.size();
-        vector<double> ans(m);
-        for (int i = 0; i < m; ++i) {
-            string c = queries[i][0], d = queries[i][1];
-            ans[i] = p.find(c) == p.end() || p.find(d) == p.end() || find(c) != find(d) ? -1.0 : w[c] / w[d];
+
+        std::vector<double> ans;
+        ans.reserve(queries.size());
+
+        for (const auto& q : queries) {
+            const auto& c = q[0];
+            const auto& d = q[1];
+            if (!parent.contains(c) || !parent.contains(d) || find(c, parent, weight) != find(d, parent, weight)) {
+                ans.push_back(-1.0);
+            } else {
+                ans.push_back(weight[c] / weight[d]);
+            }
         }
+
         return ans;
     }
 
-    string find(string x) {
-        if (p[x] != x) {
-            string origin = p[x];
-            p[x] = find(p[x]);
-            w[x] *= w[origin];
+private:
+    static auto find(const std::string& x,
+                     std::unordered_map<std::string, std::string>& parent,
+                     std::unordered_map<std::string, double>& weight) -> std::string {
+        if (parent[x] != x) {
+            auto origin = parent[x];
+            parent[x] = find(parent[x], parent, weight);
+            weight[x] *= weight[origin];
         }
-        return p[x];
+        return parent[x];
     }
 };

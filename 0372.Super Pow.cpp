@@ -1,23 +1,33 @@
-class Solution {
+/**
+ * @brief Calculate a^b mod 1337 where b is represented as array of digits
+ * @intuition Use modular exponentiation: a^[1,2,3] = a^3 * (a^10)^[1,2]
+ * @approach Process digits from right to left, multiply by successive powers
+ * @complexity Time: O(n * log(10)), Space: O(1)
+ */
+class Solution final {
 public:
-    int superPow(int a, vector<int>& b) {
-        using ll = long long;
-        const int mod = 1337;
-        ll ans = 1;
-        auto qpow = [&](ll a, int n) {
-            ll ans = 1;
-            for (; n; n >>= 1) {
+    [[nodiscard]] static auto superPow(int a, const std::vector<int>& b) -> int {
+        constexpr int mod = 1337;
+        long long ans = 1;
+
+        auto qpow = [](long long base, int n) {
+            long long result = 1;
+            while (n > 0) {
                 if (n & 1) {
-                    ans = ans * a % mod;
+                    result = result * base % mod;
                 }
-                a = a * a % mod;
+                base = base * base % mod;
+                n >>= 1;
             }
-            return (int) ans;
+            return static_cast<int>(result);
         };
-        for (int i = b.size() - 1; ~i; --i) {
-            ans = ans * qpow(a, b[i]) % mod;
-            a = qpow(a, 10);
+
+        int base = a;
+        for (int i = static_cast<int>(b.size()) - 1; i >= 0; --i) {
+            ans = ans * qpow(base, b[i]) % mod;
+            base = qpow(base, 10);
         }
-        return ans;
+
+        return static_cast<int>(ans);
     }
 };

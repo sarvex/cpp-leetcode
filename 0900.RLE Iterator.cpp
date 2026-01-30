@@ -1,10 +1,19 @@
-class RLEIterator {
-public:
-    RLEIterator(vector<int>& encoding) {
-        this->encoding = encoding;
-    }
+/**
+ * @brief Iterator over run-length encoded sequence
+ * @intuition Track current position in encoding; skip runs as needed
+ * @approach Maintain index in encoding and offset within current run. For each next(n),
+ *           consume n elements, advancing through runs as needed.
+ * @complexity Time: O(n) amortized per next, Space: O(1)
+ */
+class RLEIterator final {
+    std::vector<int> encoding;
+    std::size_t i = 0;
+    int j = 0;
 
-    int next(int n) {
+public:
+    explicit RLEIterator(const std::vector<int>& encoding) : encoding(encoding) {}
+
+    [[nodiscard]] auto next(int n) -> int {
         while (i < encoding.size()) {
             if (encoding[i] - j < n) {
                 n -= (encoding[i] - j);
@@ -17,15 +26,4 @@ public:
         }
         return -1;
     }
-
-private:
-    vector<int> encoding;
-    int i = 0;
-    int j = 0;
 };
-
-/**
- * Your RLEIterator object will be instantiated and called as such:
- * RLEIterator* obj = new RLEIterator(encoding);
- * int param_1 = obj->next(n);
- */

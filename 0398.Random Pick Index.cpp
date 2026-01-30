@@ -1,22 +1,32 @@
-class Solution {
+/**
+ * @brief Pick random index of target value using reservoir sampling
+ * @intuition Reservoir sampling ensures uniform distribution without extra space
+ * @approach For kth occurrence, replace result with probability 1/k
+ * @complexity Time: O(n) per pick, Space: O(1)
+ */
+class Solution final {
 public:
-    vector<int> nums;
+    explicit Solution(std::vector<int>& nums) : nums_(nums) {}
 
-    Solution(vector<int>& nums) {
-        this->nums = nums;
-    }
+    [[nodiscard]] auto pick(int target) const -> int {
+        int n = 0;
+        int ans = 0;
+        const auto size = static_cast<int>(nums_.size());
 
-    int pick(int target) {
-        int n = 0, ans = 0;
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] == target) {
+        for (int i = 0; i < size; ++i) {
+            if (nums_[i] == target) {
                 ++n;
-                int x = 1 + rand() % n;
-                if (n == x) ans = i;
+                if (rand() % n == 0) {
+                    ans = i;
+                }
             }
         }
+
         return ans;
     }
+
+private:
+    std::vector<int> nums_;
 };
 
 /**

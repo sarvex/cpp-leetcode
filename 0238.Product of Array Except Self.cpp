@@ -4,11 +4,10 @@
  * @approach Single pass computing prefix and suffix products simultaneously
  * @complexity Time: O(n), Space: O(1) extra excluding output
  */
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto productExceptSelf(const std::vector<int>& nums) const -> std::vector<int> {
+  [[nodiscard]] static auto productExceptSelf(const std::vector<int>& nums) -> std::vector<int> {
     const auto n = static_cast<int>(nums.size());
     std::vector<int> result(n, 1);
     int prefix = 1;

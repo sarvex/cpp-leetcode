@@ -1,7 +1,13 @@
-class Solution {
+/**
+ * @brief Two-pointer in-place array partitioning by parity
+ * @intuition Place even numbers at front, odd at back
+ * @approach Use two pointers from both ends; swap when left is odd and right is even
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    vector<int> sortArrayByParity(vector<int>& nums) {
-        int i = 0, j = nums.size() - 1;
+    [[nodiscard]] static vector<int> sortArrayByParity(vector<int>& nums) {
+        int i = 0, j = static_cast<int>(nums.size()) - 1;
         while (i < j) {
             if (nums[i] % 2 == 0) {
                 ++i;

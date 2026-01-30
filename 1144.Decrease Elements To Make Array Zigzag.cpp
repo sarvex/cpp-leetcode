@@ -1,8 +1,15 @@
-class Solution {
+/**
+ * @brief Find minimum decreases to make array zigzag (alternating peaks and valleys)
+ * @intuition Try two patterns: even indices as valleys or odd indices as valleys
+ * @approach For each pattern, compute how much each valley must decrease to be strictly
+ *           less than both neighbors. Return minimum of both patterns.
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    int movesToMakeZigzag(vector<int>& nums) {
+    [[nodiscard]] static int movesToMakeZigzag(const vector<int>& nums) {
         vector<int> ans(2);
-        int n = nums.size();
+        const int n = nums.size();
         for (int i = 0; i < 2; ++i) {
             for (int j = i; j < n; j += 2) {
                 int d = 0;

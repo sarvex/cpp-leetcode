@@ -1,59 +1,58 @@
-class MyCircularQueue {
-private:
-    int front;
-    int size;
-    int capacity;
-    vector<int> q;
-
+/**
+ * @brief Circular queue with fixed capacity using array
+ * @intuition Use front pointer and size to track queue state in circular buffer
+ * @approach Maintain front index and size, compute indices with modulo
+ * @complexity Time: O(1) per operation, Space: O(k)
+ */
+class MyCircularQueue final {
 public:
-    MyCircularQueue(int k) {
-        capacity = k;
-        q = vector<int>(k);
-        front = size = 0;
-    }
+    explicit MyCircularQueue(const int k) : capacity_(k), q_(k) {}
 
-    bool enQueue(int value) {
-        if (isFull()) return false;
-        int idx = (front + size) % capacity;
-        q[idx] = value;
-        ++size;
+    bool enQueue(const int value) {
+        if (isFull()) {
+            return false;
+        }
+        const int idx = (front_ + size_) % capacity_;
+        q_[idx] = value;
+        ++size_;
         return true;
     }
 
     bool deQueue() {
-        if (isEmpty()) return false;
-        front = (front + 1) % capacity;
-        --size;
+        if (isEmpty()) {
+            return false;
+        }
+        front_ = (front_ + 1) % capacity_;
+        --size_;
         return true;
     }
 
-    int Front() {
-        if (isEmpty()) return -1;
-        return q[front];
+    [[nodiscard]] int Front() const {
+        if (isEmpty()) {
+            return -1;
+        }
+        return q_[front_];
     }
 
-    int Rear() {
-        if (isEmpty()) return -1;
-        int idx = (front + size - 1) % capacity;
-        return q[idx];
+    [[nodiscard]] int Rear() const {
+        if (isEmpty()) {
+            return -1;
+        }
+        const int idx = (front_ + size_ - 1) % capacity_;
+        return q_[idx];
     }
 
-    bool isEmpty() {
-        return size == 0;
+    [[nodiscard]] bool isEmpty() const {
+        return size_ == 0;
     }
 
-    bool isFull() {
-        return size == capacity;
+    [[nodiscard]] bool isFull() const {
+        return size_ == capacity_;
     }
+
+private:
+    int front_ = 0;
+    int size_ = 0;
+    int capacity_;
+    vector<int> q_;
 };
-
-/**
- * Your MyCircularQueue object will be instantiated and called as such:
- * MyCircularQueue* obj = new MyCircularQueue(k);
- * bool param_1 = obj->enQueue(value);
- * bool param_2 = obj->deQueue();
- * int param_3 = obj->Front();
- * int param_4 = obj->Rear();
- * bool param_5 = obj->isEmpty();
- * bool param_6 = obj->isFull();
- */

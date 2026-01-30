@@ -4,18 +4,12 @@
  * @approach Track crossing requirements, use symmetry (1,3,7,9 same, 2,4,6,8 same)
  * @complexity Time: O(9!), Space: O(9) for recursion
  */
-#include <cstring>
-#include <functional>
-
 class Solution final {
 public:
-    [[nodiscard]] int numberOfPatterns(int m, int n) const {
-        int cross[10][10];
-        std::memset(cross, 0, sizeof(cross));
-        bool visited[10];
-        std::memset(visited, false, sizeof(visited));
+    [[nodiscard]] static int numberOfPatterns(const int m, const int n) {
+        std::array<std::array<int, 10>, 10> cross{};
+        std::array<bool, 10> visited{};
         
-        // Set up crossing requirements
         cross[1][3] = cross[3][1] = 2;
         cross[1][7] = cross[7][1] = 4;
         cross[1][9] = cross[9][1] = 5;
@@ -25,7 +19,7 @@ public:
         cross[4][6] = cross[6][4] = 5;
         cross[7][9] = cross[9][7] = 8;
 
-        std::function<int(int, int)> dfs = [&](int i, int cnt) -> int {
+        auto dfs = [&](this auto&& dfs, int i, int cnt) -> int {
             if (cnt > n) {
                 return 0;
             }
@@ -42,7 +36,6 @@ public:
             return ans;
         };
 
-        // Use symmetry: corners (1,3,7,9) are equivalent, edges (2,4,6,8) are equivalent
         return dfs(1, 1) * 4 + dfs(2, 1) * 4 + dfs(5, 1);
     }
 };

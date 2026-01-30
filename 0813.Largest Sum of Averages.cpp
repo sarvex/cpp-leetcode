@@ -1,30 +1,39 @@
-class Solution {
+/**
+ * @brief Memoized recursion for partitioning array to maximize sum of averages
+ * @intuition Use DP to track best partition at each position with remaining groups
+ * @approach For each position, try all possible partition points. Recursively compute
+ *           maximum sum of averages using prefix sums for efficient average calculation.
+ * @complexity Time: O(n^2 * k), Space: O(n * k)
+ */
+class Solution final {
 public:
-    double largestSumOfAverages(vector<int>& nums, int k) {
-        int n = nums.size();
-        int s[n + 1];
-        double f[n][k + 1];
-        memset(f, 0, sizeof(f));
-        s[0] = 0;
+    [[nodiscard]] static auto largestSumOfAverages(const std::vector<int>& nums,
+                                                    int k) -> double {
+        const int n = static_cast<int>(nums.size());
+        std::vector<int> s(n + 1);
+        std::vector<std::vector<double>> f(n, std::vector<double>(k + 1, 0.0));
+        
         for (int i = 0; i < n; ++i) {
             s[i + 1] = s[i] + nums[i];
         }
-        auto dfs = [&](this auto&& dfs, int i, int k) -> double {
-            if (i == n) {
-                return 0;
+        
+        auto dfs = [&](auto&& self, int i, int remaining) -> double {
+            if (i == n) return 0.0;
+            if (remaining == 1) {
+                return static_cast<double>(s[n] - s[i]) / (n - i);
             }
-            if (k == 1) {
-                return (s[n] - s[i]) * 1.0 / (n - i);
+            if (f[i][remaining] > 0) {
+                return f[i][remaining];
             }
-            if (f[i][k] > 0) {
-                return f[i][k];
-            }
-            double ans = 0;
+            
+            double ans = 0.0;
             for (int j = i + 1; j < n; ++j) {
-                ans = max(ans, (s[j] - s[i]) * 1.0 / (j - i) + dfs(j, k - 1));
+                const double avg = static_cast<double>(s[j] - s[i]) / (j - i);
+                ans = std::max(ans, avg + self(self, j, remaining - 1));
             }
-            return f[i][k] = ans;
+            return f[i][remaining] = ans;
         };
-        return dfs(0, k);
+        
+        return dfs(dfs, 0, k);
     }
 };

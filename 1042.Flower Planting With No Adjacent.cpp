@@ -1,9 +1,15 @@
-class Solution {
+/**
+ * @brief Greedy graph coloring with 4 colors
+ * @intuition With max degree 3 and 4 colors, greedy assignment always works
+ * @approach For each garden, pick first unused color among neighbors
+ * @complexity Time: O(n + paths), Space: O(n + paths)
+ */
+class Solution final {
 public:
-    vector<int> gardenNoAdj(int n, vector<vector<int>>& paths) {
+    [[nodiscard]] static vector<int> gardenNoAdj(const int n, const vector<vector<int>>& paths) {
         vector<vector<int>> g(n);
-        for (auto& p : paths) {
-            int x = p[0] - 1, y = p[1] - 1;
+        for (const auto& p : paths) {
+            const int x = p[0] - 1, y = p[1] - 1;
             g[x].push_back(y);
             g[y].push_back(x);
         }
@@ -11,7 +17,7 @@ public:
         bool used[5];
         for (int x = 0; x < n; ++x) {
             memset(used, false, sizeof(used));
-            for (int y : g[x]) {
+            for (const int y : g[x]) {
                 used[ans[y]] = true;
             }
             for (int c = 1; c < 5; ++c) {

@@ -4,19 +4,16 @@
  * @approach BFS from leaves, peeling layer by layer until 1-2 nodes remain
  * @complexity Time: O(n), Space: O(n)
  */
-#include <queue>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] std::vector<int> findMinHeightTrees(int n, 
-                                                       std::vector<std::vector<int>>& edges) const {
+    [[nodiscard]] static vector<int> findMinHeightTrees(int n, 
+                                                         const vector<vector<int>>& edges) {
         if (n == 1) {
             return {0};
         }
         
-        std::vector<std::vector<int>> graph(n);
-        std::vector<int> degree(n);
+        vector<vector<int>> graph(n);
+        vector<int> degree(n);
         
         for (const auto& edge : edges) {
             const int a = edge[0];
@@ -27,14 +24,14 @@ public:
             ++degree[b];
         }
         
-        std::queue<int> q;
+        queue<int> q;
         for (int i = 0; i < n; ++i) {
             if (degree[i] == 1) {
                 q.push(i);
             }
         }
         
-        std::vector<int> ans;
+        vector<int> ans;
         while (!q.empty()) {
             ans.clear();
             const int size = static_cast<int>(q.size());

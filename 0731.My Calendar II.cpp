@@ -1,17 +1,23 @@
-class MyCalendarTwo {
+/**
+ * @brief Calendar double-booking prevention using difference array
+ * @intuition Track interval boundaries; sum reveals overlap count at any point
+ * @approach Use ordered map as difference array, check max overlap after booking
+ * @complexity Time: O(n^2) total for n bookings, Space: O(n)
+ */
+class MyCalendarTwo final {
 public:
-    MyCalendarTwo() {
-    }
+    MyCalendarTwo() = default;
 
-    bool book(int startTime, int endTime) {
-        ++m[startTime];
-        --m[endTime];
-        int s = 0;
-        for (auto& [_, v] : m) {
-            s += v;
-            if (s > 2) {
-                --m[startTime];
-                ++m[endTime];
+    [[nodiscard]] bool book(const int startTime, const int endTime) {
+        ++timeline_[startTime];
+        --timeline_[endTime];
+        
+        int activeBookings = 0;
+        for (const auto& [_, delta] : timeline_) {
+            activeBookings += delta;
+            if (activeBookings > 2) {
+                --timeline_[startTime];
+                ++timeline_[endTime];
                 return false;
             }
         }
@@ -19,11 +25,5 @@ public:
     }
 
 private:
-    map<int, int> m;
+    std::map<int, int> timeline_;
 };
-
-/**
- * Your MyCalendarTwo object will be instantiated and called as such:
- * MyCalendarTwo* obj = new MyCalendarTwo();
- * bool param_1 = obj->book(startTime,endTime);
- */

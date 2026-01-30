@@ -4,10 +4,6 @@
  * @approach Generate numbers for each length, filter by range bounds
  * @complexity Time: O(5^(n/2) * m) where m is max digit count, Space: O(5^(n/2))
  */
-#include <functional>
-#include <string>
-#include <utility>
-#include <vector>
 
 class Solution final {
 public:
@@ -15,7 +11,7 @@ public:
     const std::vector<std::pair<char, char>> pairs = {{'1', '1'}, {'8', '8'}, {'6', '9'}, {'9', '6'}};
     int targetLen = 0;
     
-    std::function<std::vector<std::string>(int)> generate = [&](int len) -> std::vector<std::string> {
+    std::function<std::vector<std::string>(int)> generate = [&](const int len) -> std::vector<std::string> {
       if (len == 0) {
         return {""};
       }

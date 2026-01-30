@@ -4,11 +4,9 @@
  * @approach Find lowest set bit in XOR result to partition numbers
  * @complexity Time: O(n), Space: O(1)
  */
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto singleNumber(const std::vector<int>& nums) const -> std::vector<int> {
+  [[nodiscard]] static auto singleNumber(const std::vector<int>& nums) -> std::vector<int> {
     long long xorAll = 0;
     for (const int num : nums) {
       xorAll ^= num;

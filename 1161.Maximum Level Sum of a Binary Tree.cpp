@@ -1,17 +1,13 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find level with maximum sum in binary tree using BFS
+ * @intuition Process tree level by level, track sum at each level
+ * @approach Use BFS to traverse level by level. Compute sum at each level and track
+ *           the level number with maximum sum.
+ * @complexity Time: O(n), Space: O(w) where w is max width of tree
  */
-class Solution {
+class Solution final {
 public:
-    int maxLevelSum(TreeNode* root) {
+    [[nodiscard]] static int maxLevelSum(TreeNode* root) {
         queue<TreeNode*> q{{root}};
         int mx = INT_MIN;
         int ans = 0;
@@ -26,7 +22,10 @@ public:
                 if (root->left) q.push(root->left);
                 if (root->right) q.push(root->right);
             }
-            if (mx < s) mx = s, ans = i;
+            if (mx < s) {
+                mx = s;
+                ans = i;
+            }
         }
         return ans;
     }

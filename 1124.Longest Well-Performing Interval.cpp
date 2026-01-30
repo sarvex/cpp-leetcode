@@ -1,6 +1,13 @@
-class Solution {
+/**
+ * @brief Find longest interval where tiring days exceed non-tiring days
+ * @intuition Transform to prefix sum problem: +1 for tiring day (>8h), -1 otherwise
+ * @approach Track first occurrence of each prefix sum. When sum > 0, interval from start is valid.
+ *           When sum <= 0, look for earliest position with sum-1 (one fewer tiring day).
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    int longestWPI(vector<int>& hours) {
+    [[nodiscard]] static int longestWPI(const vector<int>& hours) {
         int ans = 0, s = 0;
         unordered_map<int, int> pos;
         for (int i = 0; i < hours.size(); ++i) {

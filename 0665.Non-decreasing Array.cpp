@@ -1,17 +1,26 @@
-class Solution {
+/**
+ * @brief Check if array can become non-decreasing with at most one modification
+ * @intuition At first violation, try fixing either element and verify sorted
+ * @approach Find first decrease, try both fixes, check if either results in sorted array
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    bool checkPossibility(vector<int>& nums) {
-        int n = nums.size();
+    [[nodiscard]] static bool checkPossibility(vector<int>& nums) {
+        const int n = nums.size();
+        
         for (int i = 0; i < n - 1; ++i) {
-            int a = nums[i], b = nums[i + 1];
+            const int a = nums[i];
+            const int b = nums[i + 1];
+            
             if (a > b) {
                 nums[i] = b;
-                if (is_sorted(nums.begin(), nums.end())) {
+                if (ranges::is_sorted(nums)) {
                     return true;
                 }
                 nums[i] = a;
                 nums[i + 1] = a;
-                return is_sorted(nums.begin(), nums.end());
+                return ranges::is_sorted(nums);
             }
         }
         return true;

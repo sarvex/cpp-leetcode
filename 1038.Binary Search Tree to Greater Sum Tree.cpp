@@ -1,26 +1,21 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Reverse inorder traversal accumulating sums
+ * @intuition Reverse inorder visits nodes in decreasing order
+ * @approach Visit right, add value to running sum, update node, visit left
+ * @complexity Time: O(n), Space: O(h) where h = tree height
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* bstToGst(TreeNode* root) {
+    [[nodiscard]] static TreeNode* bstToGst(TreeNode* root) {
         int s = 0;
-        auto dfs = [&](this auto&& dfs, TreeNode* root) {
-            if (!root) {
+        auto dfs = [&](this auto&& dfs, TreeNode* node) {
+            if (!node) {
                 return;
             }
-            dfs(root->right);
-            s += root->val;
-            root->val = s;
-            dfs(root->left);
+            dfs(node->right);
+            s += node->val;
+            node->val = s;
+            dfs(node->left);
         };
         dfs(root);
         return root;

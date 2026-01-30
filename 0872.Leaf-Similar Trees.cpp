@@ -1,33 +1,25 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Compare leaf sequences of two binary trees
+ * @intuition Trees are leaf-similar if leaf value sequences match
+ * @approach DFS both trees, collecting leaf values in order. Compare the
+ *           resulting sequences for equality.
+ * @complexity Time: O(n1 + n2), Space: O(n1 + n2)
  */
-class Solution {
-public:
-    bool leafSimilar(TreeNode* root1, TreeNode* root2) {
-        vector<int> l1, l2;
-        dfs(root1, l1);
-        dfs(root2, l2);
-        return l1 == l2;
-    }
-
-    void dfs(TreeNode* root, vector<int>& nums) {
+class Solution final {
+    static auto collectLeaves(TreeNode* root, std::vector<int>& leaves) -> void {
         if (root->left == root->right) {
-            nums.push_back(root->val);
+            leaves.push_back(root->val);
             return;
         }
-        if (root->left) {
-            dfs(root->left, nums);
-        }
-        if (root->right) {
-            dfs(root->right, nums);
-        }
+        if (root->left) collectLeaves(root->left, leaves);
+        if (root->right) collectLeaves(root->right, leaves);
+    }
+
+public:
+    [[nodiscard]] static auto leafSimilar(TreeNode* root1, TreeNode* root2) -> bool {
+        std::vector<int> l1, l2;
+        collectLeaves(root1, l1);
+        collectLeaves(root2, l2);
+        return l1 == l2;
     }
 };

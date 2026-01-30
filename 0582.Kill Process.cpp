@@ -1,18 +1,30 @@
-class Solution {
+/**
+ * @brief Find all processes to kill starting from given process
+ * @intuition Build parent-to-children graph, then DFS from kill process
+ * @approach Create adjacency list from ppid->pid, traverse all descendants
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    vector<int> killProcess(vector<int>& pid, vector<int>& ppid, int kill) {
-        unordered_map<int, vector<int>> g;
-        int n = pid.size();
+    [[nodiscard]] static vector<int> killProcess(const vector<int>& pid,
+                                                  const vector<int>& ppid,
+                                                  const int kill) {
+        unordered_map<int, vector<int>> children;
+        const int n = static_cast<int>(pid.size());
+        
         for (int i = 0; i < n; ++i) {
-            g[ppid[i]].push_back(pid[i]);
+            children[ppid[i]].push_back(pid[i]);
         }
+        
         vector<int> ans;
-        function<void(int)> dfs = [&](int i) {
-            ans.push_back(i);
-            for (int j : g[i]) {
-                dfs(j);
+        
+        auto dfs = [&](this auto&& dfs, int process) -> void {
+            ans.push_back(process);
+            for (const int child : children[process]) {
+                dfs(child);
             }
         };
+        
         dfs(kill);
         return ans;
     }

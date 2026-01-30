@@ -1,23 +1,35 @@
-class Solution {
+/**
+ * @brief Track longest line in 4 directions using DP
+ * @intuition Track consecutive ones ending at each cell for horizontal, vertical, diagonal, anti-diagonal
+ * @approach Use 4 DP arrays; for each 1, update from appropriate predecessor
+ * @complexity Time: O(m*n), Space: O(m*n)
+ */
+class Solution final {
 public:
-    int longestLine(vector<vector<int>>& mat) {
-        int m = mat.size(), n = mat[0].size();
-        vector<vector<int>> a(m + 2, vector<int>(n + 2));
-        vector<vector<int>> b(m + 2, vector<int>(n + 2));
-        vector<vector<int>> c(m + 2, vector<int>(n + 2));
-        vector<vector<int>> d(m + 2, vector<int>(n + 2));
+    [[nodiscard]] static int longestLine(const vector<vector<int>>& mat) {
+        const int m = static_cast<int>(mat.size());
+        const int n = static_cast<int>(mat[0].size());
+        
+        vector<vector<int>> horizontal(m + 2, vector<int>(n + 2));
+        vector<vector<int>> vertical(m + 2, vector<int>(n + 2));
+        vector<vector<int>> diagonal(m + 2, vector<int>(n + 2));
+        vector<vector<int>> antiDiag(m + 2, vector<int>(n + 2));
+        
         int ans = 0;
+        
         for (int i = 1; i <= m; ++i) {
             for (int j = 1; j <= n; ++j) {
                 if (mat[i - 1][j - 1]) {
-                    a[i][j] = a[i - 1][j] + 1;
-                    b[i][j] = b[i][j - 1] + 1;
-                    c[i][j] = c[i - 1][j - 1] + 1;
-                    d[i][j] = d[i - 1][j + 1] + 1;
-                    ans = max(ans, max(a[i][j], max(b[i][j], max(c[i][j], d[i][j]))));
+                    horizontal[i][j] = horizontal[i - 1][j] + 1;
+                    vertical[i][j] = vertical[i][j - 1] + 1;
+                    diagonal[i][j] = diagonal[i - 1][j - 1] + 1;
+                    antiDiag[i][j] = antiDiag[i - 1][j + 1] + 1;
+                    ans = max({ans, horizontal[i][j], vertical[i][j], 
+                              diagonal[i][j], antiDiag[i][j]});
                 }
             }
         }
+        
         return ans;
     }
 };

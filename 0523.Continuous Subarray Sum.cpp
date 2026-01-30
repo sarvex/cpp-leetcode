@@ -1,13 +1,21 @@
-class Solution {
+/**
+ * @brief Check if subarray sum is multiple of k
+ * @intuition If prefix[i] % k == prefix[j] % k, then sum(i+1..j) is divisible by k
+ * @approach Track first occurrence of each prefix sum modulo k. If same remainder seen
+ *           at positions > 1 apart, found valid subarray of length >= 2.
+ * @complexity Time: O(n), Space: O(min(n, k))
+ */
+class Solution final {
 public:
-    bool checkSubarraySum(vector<int>& nums, int k) {
-        unordered_map<int, int> d{{0, -1}};
-        int s = 0;
-        for (int i = 0; i < nums.size(); ++i) {
-            s = (s + nums[i]) % k;
-            if (!d.contains(s)) {
-                d[s] = i;
-            } else if (i - d[s] > 1) {
+    [[nodiscard]] static auto checkSubarraySum(const vector<int>& nums, int k) -> bool {
+        unordered_map<int, int> firstOccurrence{{0, -1}};
+        int prefixSum = 0;
+        
+        for (int i = 0; i < static_cast<int>(nums.size()); ++i) {
+            prefixSum = (prefixSum + nums[i]) % k;
+            if (!firstOccurrence.contains(prefixSum)) {
+                firstOccurrence[prefixSum] = i;
+            } else if (i - firstOccurrence[prefixSum] > 1) {
                 return true;
             }
         }

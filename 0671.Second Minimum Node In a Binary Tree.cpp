@@ -1,27 +1,27 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find second minimum value in special binary tree
+ * @intuition Root has minimum value; find smallest value strictly greater than root
+ * @approach DFS tracking smallest value greater than root value
+ * @complexity Time: O(n), Space: O(h) for recursion
  */
-class Solution {
+class Solution final {
 public:
-    int ans = -1;
-
-    int findSecondMinimumValue(TreeNode* root) {
-        dfs(root, root->val);
+    [[nodiscard]] int findSecondMinimumValue(TreeNode* root) {
+        int ans = -1;
+        const int rootVal = root->val;
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> void {
+            if (!node) {
+                return;
+            }
+            dfs(node->left);
+            dfs(node->right);
+            if (node->val > rootVal) {
+                ans = ans == -1 ? node->val : min(ans, node->val);
+            }
+        };
+        
+        dfs(root);
         return ans;
-    }
-
-    void dfs(TreeNode* root, int val) {
-        if (!root) return;
-        dfs(root->left, val);
-        dfs(root->right, val);
-        if (root->val > val) ans = ans == -1 ? root->val : min(ans, root->val);
     }
 };

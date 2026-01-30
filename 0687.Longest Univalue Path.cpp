@@ -1,29 +1,26 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find longest path where all nodes have same value
+ * @intuition DFS returns longest arm, path through node is sum of left and right arms
+ * @approach For each node, compute max extending arm and update global path length
+ * @complexity Time: O(n), Space: O(h) for recursion
  */
-class Solution {
+class Solution final {
 public:
-    int longestUnivaluePath(TreeNode* root) {
+    [[nodiscard]] int longestUnivaluePath(TreeNode* root) {
         int ans = 0;
-        auto dfs = [&](this auto&& dfs, TreeNode* root) -> int {
-            if (!root) {
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> int {
+            if (!node) {
                 return 0;
             }
-            int l = dfs(root->left);
-            int r = dfs(root->right);
-            l = root->left && root->left->val == root->val ? l + 1 : 0;
-            r = root->right && root->right->val == root->val ? r + 1 : 0;
+            int l = dfs(node->left);
+            int r = dfs(node->right);
+            l = node->left && node->left->val == node->val ? l + 1 : 0;
+            r = node->right && node->right->val == node->val ? r + 1 : 0;
             ans = max(ans, l + r);
             return max(l, r);
         };
+        
         dfs(root);
         return ans;
     }

@@ -4,12 +4,9 @@
  * @approach DP where f[i] = max(f[i-j]*j, (i-j)*j) for all j
  * @complexity Time: O(n^2), Space: O(n)
  */
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int integerBreak(int n) const {
+    [[nodiscard]] static int integerBreak(const int n) {
         std::vector<int> dp(n + 1);
         dp[1] = 1;
         

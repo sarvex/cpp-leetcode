@@ -1,7 +1,14 @@
-class Solution {
+/**
+ * @brief Union-Find with sorted cells to find path maximizing minimum value
+ * @intuition Process cells in descending order of value and use union-find to connect adjacent visited cells
+ * @approach Sort all cells by value in descending order. Process cells one by one, marking them as visited
+ *           and unioning with adjacent visited cells. The answer is the value when top-left connects to bottom-right.
+ * @complexity Time: O(m*n * log(m*n) * alpha(m*n)), Space: O(m*n)
+ */
+class Solution final {
 public:
-    int maximumMinimumPath(vector<vector<int>>& grid) {
-        int m = grid.size(), n = grid[0].size();
+    [[nodiscard]] static int maximumMinimumPath(vector<vector<int>>& grid) {
+        const int m = grid.size(), n = grid[0].size();
         vector<tuple<int, int, int>> q;
         vector<int> p(m * n);
         iota(p.begin(), p.end(), 0);
@@ -10,14 +17,13 @@ public:
                 q.emplace_back(grid[i][j], i, j);
             }
         }
-        function<int(int)> find = [&](int x) {
+        auto find = [&](this auto&& find, int x) -> int {
             return p[x] == x ? x : p[x] = find(p[x]);
         };
-        sort(q.begin(), q.end(), greater<tuple<int, int, int>>());
+        ranges::sort(q, greater<tuple<int, int, int>>());
         int ans = 0;
-        int dirs[5] = {-1, 0, 1, 0, -1};
-        bool vis[m][n];
-        memset(vis, false, sizeof(vis));
+        constexpr int dirs[5] = {-1, 0, 1, 0, -1};
+        vector<vector<bool>> vis(m, vector<bool>(n, false));
         for (auto& [v, i, j] : q) {
             vis[i][j] = true;
             ans = v;

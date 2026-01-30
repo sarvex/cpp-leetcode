@@ -4,11 +4,9 @@
  * @approach Track covered range, patch when gap exists
  * @complexity Time: O(m + log n), Space: O(1)
  */
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int minPatches(const std::vector<int>& nums, int n) const {
+    [[nodiscard]] static int minPatches(const std::vector<int>& nums, const int n) {
         long long covered = 1;
         int patches = 0;
         int i = 0;

@@ -1,64 +1,65 @@
-class MyLinkedList {
-private:
-    ListNode* dummy = new ListNode();
-    int cnt = 0;
+/**
+ * @brief Singly linked list with dummy head implementation
+ * @intuition Dummy head simplifies edge cases for insertion and deletion
+ * @approach Maintain count and traverse to index for operations
+ * @complexity Time: O(n) for get/add/delete, Space: O(n)
+ */
+class MyLinkedList final {
+    struct ListNode {
+        int val;
+        ListNode* next;
+        ListNode(int x = 0, ListNode* n = nullptr) : val(x), next(n) {}
+    };
 
 public:
-    MyLinkedList() {
-    }
+    MyLinkedList() : dummy_(new ListNode()), count_(0) {}
 
-    int get(int index) {
-        if (index < 0 || index >= cnt) {
+    [[nodiscard]] int get(int index) const {
+        if (index < 0 || index >= count_) {
             return -1;
         }
-        auto cur = dummy->next;
+        auto cur = dummy_->next;
         while (index--) {
             cur = cur->next;
         }
         return cur->val;
     }
 
-    void addAtHead(int val) {
+    void addAtHead(const int val) {
         addAtIndex(0, val);
     }
 
-    void addAtTail(int val) {
-        addAtIndex(cnt, val);
+    void addAtTail(const int val) {
+        addAtIndex(count_, val);
     }
 
-    void addAtIndex(int index, int val) {
-        if (index > cnt) {
+    void addAtIndex(int index, const int val) {
+        if (index > count_) {
             return;
         }
-        auto pre = dummy;
+        auto prev = dummy_;
         while (index-- > 0) {
-            pre = pre->next;
+            prev = prev->next;
         }
-        pre->next = new ListNode(val, pre->next);
-        ++cnt;
+        prev->next = new ListNode(val, prev->next);
+        ++count_;
     }
 
     void deleteAtIndex(int index) {
-        if (index >= cnt) {
+        if (index < 0 || index >= count_) {
             return;
         }
-        auto pre = dummy;
+        auto prev = dummy_;
         while (index-- > 0) {
-            pre = pre->next;
+            prev = prev->next;
         }
-        auto t = pre->next;
-        pre->next = t->next;
-        t->next = nullptr;
-        --cnt;
+        auto toDelete = prev->next;
+        prev->next = toDelete->next;
+        delete toDelete;
+        --count_;
     }
-};
 
-/**
- * Your MyLinkedList object will be instantiated and called as such:
- * MyLinkedList* obj = new MyLinkedList();
- * int param_1 = obj->get(index);
- * obj->addAtHead(val);
- * obj->addAtTail(val);
- * obj->addAtIndex(index,val);
- * obj->deleteAtIndex(index);
- */
+private:
+    ListNode* dummy_;
+    int count_;
+};

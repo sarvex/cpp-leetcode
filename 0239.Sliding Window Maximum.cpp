@@ -4,13 +4,10 @@
  * @approach Store value and negated index, remove expired entries lazily
  * @complexity Time: O(n log n), Space: O(n)
  */
-#include <queue>
-#include <utility>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto maxSlidingWindow(const std::vector<int>& nums, int k) const -> std::vector<int> {
+  [[nodiscard]] static auto maxSlidingWindow(const std::vector<int>& nums, const int k) -> std::vector<int> {
     std::priority_queue<std::pair<int, int>> maxHeap;
     const auto n = static_cast<int>(nums.size());
     

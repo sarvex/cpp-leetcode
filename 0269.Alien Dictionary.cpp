@@ -4,14 +4,9 @@
  * @approach Compare adjacent words to find edges, use BFS topological sort
  * @complexity Time: O(C) where C is total characters, Space: O(1) for 26 letters
  */
-#include <array>
-#include <queue>
-#include <string>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto alienOrder(const std::vector<std::string>& words) const -> std::string {
+  [[nodiscard]] static auto alienOrder(const std::vector<std::string>& words) -> std::string {
     std::array<std::array<bool, 26>, 26> graph{};
     std::array<bool, 26> exists{};
     int charCount = 0;

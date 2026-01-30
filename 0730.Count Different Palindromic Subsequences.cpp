@@ -1,29 +1,47 @@
-using ll = long long;
-
-class Solution {
+/**
+ * @brief Count distinct palindromic subsequences
+ * @intuition DP with character-specific counting to handle duplicates
+ * @approach dp[i][j][c] = count of palindromes starting and ending with char c in s[i..j]
+ * @complexity Time: O(n^2), Space: O(n^2)
+ */
+class Solution final {
 public:
-    int countPalindromicSubsequences(string s) {
-        int mod = 1e9 + 7;
-        int n = s.size();
-        vector<vector<vector<ll>>> dp(n, vector<vector<ll>>(n, vector<ll>(4)));
-        for (int i = 0; i < n; ++i) dp[i][i][s[i] - 'a'] = 1;
-        for (int l = 2; l <= n; ++l) {
-            for (int i = 0; i + l <= n; ++i) {
-                int j = i + l - 1;
-                for (char c = 'a'; c <= 'd'; ++c) {
-                    int k = c - 'a';
-                    if (s[i] == c && s[j] == c)
-                        dp[i][j][k] = 2 + accumulate(dp[i + 1][j - 1].begin(), dp[i + 1][j - 1].end(), 0ll) % mod;
-                    else if (s[i] == c)
-                        dp[i][j][k] = dp[i][j - 1][k];
-                    else if (s[j] == c)
-                        dp[i][j][k] = dp[i + 1][j][k];
-                    else
-                        dp[i][j][k] = dp[i + 1][j - 1][k];
+    [[nodiscard]] static int countPalindromicSubsequences(const std::string& s) {
+        constexpr int MOD = 1e9 + 7;
+        const int n = static_cast<int>(s.size());
+        std::vector<std::vector<std::array<long long, 4>>> dp(
+            n, std::vector<std::array<long long, 4>>(n, {0, 0, 0, 0}));
+        
+        for (int i = 0; i < n; ++i) {
+            dp[i][i][s[i] - 'a'] = 1;
+        }
+        
+        for (int len = 2; len <= n; ++len) {
+            for (int i = 0; i + len <= n; ++i) {
+                const int j = i + len - 1;
+                for (int c = 0; c < 4; ++c) {
+                    const char ch = 'a' + c;
+                    if (s[i] == ch && s[j] == ch) {
+                        long long sum = 0;
+                        for (int k = 0; k < 4; ++k) {
+                            sum += dp[i + 1][j - 1][k];
+                        }
+                        dp[i][j][c] = (2 + sum) % MOD;
+                    } else if (s[i] == ch) {
+                        dp[i][j][c] = dp[i][j - 1][c];
+                    } else if (s[j] == ch) {
+                        dp[i][j][c] = dp[i + 1][j][c];
+                    } else {
+                        dp[i][j][c] = dp[i + 1][j - 1][c];
+                    }
                 }
             }
         }
-        ll ans = accumulate(dp[0][n - 1].begin(), dp[0][n - 1].end(), 0ll);
-        return (int) (ans % mod);
+        
+        long long result = 0;
+        for (int c = 0; c < 4; ++c) {
+            result += dp[0][n - 1][c];
+        }
+        return static_cast<int>(result % MOD);
     }
 };

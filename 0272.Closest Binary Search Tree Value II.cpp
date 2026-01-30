@@ -1,42 +1,38 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Inorder traversal with sliding window for k closest values
+ * @intuition BST inorder gives sorted values, maintain k closest using queue
+ * @approach During inorder, keep queue of size k with closest values to target
+ * @complexity Time: O(n), Space: O(k)
  */
-class Solution {
+class Solution final {
 public:
-    queue<int> q;
-    double target;
-    int k;
-
-    vector<int> closestKValues(TreeNode* root, double target, int k) {
-        this->target = target;
-        this->k = k;
-        dfs(root);
-        vector<int> ans;
-        while (!q.empty()) {
-            ans.push_back(q.front());
-            q.pop();
+  [[nodiscard]] static auto closestKValues(TreeNode* root, const double target, const int k) -> std::vector<int> {
+    std::queue<int> q;
+    
+    std::function<void(TreeNode*)> dfs = [&](TreeNode* node) {
+      if (node == nullptr) {
+        return;
+      }
+      dfs(node->left);
+      if (static_cast<int>(q.size()) < k) {
+        q.push(node->val);
+      } else {
+        if (std::abs(node->val - target) >= std::abs(q.front() - target)) {
+          return;
         }
-        return ans;
+        q.pop();
+        q.push(node->val);
+      }
+      dfs(node->right);
+    };
+    
+    dfs(root);
+    
+    std::vector<int> result;
+    while (!q.empty()) {
+      result.push_back(q.front());
+      q.pop();
     }
-
-    void dfs(TreeNode* root) {
-        if (!root) return;
-        dfs(root->left);
-        if (q.size() < k)
-            q.push(root->val);
-        else {
-            if (abs(root->val - target) >= abs(q.front() - target)) return;
-            q.pop();
-            q.push(root->val);
-        }
-        dfs(root->right);
-    }
+    return result;
+  }
 };

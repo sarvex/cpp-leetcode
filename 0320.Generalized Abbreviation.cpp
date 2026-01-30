@@ -4,32 +4,26 @@
  * @approach DFS trying both options at each position
  * @complexity Time: O(n * 2^n), Space: O(n) for recursion
  */
-#include <functional>
-#include <string>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] std::vector<std::string> generateAbbreviations(const std::string& word) const {
+    [[nodiscard]] static vector<string> generateAbbreviations(const string& word) {
         const int n = static_cast<int>(word.size());
         
-        std::function<std::vector<std::string>(int)> dfs = [&](int i) -> std::vector<std::string> {
+        function<vector<string>(int)> dfs = [&](int i) -> vector<string> {
             if (i >= n) {
                 return {""};
             }
             
-            std::vector<std::string> ans;
+            vector<string> ans;
             
-            // Keep current character
             for (const auto& s : dfs(i + 1)) {
-                ans.emplace_back(std::string(1, word[i]) + s);
+                ans.emplace_back(string(1, word[i]) + s);
             }
             
-            // Abbreviate starting from current position
             for (int j = i + 1; j <= n; ++j) {
                 for (const auto& s : dfs(j + 1)) {
-                    const std::string prefix = j < n ? std::string(1, word[j]) : "";
-                    ans.emplace_back(std::to_string(j - i) + prefix + s);
+                    const string prefix = j < n ? string(1, word[j]) : "";
+                    ans.emplace_back(to_string(j - i) + prefix + s);
                 }
             }
             return ans;

@@ -1,23 +1,33 @@
-class Solution {
+/**
+ * @brief Find maximum area island in grid
+ * @intuition DFS from each land cell, count connected cells
+ * @approach Mark visited by setting to 0, recursively count neighbors
+ * @complexity Time: O(m * n), Space: O(m * n) for recursion
+ */
+class Solution final {
 public:
-    int maxAreaOfIsland(vector<vector<int>>& grid) {
-        int m = grid.size(), n = grid[0].size();
-        int dirs[5] = {-1, 0, 1, 0, -1};
+    [[nodiscard]] static int maxAreaOfIsland(vector<vector<int>>& grid) {
+        const int m = grid.size();
+        const int n = grid[0].size();
+        constexpr int dirs[] = {-1, 0, 1, 0, -1};
         int ans = 0;
-        function<int(int, int)> dfs = [&](int i, int j) {
+        
+        auto dfs = [&](this auto&& dfs, int i, int j) -> int {
             if (grid[i][j] == 0) {
                 return 0;
             }
-            int ans = 1;
+            int area = 1;
             grid[i][j] = 0;
             for (int k = 0; k < 4; ++k) {
-                int x = i + dirs[k], y = j + dirs[k + 1];
+                const int x = i + dirs[k];
+                const int y = j + dirs[k + 1];
                 if (x >= 0 && x < m && y >= 0 && y < n) {
-                    ans += dfs(x, y);
+                    area += dfs(x, y);
                 }
             }
-            return ans;
+            return area;
         };
+        
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 ans = max(ans, dfs(i, j));

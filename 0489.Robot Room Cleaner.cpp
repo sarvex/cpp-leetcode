@@ -1,4 +1,14 @@
 /**
+ * @brief Clean entire room using robot with move/turn/clean operations
+ * @intuition DFS backtracking: explore all directions, return to start
+ * @approach Track visited cells, for each cell try all 4 directions
+ * @complexity Time: O(n - m) where n is cells, m is obstacles, Space: O(n - m)
+ */
+#include <functional>
+#include <set>
+#include <utility>
+
+/**
  * // This is the robot's control interface.
  * // You should not implement it, or speculate about its implementation
  * class Robot {
@@ -17,19 +27,23 @@
  * };
  */
 
-class Solution {
+class Solution final {
 public:
-    void cleanRoom(Robot& robot) {
-        int dirs[5] = {-1, 0, 1, 0, -1};
-        set<pair<int, int>> vis;
-        function<void(int, int, int)> dfs = [&](int i, int j, int d) {
+    auto cleanRoom(Robot& robot) const -> void {
+        constexpr int dirs[5] = {-1, 0, 1, 0, -1};
+        std::set<std::pair<int, int>> visited;
+
+        std::function<void(int, int, int)> dfs = [&](int row, int col, int dir) {
             robot.clean();
-            vis.insert({i, j});
+            visited.insert({row, col});
+
             for (int k = 0; k < 4; ++k) {
-                int nd = (d + k) % 4;
-                int x = i + dirs[nd], y = j + dirs[nd + 1];
-                if (!vis.count({x, y}) && robot.move()) {
-                    dfs(x, y, nd);
+                const int newDir = (dir + k) % 4;
+                const int newRow = row + dirs[newDir];
+                const int newCol = col + dirs[newDir + 1];
+
+                if (!visited.contains({newRow, newCol}) && robot.move()) {
+                    dfs(newRow, newCol, newDir);
                     robot.turnRight();
                     robot.turnRight();
                     robot.move();
@@ -39,6 +53,7 @@ public:
                 robot.turnRight();
             }
         };
+
         dfs(0, 0, 0);
     }
 };

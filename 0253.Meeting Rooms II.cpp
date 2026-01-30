@@ -4,12 +4,9 @@
  * @approach Increment at start, decrement at end, compute max concurrent
  * @complexity Time: O(n + m) where m is max end time, Space: O(m)
  */
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto minMeetingRooms(const std::vector<std::vector<int>>& intervals) const -> int {
+  [[nodiscard]] static auto minMeetingRooms(const std::vector<std::vector<int>>& intervals) -> int {
     int maxTime = 0;
     for (const auto& interval : intervals) {
       maxTime = std::max(maxTime, interval[1]);

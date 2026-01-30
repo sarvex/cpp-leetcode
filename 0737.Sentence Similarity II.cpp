@@ -1,35 +1,55 @@
-class Solution {
+/**
+ * @brief Check sentence similarity with transitivity using Union-Find
+ * @intuition Transitive similarity forms connected components
+ * @approach Union-Find to group similar words, check if word pairs share root
+ * @complexity Time: O(n + p*α(p)), Space: O(p) where p is pairs count
+ */
+class Solution final {
 public:
-    vector<int> p;
-    bool areSentencesSimilarTwo(vector<string>& sentence1, vector<string>& sentence2, vector<vector<string>>& similarPairs) {
-        if (sentence1.size() != sentence2.size())
+    [[nodiscard]] bool areSentencesSimilarTwo(
+            const std::vector<std::string>& sentence1,
+            const std::vector<std::string>& sentence2,
+            const std::vector<std::vector<std::string>>& similarPairs) {
+        if (sentence1.size() != sentence2.size()) {
             return false;
-        int n = similarPairs.size();
-        p.resize(n << 1);
-        for (int i = 0; i < p.size(); ++i)
-            p[i] = i;
-        unordered_map<string, int> words;
-        int idx = 0;
-        for (auto e : similarPairs) {
-            string a = e[0], b = e[1];
-            if (!words.count(a))
-                words[a] = idx++;
-            if (!words.count(b))
-                words[b] = idx++;
-            p[find(words[a])] = find(words[b]);
         }
-        for (int i = 0; i < sentence1.size(); ++i) {
-            if (sentence1[i] == sentence2[i])
+        
+        const int n = static_cast<int>(similarPairs.size());
+        parent_.resize(n << 1);
+        std::iota(parent_.begin(), parent_.end(), 0);
+        
+        std::unordered_map<std::string, int> wordToId;
+        int idx = 0;
+        
+        for (const auto& pair : similarPairs) {
+            if (!wordToId.contains(pair[0])) {
+                wordToId[pair[0]] = idx++;
+            }
+            if (!wordToId.contains(pair[1])) {
+                wordToId[pair[1]] = idx++;
+            }
+            parent_[find(wordToId[pair[0]])] = find(wordToId[pair[1]]);
+        }
+        
+        for (size_t i = 0; i < sentence1.size(); ++i) {
+            if (sentence1[i] == sentence2[i]) {
                 continue;
-            if (!words.count(sentence1[i]) || !words.count(sentence2[i]) || find(words[sentence1[i]]) != find(words[sentence2[i]]))
+            }
+            if (!wordToId.contains(sentence1[i]) || !wordToId.contains(sentence2[i]) ||
+                find(wordToId[sentence1[i]]) != find(wordToId[sentence2[i]])) {
                 return false;
+            }
         }
         return true;
     }
 
-    int find(int x) {
-        if (p[x] != x)
-            p[x] = find(p[x]);
-        return p[x];
+private:
+    std::vector<int> parent_;
+
+    [[nodiscard]] int find(const int x) {
+        if (parent_[x] != x) {
+            parent_[x] = find(parent_[x]);
+        }
+        return parent_[x];
     }
 };

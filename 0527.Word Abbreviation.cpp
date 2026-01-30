@@ -1,15 +1,22 @@
-class Trie {
+/**
+ * @brief Generate minimal unique abbreviations using Trie
+ * @intuition Group words by length and last char; use Trie to find minimal unique prefix
+ * @approach Build Tries for each (length, last_char) group counting prefix occurrences.
+ *           For each word, find shortest prefix with count=1. Generate abbreviation
+ *           only if it's shorter than original word.
+ * @complexity Time: O(n * L^2), Space: O(n * L)
+ */
+class Trie final {
 public:
-    Trie()
-        : cnt(0) {
+    Trie() : cnt(0) {
         fill(children.begin(), children.end(), nullptr);
     }
 
     void insert(const string& w) {
         Trie* node = this;
         for (char c : w) {
-            int idx = c - 'a';
-            if (node->children[idx] == nullptr) {
+            const int idx = c - 'a';
+            if (!node->children[idx]) {
                 node->children[idx] = new Trie();
             }
             node = node->children[idx];
@@ -17,18 +24,16 @@ public:
         }
     }
 
-    int search(const string& w) {
-        Trie* node = this;
-        int ans = 0;
+    [[nodiscard]] auto search(const string& w) const -> int {
+        const Trie* node = this;
+        int len = 0;
         for (char c : w) {
-            ++ans;
-            int idx = c - 'a';
+            ++len;
+            const int idx = c - 'a';
             node = node->children[idx];
-            if (node->cnt == 1) {
-                return ans;
-            }
+            if (node->cnt == 1) return len;
         }
-        return w.size();
+        return static_cast<int>(w.size());
     }
 
 private:
@@ -36,26 +41,33 @@ private:
     int cnt;
 };
 
-class Solution {
+class Solution final {
 public:
-    vector<string> wordsAbbreviation(vector<string>& words) {
+    [[nodiscard]] static auto wordsAbbreviation(const vector<string>& words) -> vector<string> {
         map<pair<int, int>, Trie*> tries;
+        
         for (const auto& w : words) {
             pair<int, int> key = {static_cast<int>(w.size()), w.back() - 'a'};
-            if (tries.find(key) == tries.end()) {
+            if (!tries.contains(key)) {
                 tries[key] = new Trie();
             }
             tries[key]->insert(w);
         }
 
         vector<string> ans;
+        ans.reserve(words.size());
+        
         for (const auto& w : words) {
-            int m = w.size();
+            const int m = static_cast<int>(w.size());
             pair<int, int> key = {m, w.back() - 'a'};
-            int cnt = tries[key]->search(w);
-            ans.push_back((cnt + 2 >= m) ? w : w.substr(0, cnt) + to_string(m - cnt - 1) + w.back());
+            const int prefixLen = tries[key]->search(w);
+            
+            if (prefixLen + 2 >= m) {
+                ans.push_back(w);
+            } else {
+                ans.push_back(w.substr(0, prefixLen) + to_string(m - prefixLen - 1) + w.back());
+            }
         }
-
         return ans;
     }
 };

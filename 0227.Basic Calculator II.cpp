@@ -4,13 +4,10 @@
  * @approach Push values for +/-, compute immediately for *//, sum stack at end
  * @complexity Time: O(n), Space: O(n)
  */
-#include <cctype>
-#include <stack>
-#include <string>
 
 class Solution final {
 public:
-  [[nodiscard]] auto calculate(const std::string& s) const -> int {
+  [[nodiscard]] static auto calculate(const std::string& s) -> int {
     int currentNum = 0;
     char prevOp = '+';
     std::stack<int> stk;
@@ -27,13 +24,13 @@ public:
         } else if (prevOp == '-') {
           stk.push(-currentNum);
         } else if (prevOp == '*') {
-          const int top = stk.top();
+          const int topVal = stk.top();
           stk.pop();
-          stk.push(top * currentNum);
+          stk.push(topVal * currentNum);
         } else if (prevOp == '/') {
-          const int top = stk.top();
+          const int topVal = stk.top();
           stk.pop();
-          stk.push(top / currentNum);
+          stk.push(topVal / currentNum);
         }
         prevOp = c;
         currentNum = 0;

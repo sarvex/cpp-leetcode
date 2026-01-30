@@ -1,16 +1,23 @@
-class Solution {
+/**
+ * @brief Count number of combinations that sum to target (order matters)
+ * @intuition This is actually counting permutations, not combinations
+ * @approach DP: f[i] = sum of f[i-x] for each number x <= i
+ * @complexity Time: O(target * n), Space: O(target)
+ */
+class Solution final {
 public:
-    int combinationSum4(vector<int>& nums, int target) {
-        int f[target + 1];
-        memset(f, 0, sizeof(f));
+    [[nodiscard]] static auto combinationSum4(const std::vector<int>& nums, int target) -> int {
+        std::vector<unsigned int> f(target + 1, 0);
         f[0] = 1;
+
         for (int i = 1; i <= target; ++i) {
-            for (int x : nums) {
-                if (i >= x && f[i - x] < INT_MAX - f[i]) {
+            for (const int x : nums) {
+                if (i >= x) {
                     f[i] += f[i - x];
                 }
             }
         }
-        return f[target];
+
+        return static_cast<int>(f[target]);
     }
 };

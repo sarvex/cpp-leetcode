@@ -1,9 +1,15 @@
-class Solution {
+/**
+ * @brief Greedy two-pointer for maximizing token score
+ * @intuition Play cheapest tokens face-up, most expensive face-down
+ * @approach Sort; use two pointers to play optimal token each turn
+ * @complexity Time: O(n log n), Space: O(1)
+ */
+class Solution final {
 public:
-    int bagOfTokensScore(vector<int>& tokens, int power) {
-        sort(tokens.begin(), tokens.end());
+    [[nodiscard]] static int bagOfTokensScore(vector<int>& tokens, int power) {
+        ranges::sort(tokens);
         int ans = 0, score = 0;
-        for (int i = 0, j = tokens.size() - 1; i <= j;) {
+        for (int i = 0, j = static_cast<int>(tokens.size()) - 1; i <= j;) {
             if (power >= tokens[i]) {
                 power -= tokens[i++];
                 ans = max(ans, ++score);

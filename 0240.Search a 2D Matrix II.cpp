@@ -1,19 +1,30 @@
 /**
- * @brief Binary search on each row for 2D matrix search
- * @intuition Each row is sorted, use binary search per row
- * @approach Apply lower_bound to each row to find target
- * @complexity Time: O(m log n), Space: O(1)
+ * @brief Search from top-right corner using matrix properties
+ * @intuition Each row is sorted left-to-right, each column sorted top-to-bottom
+ * @approach Start at top-right, go left if too large, down if too small
+ * @complexity Time: O(m + n), Space: O(1)
  */
-#include <algorithm>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto searchMatrix(const std::vector<std::vector<int>>& matrix, int target) const -> bool {
-    for (const auto& row : matrix) {
-      auto it = std::lower_bound(row.begin(), row.end(), target);
-      if (it != row.end() && *it == target) {
+  [[nodiscard]] static auto searchMatrix(const std::vector<std::vector<int>>& matrix, const int target) -> bool {
+    if (matrix.empty() || matrix[0].empty()) {
+      return false;
+    }
+    
+    const auto m = static_cast<int>(matrix.size());
+    const auto n = static_cast<int>(matrix[0].size());
+    int row = 0;
+    int col = n - 1;
+    
+    while (row < m && col >= 0) {
+      if (matrix[row][col] == target) {
         return true;
+      }
+      if (matrix[row][col] > target) {
+        --col;
+      } else {
+        ++row;
       }
     }
     return false;

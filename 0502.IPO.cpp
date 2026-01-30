@@ -1,24 +1,32 @@
-using pii = pair<int, int>;
-
-class Solution {
+/**
+ * @brief Greedy selection with two priority queues for IPO maximization
+ * @intuition Always pick the most profitable project we can afford to maximize capital
+ * @approach Use min-heap sorted by capital requirement and max-heap for available profits.
+ *           For each round, move all affordable projects to available heap, then pick the best.
+ * @complexity Time: O(n log n), Space: O(n)
+ */
+class Solution final {
 public:
-    int findMaximizedCapital(int k, int w, vector<int>& profits, vector<int>& capital) {
-        priority_queue<pii, vector<pii>, greater<pii>> q1;
-        int n = profits.size();
+    [[nodiscard]] static auto findMaximizedCapital(int k, int w, 
+                                                    const vector<int>& profits, 
+                                                    const vector<int>& capital) -> int {
+        using pii = pair<int, int>;
+        priority_queue<pii, vector<pii>, greater<pii>> minHeap;
+        const int n = static_cast<int>(profits.size());
+        
         for (int i = 0; i < n; ++i) {
-            q1.push({capital[i], profits[i]});
+            minHeap.emplace(capital[i], profits[i]);
         }
-        priority_queue<int> q2;
+        
+        priority_queue<int> maxHeap;
         while (k--) {
-            while (!q1.empty() && q1.top().first <= w) {
-                q2.push(q1.top().second);
-                q1.pop();
+            while (!minHeap.empty() && minHeap.top().first <= w) {
+                maxHeap.push(minHeap.top().second);
+                minHeap.pop();
             }
-            if (q2.empty()) {
-                break;
-            }
-            w += q2.top();
-            q2.pop();
+            if (maxHeap.empty()) break;
+            w += maxHeap.top();
+            maxHeap.pop();
         }
         return w;
     }

@@ -1,7 +1,13 @@
-class Solution {
+/**
+ * @brief DP for longest repeating substring
+ * @intuition f[i][j] = length of common suffix ending at i and j (i > j)
+ * @approach Compare all pairs of positions, track maximum matching length
+ * @complexity Time: O(n^2), Space: O(n^2)
+ */
+class Solution final {
 public:
-    int longestRepeatingSubstring(string s) {
-        int n = s.length();
+    [[nodiscard]] static int longestRepeatingSubstring(const string& s) {
+        const int n = s.length();
         int f[n][n];
         memset(f, 0, sizeof(f));
         int ans = 0;

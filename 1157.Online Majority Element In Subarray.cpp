@@ -1,4 +1,11 @@
-class Node {
+/**
+ * @brief Segment tree with Boyer-Moore voting for subarray majority queries
+ * @intuition Use segment tree to find candidate majority element, verify with binary search
+ * @approach Build segment tree storing (candidate, count) using Boyer-Moore merge. For queries,
+ *           get candidate from tree then verify actual count using binary search on positions.
+ * @complexity Time: O(n) build, O(log^2 n) per query, Space: O(n)
+ */
+class Node final {
 public:
     int l = 0, r = 0;
     int x = 0, cnt = 0;
@@ -6,11 +13,10 @@ public:
 
 using pii = pair<int, int>;
 
-class SegmentTree {
+class SegmentTree final {
 public:
-    SegmentTree(vector<int>& nums) {
-        this->nums = nums;
-        int n = nums.size();
+    SegmentTree(const vector<int>& nums) : nums(nums) {
+        const int n = nums.size();
         tr.resize(n << 2);
         for (int i = 0; i < tr.size(); ++i) {
             tr[i] = new Node();
@@ -18,7 +24,7 @@ public:
         build(1, 1, n);
     }
 
-    pii query(int u, int l, int r) {
+    [[nodiscard]] pii query(int u, int l, int r) const {
         if (tr[u]->l >= l && tr[u]->r <= r) {
             return {tr[u]->x, tr[u]->cnt};
         }
@@ -74,19 +80,18 @@ private:
     }
 };
 
-class MajorityChecker {
+class MajorityChecker final {
 public:
-    MajorityChecker(vector<int>& arr) {
-        tree = new SegmentTree(arr);
+    MajorityChecker(const vector<int>& arr) : tree(new SegmentTree(arr)) {
         for (int i = 0; i < arr.size(); ++i) {
             d[arr[i]].push_back(i);
         }
     }
 
-    int query(int left, int right, int threshold) {
+    [[nodiscard]] int query(int left, int right, int threshold) const {
         int x = tree->query(1, left + 1, right + 1).first;
-        auto l = lower_bound(d[x].begin(), d[x].end(), left);
-        auto r = lower_bound(d[x].begin(), d[x].end(), right + 1);
+        auto l = lower_bound(d.at(x).begin(), d.at(x).end(), left);
+        auto r = lower_bound(d.at(x).begin(), d.at(x).end(), right + 1);
         return r - l >= threshold ? x : -1;
     }
 
@@ -94,9 +99,3 @@ private:
     unordered_map<int, vector<int>> d;
     SegmentTree* tree;
 };
-
-/**
- * Your MajorityChecker object will be instantiated and called as such:
- * MajorityChecker* obj = new MajorityChecker(arr);
- * int param_1 = obj->query(left,right,threshold);
- */

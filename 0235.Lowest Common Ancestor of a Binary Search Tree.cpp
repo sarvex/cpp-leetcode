@@ -4,18 +4,10 @@
  * @approach Navigate based on BST property until split point
  * @complexity Time: O(h), Space: O(1)
  */
-#include <algorithm>
-
-struct TreeNode {
-  int val;
-  TreeNode* left;
-  TreeNode* right;
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-};
 
 class Solution final {
 public:
-  [[nodiscard]] auto lowestCommonAncestor(TreeNode* root, const TreeNode* p, const TreeNode* q) const -> TreeNode* {
+  [[nodiscard]] static auto lowestCommonAncestor(TreeNode* root, const TreeNode* p, const TreeNode* q) -> TreeNode* {
     while (root != nullptr) {
       if (root->val < std::min(p->val, q->val)) {
         root = root->right;

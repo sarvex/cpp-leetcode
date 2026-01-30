@@ -1,29 +1,27 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find all duplicate subtrees in binary tree
+ * @intuition Serialize subtrees and use hashmap to count occurrences
+ * @approach DFS serialization with counting, return nodes seen exactly twice
+ * @complexity Time: O(n^2), Space: O(n^2) for serialization
  */
-class Solution {
+class Solution final {
 public:
-    unordered_map<string, int> counter;
-    vector<TreeNode*> ans;
-
-    vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+    [[nodiscard]] vector<TreeNode*> findDuplicateSubtrees(TreeNode* root) {
+        unordered_map<string, int> counter;
+        vector<TreeNode*> ans;
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> string {
+            if (!node) {
+                return "#";
+            }
+            string v = to_string(node->val) + "," + dfs(node->left) + "," + dfs(node->right);
+            if (++counter[v] == 2) {
+                ans.push_back(node);
+            }
+            return v;
+        };
+        
         dfs(root);
         return ans;
-    }
-
-    string dfs(TreeNode* root) {
-        if (!root) return "#";
-        string v = to_string(root->val) + "," + dfs(root->left) + "," + dfs(root->right);
-        ++counter[v];
-        if (counter[v] == 2) ans.push_back(root);
-        return v;
     }
 };

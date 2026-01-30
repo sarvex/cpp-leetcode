@@ -1,26 +1,26 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Sum of absolute differences between left and right subtree sums
+ * @intuition Tilt at node = |left_sum - right_sum|; accumulate during traversal
+ * @approach DFS returning subtree sum, accumulating tilt as side effect
+ * @complexity Time: O(n), Space: O(h) where h is tree height
  */
-class Solution {
+class Solution final {
 public:
-    int findTilt(TreeNode* root) {
+    [[nodiscard]] static int findTilt(TreeNode* root) {
         int ans = 0;
-        auto dfs = [&](this auto&& dfs, TreeNode* root) -> int {
-            if (!root) {
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> int {
+            if (!node) {
                 return 0;
             }
-            int l = dfs(root->left), r = dfs(root->right);
-            ans += abs(l - r);
-            return l + r + root->val;
+            
+            const int left = dfs(node->left);
+            const int right = dfs(node->right);
+            ans += abs(left - right);
+            
+            return left + right + node->val;
         };
+        
         dfs(root);
         return ans;
     }

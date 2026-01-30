@@ -4,14 +4,9 @@
  * @approach Priority queue with cooldown queue for k-distance constraint
  * @complexity Time: O(n log 26), Space: O(26)
  */
-#include <queue>
-#include <string>
-#include <unordered_map>
-#include <utility>
-
 class Solution final {
 public:
-    [[nodiscard]] std::string rearrangeString(const std::string& s, int k) const {
+    [[nodiscard]] static std::string rearrangeString(const std::string& s, const int k) {
         std::unordered_map<char, int> cnt;
         for (const char c : s) {
             ++cnt[c];

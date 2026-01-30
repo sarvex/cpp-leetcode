@@ -1,16 +1,22 @@
-const int HOLE = 0;
-const int MOUSE_START = 1;
-const int CAT_START = 2;
-const int MOUSE_TURN = 0;
-const int CAT_TURN = 1;
-const int MOUSE_WIN = 1;
-const int CAT_WIN = 2;
-const int TIE = 0;
+/**
+ * @brief Game theory with BFS backward induction
+ * @intuition Work backwards from terminal states using minimax
+ * @approach Start from win states, propagate results using degree counting
+ * @complexity Time: O(n^3), Space: O(n^2)
+ */
+constexpr int HOLE = 0;
+constexpr int MOUSE_START = 1;
+constexpr int CAT_START = 2;
+constexpr int MOUSE_TURN = 0;
+constexpr int CAT_TURN = 1;
+constexpr int MOUSE_WIN = 1;
+constexpr int CAT_WIN = 2;
+constexpr int TIE = 0;
 
-class Solution {
+class Solution final {
 public:
-    int catMouseGame(vector<vector<int>>& graph) {
-        int n = graph.size();
+    [[nodiscard]] static int catMouseGame(const vector<vector<int>>& graph) {
+        const int n = static_cast<int>(graph.size());
         int ans[n][n][2];
         int degree[n][n][2];
         memset(ans, 0, sizeof ans);
@@ -20,21 +26,21 @@ public:
                 degree[i][j][MOUSE_TURN] = graph[i].size();
                 degree[i][j][CAT_TURN] = graph[j].size();
             }
-            for (int j : graph[HOLE]) {
+            for (const int j : graph[HOLE]) {
                 --degree[i][j][CAT_TURN];
             }
         }
         auto getPrevStates = [&](int m, int c, int t) {
-            int pt = t ^ 1;
+            const int pt = t ^ 1;
             vector<tuple<int, int, int>> pre;
             if (pt == CAT_TURN) {
-                for (int pc : graph[c]) {
+                for (const int pc : graph[c]) {
                     if (pc != HOLE) {
                         pre.emplace_back(m, pc, pt);
                     }
                 }
             } else {
-                for (int pm : graph[m]) {
+                for (const int pm : graph[m]) {
                     pre.emplace_back(pm, c, pt);
                 }
             }
@@ -54,10 +60,10 @@ public:
         while (!q.empty()) {
             auto [m, c, t] = q.front();
             q.pop();
-            int x = ans[m][c][t];
+            const int x = ans[m][c][t];
             for (auto [pm, pc, pt] : getPrevStates(m, c, t)) {
                 if (ans[pm][pc][pt] == TIE) {
-                    bool win = (x == MOUSE_WIN && pt == MOUSE_TURN) || (x == CAT_WIN && pt == CAT_TURN);
+                    const bool win = (x == MOUSE_WIN && pt == MOUSE_TURN) || (x == CAT_WIN && pt == CAT_TURN);
                     if (win) {
                         ans[pm][pc][pt] = x;
                         q.emplace(pm, pc, pt);

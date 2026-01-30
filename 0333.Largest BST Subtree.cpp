@@ -4,22 +4,6 @@
  * @approach Post-order traversal validating BST property at each node
  * @complexity Time: O(n), Space: O(h) for recursion
  */
-#include <algorithm>
-#include <climits>
-#include <vector>
-
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-
 class Solution final {
 public:
     [[nodiscard]] int largestBSTSubtree(TreeNode* root) const {
@@ -29,7 +13,7 @@ public:
     }
 
 private:
-    [[nodiscard]] std::vector<int> dfs(TreeNode* root, int& ans) const {
+    [[nodiscard]] static std::vector<int> dfs(TreeNode* root, int& ans) {
         if (root == nullptr) {
             return {INT_MAX, INT_MIN, 0};
         }

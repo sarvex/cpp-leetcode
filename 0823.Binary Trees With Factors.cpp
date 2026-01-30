@@ -1,31 +1,41 @@
-class Solution {
+/**
+ * @brief Count binary trees where parent = left_child * right_child
+ * @intuition For each root, count valid (left, right) pairs from smaller elements
+ * @approach Sort array. For each element as root, find factor pairs from smaller
+ *           elements. Use DP: f[i] = 1 + sum of f[j]*f[k] for all valid j,k pairs.
+ * @complexity Time: O(n^2), Space: O(n)
+ */
+class Solution final {
 public:
-    int numFactoredBinaryTrees(vector<int>& arr) {
-        const int mod = 1e9 + 7;
-        sort(arr.begin(), arr.end());
-        unordered_map<int, int> idx;
-        int n = arr.size();
+    [[nodiscard]] static auto numFactoredBinaryTrees(std::vector<int>& arr) -> int {
+        constexpr int mod = 1'000'000'007;
+        std::ranges::sort(arr);
+        
+        std::unordered_map<int, int> idx;
+        const int n = static_cast<int>(arr.size());
         for (int i = 0; i < n; ++i) {
             idx[arr[i]] = i;
         }
-        vector<long> f(n, 1);
+        
+        std::vector<long> f(n, 1);
         for (int i = 0; i < n; ++i) {
-            int a = arr[i];
+            const int a = arr[i];
             for (int j = 0; j < i; ++j) {
-                int b = arr[j];
+                const int b = arr[j];
                 if (a % b == 0) {
-                    int c = a / b;
+                    const int c = a / b;
                     if (idx.count(c)) {
-                        int k = idx[c];
-                        f[i] = (f[i] + 1l * f[j] * f[k]) % mod;
+                        const int k = idx[c];
+                        f[i] = (f[i] + f[j] * f[k]) % mod;
                     }
                 }
             }
         }
+        
         long ans = 0;
-        for (long v : f) {
+        for (const long v : f) {
             ans = (ans + v) % mod;
         }
-        return ans;
+        return static_cast<int>(ans);
     }
 };

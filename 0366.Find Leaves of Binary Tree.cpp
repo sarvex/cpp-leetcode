@@ -1,31 +1,29 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Collect leaves level by level from bottom up
+ * @intuition Group nodes by their height (distance to deepest leaf)
+ * @approach DFS computing height, group nodes at same height together
+ * @complexity Time: O(n), Space: O(n)
  */
-class Solution {
+class Solution final {
 public:
-    vector<vector<int>> findLeaves(TreeNode* root) {
-        vector<vector<int>> ans;
-        function<int(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+    [[nodiscard]] static std::vector<std::vector<int>> findLeaves(TreeNode* root) {
+        std::vector<std::vector<int>> ans;
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> int {
+            if (node == nullptr) {
                 return 0;
             }
-            int l = dfs(root->left);
-            int r = dfs(root->right);
-            int h = max(l, r);
-            if (ans.size() == h) {
+            const int l = dfs(node->left);
+            const int r = dfs(node->right);
+            const int h = std::max(l, r);
+            
+            if (static_cast<int>(ans.size()) == h) {
                 ans.push_back({});
             }
-            ans[h].push_back(root->val);
+            ans[h].push_back(node->val);
             return h + 1;
         };
+        
         dfs(root);
         return ans;
     }

@@ -1,7 +1,15 @@
-class Solution {
+/**
+ * @brief Count words where f(word) > f(query) using frequency of smallest character
+ * @intuition Precompute f() for all words, sort, and use binary search for each query
+ * @approach Define f(s) as count of smallest character. Compute f() for all words, sort.
+ *           For each query, binary search to count words with strictly greater f() value.
+ * @complexity Time: O((n + m) * L + n log n + m log n) where L is max string length, Space: O(n)
+ */
+class Solution final {
 public:
-    vector<int> numSmallerByFrequency(vector<string>& queries, vector<string>& words) {
-        auto f = [](string s) {
+    [[nodiscard]] static vector<int> numSmallerByFrequency(const vector<string>& queries,
+                                                           const vector<string>& words) {
+        auto f = [](const string& s) {
             int cnt[26] = {0};
             for (char c : s) {
                 cnt[c - 'a']++;
@@ -13,16 +21,16 @@ public:
             }
             return 0;
         };
-        int n = words.size();
-        int nums[n];
+        const int n = words.size();
+        vector<int> nums(n);
         for (int i = 0; i < n; i++) {
             nums[i] = f(words[i]);
         }
-        sort(nums, nums + n);
+        ranges::sort(nums);
         vector<int> ans;
-        for (auto& q : queries) {
+        for (const auto& q : queries) {
             int x = f(q);
-            ans.push_back(n - (upper_bound(nums, nums + n, x) - nums));
+            ans.push_back(n - (upper_bound(nums.begin(), nums.end(), x) - nums.begin()));
         }
         return ans;
     }

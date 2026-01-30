@@ -1,54 +1,61 @@
-class Trie {
-private:
-    Trie* children[26];
-    int ref;
-
+/**
+ * @brief Replace words in sentence with shortest dictionary root
+ * @intuition Use Trie to find shortest prefix match for each word
+ * @approach Build Trie from dictionary, find shortest root for each word
+ * @complexity Time: O(n + m*k) where m is dictionary size, k is word length, Space: O(m*k)
+ */
+class Trie final {
 public:
-    Trie()
-        : ref(-1) {
-        memset(children, 0, sizeof(children));
+    Trie() {
+        memset(children_, 0, sizeof(children_));
     }
 
-    void insert(const string& w, int i) {
+    void insert(const string& w, const int i) {
         Trie* node = this;
-        for (auto& c : w) {
-            int idx = c - 'a';
-            if (!node->children[idx]) {
-                node->children[idx] = new Trie();
+        for (const char c : w) {
+            const int idx = c - 'a';
+            if (!node->children_[idx]) {
+                node->children_[idx] = new Trie();
             }
-            node = node->children[idx];
+            node = node->children_[idx];
         }
-        node->ref = i;
+        node->ref_ = i;
     }
 
-    int search(const string& w) {
-        Trie* node = this;
-        for (auto& c : w) {
-            int idx = c - 'a';
-            if (!node->children[idx]) {
+    [[nodiscard]] int search(const string& w) const {
+        const Trie* node = this;
+        for (const char c : w) {
+            const int idx = c - 'a';
+            if (!node->children_[idx]) {
                 return -1;
             }
-            node = node->children[idx];
-            if (node->ref != -1) {
-                return node->ref;
+            node = node->children_[idx];
+            if (node->ref_ != -1) {
+                return node->ref_;
             }
         }
         return -1;
     }
+
+private:
+    Trie* children_[26];
+    int ref_ = -1;
 };
 
-class Solution {
+class Solution final {
 public:
-    string replaceWords(vector<string>& dictionary, string sentence) {
-        Trie* trie = new Trie();
-        for (int i = 0; i < dictionary.size(); ++i) {
+    [[nodiscard]] static string replaceWords(const vector<string>& dictionary, const string& sentence) {
+        auto* trie = new Trie();
+        for (size_t i = 0; i < dictionary.size(); ++i) {
             trie->insert(dictionary[i], i);
         }
+        
         stringstream ss(sentence);
         string w;
         string ans;
+        
         while (ss >> w) {
-            int idx = trie->search(w);
+            const int idx = trie->search(w);
             ans += (idx == -1 ? w : dictionary[idx]) + " ";
         }
         ans.pop_back();

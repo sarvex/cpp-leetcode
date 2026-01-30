@@ -4,17 +4,13 @@
  * @approach Use monotonic stack to get max subsequence, then merge greedily
  * @complexity Time: O(k^2 * (m + n)), Space: O(k)
  */
-#include <algorithm>
-#include <functional>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] std::vector<int> maxNumber(std::vector<int>& nums1, 
-                                              std::vector<int>& nums2, int k) const {
-        auto getMax = [](std::vector<int>& nums, int len) -> std::vector<int> {
+    [[nodiscard]] static vector<int> maxNumber(vector<int>& nums1, 
+                                                vector<int>& nums2, int k) {
+        auto getMax = [](vector<int>& nums, int len) -> vector<int> {
             const int n = static_cast<int>(nums.size());
-            std::vector<int> stk(len);
+            vector<int> stk(len);
             int top = -1;
             int remain = n - len;
             
@@ -32,8 +28,8 @@ public:
             return stk;
         };
         
-        std::function<bool(std::vector<int>&, std::vector<int>&, int, int)> compare;
-        compare = [&](std::vector<int>& a, std::vector<int>& b, int i, int j) -> bool {
+        function<bool(vector<int>&, vector<int>&, int, int)> compare;
+        compare = [&](vector<int>& a, vector<int>& b, int i, int j) -> bool {
             if (i >= static_cast<int>(a.size())) {
                 return false;
             }
@@ -49,12 +45,12 @@ public:
             return compare(a, b, i + 1, j + 1);
         };
 
-        auto merge = [&](std::vector<int>& a, std::vector<int>& b) -> std::vector<int> {
+        auto merge = [&](vector<int>& a, vector<int>& b) -> vector<int> {
             const int m = static_cast<int>(a.size());
             const int n = static_cast<int>(b.size());
             int i = 0;
             int j = 0;
-            std::vector<int> result(m + n);
+            vector<int> result(m + n);
             
             for (int idx = 0; idx < m + n; ++idx) {
                 if (compare(a, b, i, j)) {
@@ -68,16 +64,16 @@ public:
 
         const int m = static_cast<int>(nums1.size());
         const int n = static_cast<int>(nums2.size());
-        const int left = std::max(0, k - n);
-        const int right = std::min(k, m);
-        std::vector<int> ans(k);
+        const int left = max(0, k - n);
+        const int right = min(k, m);
+        vector<int> ans(k);
         
         for (int x = left; x <= right; ++x) {
-            std::vector<int> arr1 = getMax(nums1, x);
-            std::vector<int> arr2 = getMax(nums2, k - x);
-            std::vector<int> arr = merge(arr1, arr2);
+            vector<int> arr1 = getMax(nums1, x);
+            vector<int> arr2 = getMax(nums2, k - x);
+            vector<int> arr = merge(arr1, arr2);
             if (ans < arr) {
-                ans = std::move(arr);
+                ans = move(arr);
             }
         }
         return ans;

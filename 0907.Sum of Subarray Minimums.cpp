@@ -1,7 +1,13 @@
-class Solution {
+/**
+ * @brief Monotonic stack to find contribution of each element as minimum
+ * @intuition Each element contributes to subarrays where it's the minimum
+ * @approach Use two passes to find previous/next smaller elements; multiply ranges
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    int sumSubarrayMins(vector<int>& arr) {
-        int n = arr.size();
+    [[nodiscard]] static int sumSubarrayMins(const vector<int>& arr) {
+        const int n = static_cast<int>(arr.size());
         vector<int> left(n, -1);
         vector<int> right(n, n);
         stack<int> stk;
@@ -24,12 +30,12 @@ public:
             }
             stk.push(i);
         }
+        constexpr int mod = 1e9 + 7;
         long long ans = 0;
-        const int mod = 1e9 + 7;
         for (int i = 0; i < n; ++i) {
             ans += 1LL * (i - left[i]) * (right[i] - i) * arr[i] % mod;
             ans %= mod;
         }
-        return ans;
+        return static_cast<int>(ans);
     }
 };

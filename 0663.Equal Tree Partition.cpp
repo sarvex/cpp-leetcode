@@ -1,30 +1,28 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Check if tree can be partitioned into two equal-sum subtrees
+ * @intuition Compute all subtree sums, check if half of total exists as subtree sum
+ * @approach DFS to compute subtree sums, verify total/2 exists (excluding root)
+ * @complexity Time: O(n), Space: O(n)
  */
-class Solution {
+class Solution final {
 public:
-    vector<int> seen;
-
-    bool checkEqualTree(TreeNode* root) {
-        int s = sum(root);
-        if (s % 2 != 0) return false;
+    [[nodiscard]] bool checkEqualTree(TreeNode* root) {
+        vector<int> seen;
+        
+        auto sum = [&](this auto&& sum, TreeNode* node) -> int {
+            if (!node) {
+                return 0;
+            }
+            const int s = sum(node->left) + sum(node->right) + node->val;
+            seen.push_back(s);
+            return s;
+        };
+        
+        const int total = sum(root);
+        if (total % 2 != 0) {
+            return false;
+        }
         seen.pop_back();
-        return count(seen.begin(), seen.end(), s / 2);
-    }
-
-    int sum(TreeNode* root) {
-        if (!root) return 0;
-        int l = sum(root->left), r = sum(root->right);
-        int s = l + r + root->val;
-        seen.push_back(s);
-        return s;
+        return ranges::count(seen, total / 2) > 0;
     }
 };

@@ -1,28 +1,27 @@
-class MyHashMap {
-public:
-    int data[1000001];
-
-    MyHashMap() {
-        memset(data, -1, sizeof data);
-    }
-
-    void put(int key, int value) {
-        data[key] = value;
-    }
-
-    int get(int key) {
-        return data[key];
-    }
-
-    void remove(int key) {
-        data[key] = -1;
-    }
-};
-
 /**
- * Your MyHashMap object will be instantiated and called as such:
- * MyHashMap* obj = new MyHashMap();
- * obj->put(key,value);
- * int param_2 = obj->get(key);
- * obj->remove(key);
+ * @brief Direct addressing HashMap using integer array
+ * @intuition Constraints allow direct array indexing as hash function
+ * @approach Use integer array where index maps to value, -1 indicates absence
+ * @complexity Time: O(1) for all operations, Space: O(n) where n is key range
  */
+class MyHashMap final {
+public:
+    MyHashMap() {
+        data_.fill(-1);
+    }
+
+    void put(const int key, const int value) {
+        data_[key] = value;
+    }
+
+    [[nodiscard]] int get(const int key) const {
+        return data_[key];
+    }
+
+    void remove(const int key) {
+        data_[key] = -1;
+    }
+
+private:
+    std::array<int, 1000001> data_{};
+};

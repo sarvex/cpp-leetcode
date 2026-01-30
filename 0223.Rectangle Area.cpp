@@ -4,12 +4,11 @@
  * @approach Calculate overlap dimensions using min/max of coordinates
  * @complexity Time: O(1), Space: O(1)
  */
-#include <algorithm>
 
 class Solution final {
 public:
-  [[nodiscard]] static constexpr auto computeArea(int ax1, int ay1, int ax2, int ay2,
-                                                   int bx1, int by1, int bx2, int by2) noexcept -> int {
+  [[nodiscard]] static constexpr auto computeArea(const int ax1, const int ay1, const int ax2, const int ay2,
+                                                   const int bx1, const int by1, const int bx2, const int by2) noexcept -> int {
     const int areaA = (ax2 - ax1) * (ay2 - ay1);
     const int areaB = (bx2 - bx1) * (by2 - by1);
     const int overlapWidth = std::min(ax2, bx2) - std::max(ax1, bx1);

@@ -1,28 +1,23 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Sum BST nodes within given range using DFS
+ * @intuition Prune branches outside range using BST property
+ * @approach DFS with early termination when node value outside range
+ * @complexity Time: O(n), Space: O(h)
  */
-class Solution {
+class Solution final {
 public:
-    int rangeSumBST(TreeNode* root, int low, int high) {
-        function<int(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+    [[nodiscard]] static int rangeSumBST(TreeNode* root, const int low, const int high) {
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> int {
+            if (!node) {
                 return 0;
             }
-            int x = root->val;
-            int ans = low <= x && x <= high ? x : 0;
+            const int x = node->val;
+            int ans = (low <= x && x <= high) ? x : 0;
             if (x > low) {
-                ans += dfs(root->left);
+                ans += dfs(node->left);
             }
             if (x < high) {
-                ans += dfs(root->right);
+                ans += dfs(node->right);
             }
             return ans;
         };

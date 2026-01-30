@@ -1,51 +1,64 @@
-class Solution {
+/**
+ * @brief BFS with bitmask state for collecting all keys
+ * @intuition State = (position, collected keys); BFS finds shortest path
+ * @approach Use BFS where state includes position and key bitmask. Can pass through
+ *           lock only if have corresponding key. Track visited (pos, keymask) states.
+ * @complexity Time: O(m * n * 2^k), Space: O(m * n * 2^k)
+ */
+class Solution final {
 public:
-    const static inline vector<int> dirs = {-1, 0, 1, 0, -1};
-
-    int shortestPathAllKeys(vector<string>& grid) {
-        int m = grid.size(), n = grid[0].size();
-        int k = 0;
-        int si = 0, sj = 0;
+    [[nodiscard]] static auto shortestPathAllKeys(
+        const std::vector<std::string>& grid) -> int {
+        const int m = static_cast<int>(grid.size());
+        const int n = static_cast<int>(grid[0].size());
+        int k = 0, si = 0, sj = 0;
+        
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                char c = grid[i][j];
-                // 累加钥匙数量
-                if (islower(c)) ++k;
-                // 起点
-                else if (c == '@')
-                    si = i, sj = j;
+                const char c = grid[i][j];
+                if (std::islower(c)) ++k;
+                else if (c == '@') {
+                    si = i;
+                    sj = j;
+                }
             }
         }
-        queue<tuple<int, int, int>> q{{{si, sj, 0}}};
-        vector<vector<vector<bool>>> vis(m, vector<vector<bool>>(n, vector<bool>(1 << k)));
+        
+        std::queue<std::tuple<int, int, int>> q;
+        q.emplace(si, sj, 0);
+        std::vector<std::vector<std::vector<bool>>> vis(
+            m, std::vector<std::vector<bool>>(n, std::vector<bool>(1 << k)));
         vis[si][sj][0] = true;
+        
+        constexpr std::array<int, 5> dirs = {-1, 0, 1, 0, -1};
         int ans = 0;
+        
         while (!q.empty()) {
-            for (int t = q.size(); t; --t) {
+            for (int t = static_cast<int>(q.size()); t > 0; --t) {
                 auto [i, j, state] = q.front();
                 q.pop();
-                // 找到所有钥匙，返回当前步数
+                
                 if (state == (1 << k) - 1) return ans;
-                // 往四个方向搜索
+                
                 for (int h = 0; h < 4; ++h) {
-                    int x = i + dirs[h], y = j + dirs[h + 1];
-                    // 在边界范围内
+                    const int x = i + dirs[h], y = j + dirs[h + 1];
                     if (x >= 0 && x < m && y >= 0 && y < n) {
-                        char c = grid[x][y];
-                        // 是墙，或者是锁，但此时没有对应的钥匙，无法通过
-                        if (c == '#' || (isupper(c) && (state >> (c - 'A') & 1) == 0)) continue;
+                        const char c = grid[x][y];
+                        if (c == '#') continue;
+                        if (std::isupper(c) && ((state >> (c - 'A')) & 1) == 0) continue;
+                        
                         int nxt = state;
-                        // 是钥匙，更新状态
-                        if (islower(c)) nxt |= 1 << (c - 'a');
-                        // 此状态未访问过，入队
+                        if (std::islower(c)) {
+                            nxt |= 1 << (c - 'a');
+                        }
+                        
                         if (!vis[x][y][nxt]) {
                             vis[x][y][nxt] = true;
-                            q.push({x, y, nxt});
+                            q.emplace(x, y, nxt);
                         }
                     }
                 }
             }
-            // 步数加一
             ++ans;
         }
         return -1;

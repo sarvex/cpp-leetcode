@@ -1,35 +1,30 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Split BST into two trees at target value
+ * @intuition Recursively split subtrees based on comparison with target
+ * @approach DFS: if root <= target, split right; else split left; reconnect
+ * @complexity Time: O(h), Space: O(h) for recursion
  */
-class Solution {
+class Solution final {
 public:
-    int t;
-
-    vector<TreeNode*> splitBST(TreeNode* root, int target) {
-        t = target;
-        return dfs(root);
+    [[nodiscard]] std::vector<TreeNode*> splitBST(TreeNode* root, const int target) {
+        return split(root, target);
     }
 
-    vector<TreeNode*> dfs(TreeNode* root) {
-        if (!root) return {nullptr, nullptr};
-        if (root->val <= t) {
-            auto ans = dfs(root->right);
-            root->right = ans[0];
-            ans[0] = root;
-            return ans;
+private:
+    [[nodiscard]] std::vector<TreeNode*> split(TreeNode* root, const int target) {
+        if (!root) {
+            return {nullptr, nullptr};
+        }
+        if (root->val <= target) {
+            auto result = split(root->right, target);
+            root->right = result[0];
+            result[0] = root;
+            return result;
         } else {
-            auto ans = dfs(root->left);
-            root->left = ans[1];
-            ans[1] = root;
-            return ans;
+            auto result = split(root->left, target);
+            root->left = result[1];
+            result[1] = root;
+            return result;
         }
     }
 };

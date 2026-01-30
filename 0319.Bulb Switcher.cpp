@@ -4,11 +4,9 @@
  * @approach Count perfect squares up to n
  * @complexity Time: O(1), Space: O(1)
  */
-#include <cmath>
-
 class Solution final {
 public:
-    [[nodiscard]] constexpr int bulbSwitch(int n) const {
-        return static_cast<int>(std::sqrt(n));
+    [[nodiscard]] static int bulbSwitch(int n) {
+        return static_cast<int>(sqrt(n));
     }
 };

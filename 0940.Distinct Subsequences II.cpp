@@ -1,13 +1,18 @@
-class Solution {
+/**
+ * @brief Count distinct subsequences using DP
+ * @intuition Each character extends all previous subsequences, track by last char
+ * @approach For each char, new count = sum of all previous + 1, stored by char
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    const int mod = 1e9 + 7;
-
-    int distinctSubseqII(string s) {
+    [[nodiscard]] static int distinctSubseqII(const string& s) {
+        constexpr int mod = 1e9 + 7;
         vector<long> dp(26);
-        for (char& c : s) {
-            int i = c - 'a';
-            dp[i] = accumulate(dp.begin(), dp.end(), 1l) % mod;
+        for (const char c : s) {
+            const int i = c - 'a';
+            dp[i] = accumulate(dp.begin(), dp.end(), 1L) % mod;
         }
-        return accumulate(dp.begin(), dp.end(), 0l) % mod;
+        return static_cast<int>(accumulate(dp.begin(), dp.end(), 0L) % mod);
     }
 };

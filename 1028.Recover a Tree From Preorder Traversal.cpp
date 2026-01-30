@@ -1,27 +1,24 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
+ * @brief Stack-based tree reconstruction from depth-encoded string
+ * @intuition Dashes indicate depth; numbers are node values
+ * @approach Parse depth and value, maintain stack of ancestors, attach appropriately
+ * @complexity Time: O(n), Space: O(n)
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* recoverFromPreorder(string S) {
+    [[nodiscard]] static TreeNode* recoverFromPreorder(const string& s) {
         stack<TreeNode*> st;
         int depth = 0;
         int num = 0;
-        for (int i = 0; i < S.length(); ++i) {
-            if (S[i] == '-') {
-                depth++;
+        for (int i = 0; i < static_cast<int>(s.length()); ++i) {
+            if (s[i] == '-') {
+                ++depth;
             } else {
-                num = 10 * num + S[i] - '0';
+                num = 10 * num + s[i] - '0';
             }
-            if (i + 1 >= S.length() || (isdigit(S[i]) && S[i + 1] == '-')) {
-                TreeNode* newNode = new TreeNode(num);
-                while (st.size() > depth) {
+            if (i + 1 >= static_cast<int>(s.length()) || (isdigit(s[i]) && s[i + 1] == '-')) {
+                auto* newNode = new TreeNode(num);
+                while (st.size() > static_cast<size_t>(depth)) {
                     st.pop();
                 }
                 if (!st.empty()) {
@@ -36,7 +33,7 @@ public:
                 num = 0;
             }
         }
-        TreeNode* res;
+        TreeNode* res = nullptr;
         while (!st.empty()) {
             res = st.top();
             st.pop();

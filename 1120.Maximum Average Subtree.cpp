@@ -1,17 +1,13 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find maximum average value among all subtrees
+ * @intuition Use post-order DFS to compute sum and count for each subtree, tracking max average
+ * @approach For each node, recursively get sum and count of left and right subtrees. Compute
+ *           current subtree's average and update maximum. Return sum and count for parent computation.
+ * @complexity Time: O(n), Space: O(h) where h is tree height
  */
-class Solution {
+class Solution final {
 public:
-    double maximumAverageSubtree(TreeNode* root) {
+    [[nodiscard]] static double maximumAverageSubtree(TreeNode* root) {
         double ans = 0;
         auto dfs = [&](this auto&& dfs, TreeNode* root) -> pair<int, int> {
             if (!root) {

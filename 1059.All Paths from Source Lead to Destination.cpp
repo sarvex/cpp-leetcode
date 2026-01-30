@@ -1,13 +1,24 @@
-class Solution {
+/**
+ * @brief DFS with cycle detection and destination verification
+ * @intuition All paths must reach destination; detect cycles and dead ends
+ * @approach DFS with visited tracking for cycles, memoization for results
+ * @complexity Time: O(V + E), Space: O(V + E)
+ */
+class Solution final {
 public:
-    bool leadsToDestination(int n, vector<vector<int>>& edges, int source, int destination) {
+    [[nodiscard]] static bool leadsToDestination(
+        const int n,
+        const vector<vector<int>>& edges,
+        const int source,
+        const int destination) {
+        
         vector<bool> vis(n);
         vector<vector<int>> g(n);
         vector<int> f(n);
-        for (auto& e : edges) {
+        for (const auto& e : edges) {
             g[e[0]].push_back(e[1]);
         }
-        function<bool(int)> dfs = [&](int i) {
+        function<bool(int)> dfs = [&](const int i) {
             if (i == destination) {
                 return g[i].empty();
             }
@@ -18,7 +29,7 @@ public:
                 return false;
             }
             vis[i] = true;
-            for (int j : g[i]) {
+            for (const int j : g[i]) {
                 if (!dfs(j)) {
                     f[i] = -1;
                     return false;

@@ -4,13 +4,10 @@
  * @approach Decrement count for each match found in second array
  * @complexity Time: O(m + n), Space: O(min(m, n))
  */
-#include <unordered_map>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] std::vector<int> intersect(const std::vector<int>& nums1, 
-                                              const std::vector<int>& nums2) const {
+    [[nodiscard]] static std::vector<int> intersect(const std::vector<int>& nums1, 
+                                                     const std::vector<int>& nums2) {
         std::unordered_map<int, int> cnt;
         for (const int x : nums1) {
             ++cnt[x];

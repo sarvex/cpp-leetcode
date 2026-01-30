@@ -1,29 +1,25 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Check if two nodes in BST sum to target k
+ * @intuition Use hash set to track seen values while traversing
+ * @approach DFS with hash set, check if complement exists for each node
+ * @complexity Time: O(n), Space: O(n)
  */
-class Solution {
+class Solution final {
 public:
-    bool findTarget(TreeNode* root, int k) {
+    [[nodiscard]] static bool findTarget(TreeNode* root, const int k) {
         unordered_set<int> vis;
-
-        function<bool(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> bool {
+            if (!node) {
                 return false;
             }
-            if (vis.count(k - root->val)) {
+            if (vis.count(k - node->val)) {
                 return true;
             }
-            vis.insert(root->val);
-            return dfs(root->left) || dfs(root->right);
+            vis.insert(node->val);
+            return dfs(node->left) || dfs(node->right);
         };
+        
         return dfs(root);
     }
 };

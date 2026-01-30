@@ -1,26 +1,32 @@
-class Solution {
+/**
+ * @brief Greedy selection of floor/ceil to minimize rounding error
+ * @intuition Floor all first, then greedily ceil those with largest decimal parts
+ * @approach Sort by decimal part descending, ceil top (target - floor_sum) values
+ * @complexity Time: O(n log n), Space: O(n)
+ */
+class Solution final {
 public:
-    string minimizeError(vector<string>& prices, int target) {
+    [[nodiscard]] static string minimizeError(const vector<string>& prices, const int target) {
         int mi = 0;
         vector<double> arr;
-        for (auto& p : prices) {
-            double price = stod(p);
-            mi += (int) price;
-            double d = price - (int) price;
+        for (const auto& p : prices) {
+            const double price = stod(p);
+            mi += static_cast<int>(price);
+            const double d = price - static_cast<int>(price);
             if (d > 0) {
                 arr.push_back(d);
             }
         }
-        if (target < mi || target > mi + arr.size()) {
+        if (target < mi || target > mi + static_cast<int>(arr.size())) {
             return "-1";
         }
-        int d = target - mi;
+        const int d = target - mi;
         sort(arr.rbegin(), arr.rend());
         double ans = d;
         for (int i = 0; i < d; ++i) {
             ans -= arr[i];
         }
-        for (int i = d; i < arr.size(); ++i) {
+        for (int i = d; i < static_cast<int>(arr.size()); ++i) {
             ans += arr[i];
         }
         string s = to_string(ans);

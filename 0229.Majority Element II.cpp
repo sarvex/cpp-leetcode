@@ -4,12 +4,10 @@
  * @approach Track two candidates, verify counts at end
  * @complexity Time: O(n), Space: O(1)
  */
-#include <algorithm>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto majorityElement(const std::vector<int>& nums) const -> std::vector<int> {
+  [[nodiscard]] static auto majorityElement(const std::vector<int>& nums) -> std::vector<int> {
     int count1 = 0;
     int count2 = 0;
     int candidate1 = 0;
@@ -34,10 +32,10 @@ public:
     
     std::vector<int> result;
     const auto threshold = nums.size() / 3;
-    if (std::count(nums.begin(), nums.end(), candidate1) > static_cast<long>(threshold)) {
+    if (std::ranges::count(nums, candidate1) > static_cast<long>(threshold)) {
       result.push_back(candidate1);
     }
-    if (std::count(nums.begin(), nums.end(), candidate2) > static_cast<long>(threshold)) {
+    if (std::ranges::count(nums, candidate2) > static_cast<long>(threshold)) {
       result.push_back(candidate2);
     }
     return result;

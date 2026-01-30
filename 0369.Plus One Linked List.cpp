@@ -1,27 +1,26 @@
 /**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
+ * @brief Add one to number represented as linked list
+ * @intuition Find rightmost non-9 digit to increment, set trailing 9s to 0
+ * @approach Use dummy node for carry case, find last non-9, increment and reset
+ * @complexity Time: O(n), Space: O(1)
  */
-class Solution {
+class Solution final {
 public:
-    ListNode* plusOne(ListNode* head) {
+    [[nodiscard]] static ListNode* plusOne(ListNode* head) {
         ListNode* dummy = new ListNode(0, head);
         ListNode* target = dummy;
-        for (; head; head = head->next) {
+        
+        for (; head != nullptr; head = head->next) {
             if (head->val != 9) {
                 target = head;
             }
         }
-        target->val++;
-        for (target = target->next; target; target = target->next) {
+        
+        ++target->val;
+        for (target = target->next; target != nullptr; target = target->next) {
             target->val = 0;
         }
-        return dummy->val ? dummy : dummy->next;
+        
+        return dummy->val != 0 ? dummy : dummy->next;
     }
 };

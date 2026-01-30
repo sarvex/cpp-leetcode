@@ -4,18 +4,13 @@
  * @approach DFS with memoization, state is (day, holding), skip one day after sell
  * @complexity Time: O(n), Space: O(n)
  */
-#include <algorithm>
-#include <cstring>
-#include <functional>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int maxProfit(const std::vector<int>& prices) const {
+    [[nodiscard]] static int maxProfit(const vector<int>& prices) {
         const int n = static_cast<int>(prices.size());
-        std::vector<std::vector<int>> memo(n, std::vector<int>(2, -1));
+        vector<vector<int>> memo(n, vector<int>(2, -1));
         
-        std::function<int(int, int)> dfs = [&](int i, int holding) -> int {
+        function<int(int, int)> dfs = [&](int i, int holding) -> int {
             if (i >= n) {
                 return 0;
             }
@@ -24,9 +19,9 @@ public:
             }
             int ans = dfs(i + 1, holding);
             if (holding != 0) {
-                ans = std::max(ans, prices[i] + dfs(i + 2, 0));
+                ans = max(ans, prices[i] + dfs(i + 2, 0));
             } else {
-                ans = std::max(ans, -prices[i] + dfs(i + 1, 1));
+                ans = max(ans, -prices[i] + dfs(i + 1, 1));
             }
             return memo[i][holding] = ans;
         };

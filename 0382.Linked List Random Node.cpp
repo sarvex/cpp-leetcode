@@ -1,30 +1,27 @@
 /**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
+ * @brief Return random node value from linked list using reservoir sampling
+ * @intuition Reservoir sampling gives equal probability without knowing length
+ * @approach For ith element, replace result with probability 1/i
+ * @complexity Time: O(n) per call, Space: O(1)
  */
-class Solution {
+class Solution final {
 public:
-    ListNode* head;
+    explicit Solution(ListNode* head) : head_(head) {}
 
-    Solution(ListNode* head) {
-        this->head = head;
-    }
-
-    int getRandom() {
-        int n = 0, ans = 0;
-        for (ListNode* node = head; node != nullptr; node = node->next) {
-            n += 1;
-            int x = 1 + rand() % n;
-            if (n == x) ans = node->val;
+    [[nodiscard]] auto getRandom() const -> int {
+        int n = 0;
+        int ans = 0;
+        for (ListNode* node = head_; node != nullptr; node = node->next) {
+            ++n;
+            if (rand() % n == 0) {
+                ans = node->val;
+            }
         }
         return ans;
     }
+
+private:
+    ListNode* head_;
 };
 
 /**

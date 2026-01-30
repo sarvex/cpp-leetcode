@@ -1,17 +1,12 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Recursive BST insertion
+ * @intuition BST property guides insertion to maintain sorted order
+ * @approach Recursively traverse to find null position and create new node
+ * @complexity Time: O(h) where h is tree height, Space: O(h) for recursion stack
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* insertIntoBST(TreeNode* root, int val) {
+    [[nodiscard]] static TreeNode* insertIntoBST(TreeNode* root, const int val) {
         if (!root) {
             return new TreeNode(val);
         }

@@ -1,50 +1,50 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find closest leaf to node k in binary tree using BFS
+ * @intuition Convert tree to undirected graph, BFS from k to find nearest leaf
+ * @approach Build adjacency list from tree, BFS to find closest leaf node
+ * @complexity Time: O(n), Space: O(n)
  */
-class Solution {
+class Solution final {
 public:
-    int findClosestLeaf(TreeNode* root, int k) {
-        unordered_map<TreeNode*, vector<TreeNode*>> g;
-        function<void(TreeNode*, TreeNode*)> dfs = [&](TreeNode* root, TreeNode* fa) {
-            if (root) {
-                g[root].push_back(fa);
-                g[fa].push_back(root);
-                dfs(root->left, root);
-                dfs(root->right, root);
-            }
+    [[nodiscard]] static int findClosestLeaf(TreeNode* root, const int k) {
+        std::unordered_map<TreeNode*, std::vector<TreeNode*>> graph;
+        
+        auto buildGraph = [&](auto&& self, TreeNode* node, TreeNode* parent) -> void {
+            if (!node) return;
+            graph[node].push_back(parent);
+            graph[parent].push_back(node);
+            self(self, node->left, node);
+            self(self, node->right, node);
         };
-        dfs(root, nullptr);
-        queue<TreeNode*> q;
-        unordered_set<TreeNode*> vis;
-        for (auto& [node, _] : g) {
+        
+        buildGraph(buildGraph, root, nullptr);
+        
+        std::queue<TreeNode*> queue;
+        std::unordered_set<TreeNode*> visited;
+        
+        for (const auto& [node, _] : graph) {
             if (node && node->val == k) {
-                q.push(node);
-                vis.insert(node);
+                queue.push(node);
+                visited.insert(node);
+                break;
             }
         }
-        while (1) {
-            auto node = q.front();
-            q.pop();
+        
+        while (!queue.empty()) {
+            auto* node = queue.front();
+            queue.pop();
             if (node) {
                 if (node->left == node->right) {
                     return node->val;
                 }
-                for (auto& nxt : g[node]) {
-                    if (vis.count(nxt)) {
-                        continue;
+                for (auto* neighbor : graph[node]) {
+                    if (!visited.contains(neighbor)) {
+                        queue.push(neighbor);
+                        visited.insert(neighbor);
                     }
-                    q.push(nxt);
-                    vis.insert(nxt);
                 }
             }
         }
+        return -1;
     }
 };

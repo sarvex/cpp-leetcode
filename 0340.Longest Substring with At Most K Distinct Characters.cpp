@@ -4,12 +4,9 @@
  * @approach Use hash map to track char counts, slide window
  * @complexity Time: O(n), Space: O(k)
  */
-#include <string>
-#include <unordered_map>
-
 class Solution final {
 public:
-    [[nodiscard]] int lengthOfLongestSubstringKDistinct(const std::string& s, int k) const {
+    [[nodiscard]] static int lengthOfLongestSubstringKDistinct(const std::string& s, const int k) {
         std::unordered_map<char, int> cnt;
         int left = 0;
         

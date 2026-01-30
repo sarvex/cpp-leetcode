@@ -5,13 +5,9 @@
  * @complexity Time: O(n), Space: O(1)
  */
 
-#include <string>
-
-using std::string;
-
 class Solution final {
 public:
-    [[nodiscard]] auto titleToNumber(const string& columnTitle) const -> int {
+    [[nodiscard]] static auto titleToNumber(const std::string& columnTitle) -> int {
         int result = 0;
         
         for (const char c : columnTitle) {

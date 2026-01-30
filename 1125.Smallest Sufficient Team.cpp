@@ -1,22 +1,28 @@
-class Solution {
+/**
+ * @brief Bitmask DP to find minimum team covering all required skills
+ * @intuition Use bitmask to represent skill coverage and find minimum people for full coverage
+ * @approach Convert skills to bitmasks. Use DP where f[mask] is minimum people to achieve mask.
+ *           Track which person was added and previous state for path reconstruction.
+ * @complexity Time: O(2^m * n), Space: O(2^m) where m is skills count, n is people count
+ */
+class Solution final {
 public:
-    vector<int> smallestSufficientTeam(vector<string>& req_skills, vector<vector<string>>& people) {
+    [[nodiscard]] static vector<int> smallestSufficientTeam(const vector<string>& req_skills,
+                                                            const vector<vector<string>>& people) {
         unordered_map<string, int> d;
-        int m = req_skills.size(), n = people.size();
+        const int m = req_skills.size(), n = people.size();
         for (int i = 0; i < m; ++i) {
             d[req_skills[i]] = i;
         }
-        int p[n];
-        memset(p, 0, sizeof(p));
+        vector<int> p(n, 0);
         for (int i = 0; i < n; ++i) {
-            for (auto& s : people[i]) {
+            for (const auto& s : people[i]) {
                 p[i] |= 1 << d[s];
             }
         }
-        int f[1 << m];
-        int g[1 << m];
-        int h[1 << m];
-        memset(f, 63, sizeof(f));
+        vector<int> f(1 << m, 0x3f3f3f3f);
+        vector<int> g(1 << m);
+        vector<int> h(1 << m);
         f[0] = 0;
         for (int i = 0; i < 1 << m; ++i) {
             if (f[i] == 0x3f3f3f3f) {

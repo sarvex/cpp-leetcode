@@ -1,8 +1,14 @@
-class Solution {
+/**
+ * @brief Find length of longest continuous increasing subsequence
+ * @intuition Track current streak length, reset when not increasing
+ * @approach Single pass counting consecutive increases
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    int findLengthOfLCIS(vector<int>& nums) {
+    [[nodiscard]] static int findLengthOfLCIS(const vector<int>& nums) {
         int ans = 1;
-        for (int i = 1, cnt = 1; i < nums.size(); ++i) {
+        for (size_t i = 1, cnt = 1; i < nums.size(); ++i) {
             if (nums[i - 1] < nums[i]) {
                 ans = max(ans, ++cnt);
             } else {

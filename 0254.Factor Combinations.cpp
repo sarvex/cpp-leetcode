@@ -4,12 +4,9 @@
  * @approach Recursively find factors starting from minimum to avoid duplicates
  * @complexity Time: O(sqrt(n)^k) where k is number of factors, Space: O(k)
  */
-#include <functional>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto getFactors(int n) const -> std::vector<std::vector<int>> {
+  [[nodiscard]] static auto getFactors(int n) -> std::vector<std::vector<int>> {
     std::vector<int> current;
     std::vector<std::vector<int>> result;
     

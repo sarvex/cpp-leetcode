@@ -1,34 +1,32 @@
-class MyCircularDeque {
+/**
+ * @brief Circular deque with fixed capacity using array
+ * @intuition Use front pointer and size, compute indices with modulo for wrap-around
+ * @approach Maintain front index and size, adjust indices for front/back operations
+ * @complexity Time: O(1) per operation, Space: O(k)
+ */
+class MyCircularDeque final {
 public:
-    vector<int> q;
-    int front = 0;
-    int size = 0;
-    int capacity = 0;
+    explicit MyCircularDeque(const int k) : capacity_(k), q_(k) {}
 
-    MyCircularDeque(int k) {
-        q.assign(k, 0);
-        capacity = k;
-    }
-
-    bool insertFront(int value) {
+    bool insertFront(const int value) {
         if (isFull()) {
             return false;
         }
         if (!isEmpty()) {
-            front = (front - 1 + capacity) % capacity;
+            front_ = (front_ - 1 + capacity_) % capacity_;
         }
-        q[front] = value;
-        ++size;
+        q_[front_] = value;
+        ++size_;
         return true;
     }
 
-    bool insertLast(int value) {
+    bool insertLast(const int value) {
         if (isFull()) {
             return false;
         }
-        int idx = (front + size) % capacity;
-        q[idx] = value;
-        ++size;
+        const int idx = (front_ + size_) % capacity_;
+        q_[idx] = value;
+        ++size_;
         return true;
     }
 
@@ -36,8 +34,8 @@ public:
         if (isEmpty()) {
             return false;
         }
-        front = (front + 1) % capacity;
-        --size;
+        front_ = (front_ + 1) % capacity_;
+        --size_;
         return true;
     }
 
@@ -45,36 +43,29 @@ public:
         if (isEmpty()) {
             return false;
         }
-        --size;
+        --size_;
         return true;
     }
 
-    int getFront() {
-        return isEmpty() ? -1 : q[front];
+    [[nodiscard]] int getFront() const {
+        return isEmpty() ? -1 : q_[front_];
     }
 
-    int getRear() {
-        return isEmpty() ? -1 : q[(front + size - 1) % capacity];
+    [[nodiscard]] int getRear() const {
+        return isEmpty() ? -1 : q_[(front_ + size_ - 1) % capacity_];
     }
 
-    bool isEmpty() {
-        return size == 0;
+    [[nodiscard]] bool isEmpty() const {
+        return size_ == 0;
     }
 
-    bool isFull() {
-        return size == capacity;
+    [[nodiscard]] bool isFull() const {
+        return size_ == capacity_;
     }
+
+private:
+    int front_ = 0;
+    int size_ = 0;
+    int capacity_;
+    vector<int> q_;
 };
-
-/**
- * Your MyCircularDeque object will be instantiated and called as such:
- * MyCircularDeque* obj = new MyCircularDeque(k);
- * bool param_1 = obj->insertFront(value);
- * bool param_2 = obj->insertLast(value);
- * bool param_3 = obj->deleteFront();
- * bool param_4 = obj->deleteLast();
- * int param_5 = obj->getFront();
- * int param_6 = obj->getRear();
- * bool param_7 = obj->isEmpty();
- * bool param_8 = obj->isFull();
- */

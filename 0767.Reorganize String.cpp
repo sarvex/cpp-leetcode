@@ -1,27 +1,42 @@
-class Solution {
+/**
+ * @brief Reorganize string so no two adjacent chars are same
+ * @intuition Place most frequent chars at even indices first, then odd
+ * @approach Sort by frequency, fill even positions, then odd
+ * @complexity Time: O(n log n), Space: O(n)
+ */
+class Solution final {
 public:
-    string reorganizeString(string s) {
-        vector<int> cnt(26);
-        for (char& c : s) ++cnt[c - 'a'];
-        int mx = *max_element(cnt.begin(), cnt.end());
-        int n = s.size();
-        if (mx > (n + 1) / 2) return "";
-        vector<vector<int>> m;
-        for (int i = 0; i < 26; ++i) {
-            if (cnt[i]) m.push_back({cnt[i], i});
+    [[nodiscard]] static std::string reorganizeString(const std::string& s) {
+        std::array<int, 26> counts{};
+        for (const char c : s) {
+            ++counts[c - 'a'];
         }
-        sort(m.begin(), m.end());
-        reverse(m.begin(), m.end());
-        string ans = s;
-        int k = 0;
-        for (auto& e : m) {
-            int v = e[0], i = e[1];
-            while (v--) {
-                ans[k] = 'a' + i;
-                k += 2;
-                if (k >= n) k = 1;
+        
+        const int maxCount = *std::ranges::max_element(counts);
+        const int n = static_cast<int>(s.size());
+        if (maxCount > (n + 1) / 2) {
+            return "";
+        }
+        
+        std::vector<std::pair<int, int>> freqs;
+        for (int i = 0; i < 26; ++i) {
+            if (counts[i]) {
+                freqs.emplace_back(counts[i], i);
             }
         }
-        return ans;
+        std::ranges::sort(freqs, std::greater<>());
+        
+        std::string result(n, ' ');
+        int pos = 0;
+        for (const auto& [count, charIdx] : freqs) {
+            for (int i = 0; i < count; ++i) {
+                result[pos] = static_cast<char>('a' + charIdx);
+                pos += 2;
+                if (pos >= n) {
+                    pos = 1;
+                }
+            }
+        }
+        return result;
     }
 };

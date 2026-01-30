@@ -1,8 +1,15 @@
-class Solution {
+/**
+ * @brief Huffman-like greedy algorithm to minimize stick connection cost
+ * @intuition Always connect two shortest sticks to minimize accumulated cost
+ * @approach Use min-heap to always extract two smallest sticks. Connect them (sum is the cost),
+ *           add combined stick back to heap. Repeat until one stick remains.
+ * @complexity Time: O(n log n), Space: O(n)
+ */
+class Solution final {
 public:
-    int connectSticks(vector<int>& sticks) {
+    [[nodiscard]] static int connectSticks(const vector<int>& sticks) {
         priority_queue<int, vector<int>, greater<int>> pq;
-        for (auto& x : sticks) {
+        for (int x : sticks) {
             pq.push(x);
         }
         int ans = 0;

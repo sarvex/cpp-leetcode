@@ -16,9 +16,9 @@ using std::vector;
 
 class Solution final {
 public:
-    [[nodiscard]] auto evalRPN(vector<string>& tokens) const -> int {
+    [[nodiscard]] static auto evalRPN(vector<string>& tokens) -> int {
         stack<int> operands;
-        
+
         for (const auto& token : tokens) {
             if (token.size() > 1 || std::isdigit(static_cast<unsigned char>(token[0]))) {
                 operands.push(std::stoi(token));
@@ -27,7 +27,7 @@ public:
                 operands.pop();
                 const int left = operands.top();
                 operands.pop();
-                
+
                 switch (token[0]) {
                     case '+':
                         operands.push(left + right);
@@ -44,7 +44,7 @@ public:
                 }
             }
         }
-        
+
         return operands.top();
     }
 };

@@ -1,36 +1,31 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Recursive enumeration of all full binary trees with n nodes
+ * @intuition Full binary tree with n nodes: root + left subtree + right subtree, odd n only
+ * @approach For each valid split (odd left, odd right summing to n-1), recursively
+ *           generate all combinations of left and right subtrees.
+ * @complexity Time: O(2^n), Space: O(2^n)
  */
-class Solution {
+class Solution final {
 public:
-    vector<TreeNode*> allPossibleFBT(int n) {
-        vector<vector<TreeNode*>> f(n + 1);
-        function<vector<TreeNode*>(int)> dfs = [&](int n) -> vector<TreeNode*> {
-            if (f[n].size()) {
-                return f[n];
-            }
-            if (n == 1) {
-                return vector<TreeNode*>{new TreeNode()};
-            }
-            vector<TreeNode*> ans;
-            for (int i = 0; i < n - 1; ++i) {
-                int j = n - 1 - i;
-                for (auto left : dfs(i)) {
-                    for (auto right : dfs(j)) {
+    [[nodiscard]] auto allPossibleFBT(int n) -> std::vector<TreeNode*> {
+        std::vector<std::vector<TreeNode*>> memo(n + 1);
+        
+        auto dfs = [&](auto&& self, int nodes) -> std::vector<TreeNode*> {
+            if (!memo[nodes].empty()) return memo[nodes];
+            if (nodes == 1) return {new TreeNode()};
+            
+            std::vector<TreeNode*> ans;
+            for (int i = 0; i < nodes - 1; ++i) {
+                const int j = nodes - 1 - i;
+                for (auto* left : self(self, i)) {
+                    for (auto* right : self(self, j)) {
                         ans.push_back(new TreeNode(0, left, right));
                     }
                 }
             }
-            return f[n] = ans;
+            return memo[nodes] = ans;
         };
-        return dfs(n);
+        
+        return dfs(dfs, n);
     }
 };

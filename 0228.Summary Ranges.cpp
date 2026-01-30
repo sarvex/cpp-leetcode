@@ -4,16 +4,14 @@
  * @approach Two-pointer to find consecutive sequences, format as strings
  * @complexity Time: O(n), Space: O(1) excluding output
  */
-#include <string>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto summaryRanges(const std::vector<int>& nums) const -> std::vector<std::string> {
+  [[nodiscard]] static auto summaryRanges(const std::vector<int>& nums) -> std::vector<std::string> {
     std::vector<std::string> result;
     const auto n = nums.size();
     
-    auto formatRange = [&nums](std::size_t start, std::size_t end) -> std::string {
+    auto formatRange = [&nums](const std::size_t start, const std::size_t end) -> std::string {
       if (start == end) {
         return std::to_string(nums[start]);
       }

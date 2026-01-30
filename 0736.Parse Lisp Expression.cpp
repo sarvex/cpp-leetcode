@@ -1,65 +1,85 @@
-class Solution {
+/**
+ * @brief Parse and evaluate Lisp expressions
+ * @intuition Recursive descent parser with scope-based variable binding
+ * @approach Parse let/add/mult expressions recursively, manage variable scopes
+ * @complexity Time: O(n), Space: O(n) for recursion and scope storage
+ */
+class Solution final {
 public:
-    int i = 0;
-    string expr;
-    unordered_map<string, vector<int>> scope;
-
-    int evaluate(string expression) {
-        expr = expression;
+    [[nodiscard]] int evaluate(const std::string& expression) {
+        expr_ = expression;
+        pos_ = 0;
         return eval();
     }
 
-    int eval() {
-        if (expr[i] != '(') return islower(expr[i]) ? scope[parseVar()].back() : parseInt();
-        int ans = 0;
-        ++i;
-        if (expr[i] == 'l') {
-            i += 4;
-            vector<string> vars;
-            while (1) {
-                string var = parseVar();
-                if (expr[i] == ')') {
-                    ans = scope[var].back();
+private:
+    std::string expr_;
+    int pos_ = 0;
+    std::unordered_map<std::string, std::vector<int>> scope_;
+
+    [[nodiscard]] int eval() {
+        if (expr_[pos_] != '(') {
+            return std::islower(expr_[pos_]) ? scope_[parseVar()].back() : parseInt();
+        }
+        
+        ++pos_;
+        int result = 0;
+        
+        if (expr_[pos_] == 'l') {
+            pos_ += 4;
+            std::vector<std::string> vars;
+            while (true) {
+                std::string var = parseVar();
+                if (expr_[pos_] == ')') {
+                    result = scope_[var].back();
                     break;
                 }
-                ++i;
+                ++pos_;
                 vars.push_back(var);
-                scope[var].push_back(eval());
-                ++i;
-                if (!islower(expr[i])) {
-                    ans = eval();
+                scope_[var].push_back(eval());
+                ++pos_;
+                if (!std::islower(expr_[pos_])) {
+                    result = eval();
                     break;
                 }
             }
-            for (string v : vars) scope[v].pop_back();
+            for (const auto& v : vars) {
+                scope_[v].pop_back();
+            }
         } else {
-            bool add = expr[i] == 'a';
-            i += add ? 4 : 5;
-            int a = eval();
-            ++i;
-            int b = eval();
-            ans = add ? a + b : a * b;
+            const bool isAdd = expr_[pos_] == 'a';
+            pos_ += isAdd ? 4 : 5;
+            const int a = eval();
+            ++pos_;
+            const int b = eval();
+            result = isAdd ? a + b : a * b;
         }
-        ++i;
-        return ans;
+        
+        ++pos_;
+        return result;
     }
 
-    string parseVar() {
-        int j = i;
-        while (i < expr.size() && expr[i] != ' ' && expr[i] != ')') ++i;
-        return expr.substr(j, i - j);
+    [[nodiscard]] std::string parseVar() {
+        const int start = pos_;
+        while (pos_ < static_cast<int>(expr_.size()) && 
+               expr_[pos_] != ' ' && expr_[pos_] != ')') {
+            ++pos_;
+        }
+        return expr_.substr(start, pos_ - start);
     }
 
-    int parseInt() {
-        int sign = 1, v = 0;
-        if (expr[i] == '-') {
+    [[nodiscard]] int parseInt() {
+        int sign = 1;
+        int value = 0;
+        if (expr_[pos_] == '-') {
             sign = -1;
-            ++i;
+            ++pos_;
         }
-        while (i < expr.size() && expr[i] >= '0' && expr[i] <= '9') {
-            v = v * 10 + (expr[i] - '0');
-            ++i;
+        while (pos_ < static_cast<int>(expr_.size()) && 
+               expr_[pos_] >= '0' && expr_[pos_] <= '9') {
+            value = value * 10 + (expr_[pos_] - '0');
+            ++pos_;
         }
-        return sign * v;
+        return sign * value;
     }
 };

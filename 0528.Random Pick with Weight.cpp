@@ -1,30 +1,24 @@
-class Solution {
-public:
-    vector<int> s;
-
-    Solution(vector<int>& w) {
-        int n = w.size();
-        s.resize(n + 1);
-        for (int i = 0; i < n; ++i) s[i + 1] = s[i] + w[i];
-    }
-
-    int pickIndex() {
-        int n = s.size();
-        int x = 1 + rand() % s[n - 1];
-        int left = 1, right = n - 1;
-        while (left < right) {
-            int mid = left + right >> 1;
-            if (s[mid] >= x)
-                right = mid;
-            else
-                left = mid + 1;
-        }
-        return left - 1;
-    }
-};
-
 /**
- * Your Solution object will be instantiated and called as such:
- * Solution* obj = new Solution(w);
- * int param_1 = obj->pickIndex();
+ * @brief Random index selection weighted by probability
+ * @intuition Build prefix sum array; random number maps to index via binary search
+ * @approach Construct prefix sums. For picking, generate random in [1, total],
+ *           binary search for first prefix sum >= random value.
+ * @complexity Time: O(n) construction, O(log n) per pick, Space: O(n)
  */
+class Solution final {
+public:
+    explicit Solution(const vector<int>& w) : prefixSum(w.size() + 1, 0) {
+        for (size_t i = 0; i < w.size(); ++i) {
+            prefixSum[i + 1] = prefixSum[i] + w[i];
+        }
+    }
+
+    [[nodiscard]] auto pickIndex() -> int {
+        const int x = 1 + rand() % prefixSum.back();
+        const auto it = ranges::lower_bound(prefixSum, x);
+        return static_cast<int>(it - prefixSum.begin()) - 1;
+    }
+
+private:
+    vector<int> prefixSum;
+};

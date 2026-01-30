@@ -1,34 +1,40 @@
-class Trie {
+/**
+ * @brief Trie-based word matching in text
+ * @intuition Build trie from words; scan text finding all word matches
+ * @approach Insert words into trie, for each position traverse trie collecting matches
+ * @complexity Time: O(n * m + sum of word lengths), Space: O(sum of word lengths)
+ */
+class Trie final {
 public:
-    vector<Trie*> children;
+    array<Trie*, 26> children{};
     bool isEnd = false;
 
-    Trie() {
-        children.resize(26);
-    }
-
-    void insert(string word) {
+    void insert(const string& word) {
         Trie* node = this;
-        for (char c : word) {
-            c -= 'a';
-            if (!node->children[c]) node->children[c] = new Trie();
-            node = node->children[c];
+        for (const char c : word) {
+            const int idx = c - 'a';
+            if (!node->children[idx]) {
+                node->children[idx] = new Trie();
+            }
+            node = node->children[idx];
         }
         node->isEnd = true;
     }
 };
 
-class Solution {
+class Solution final {
 public:
-    vector<vector<int>> indexPairs(string text, vector<string>& words) {
-        Trie* trie = new Trie();
-        for (auto w : words) trie->insert(w);
-        int n = text.size();
+    [[nodiscard]] static vector<vector<int>> indexPairs(const string& text, const vector<string>& words) {
+        auto* trie = new Trie();
+        for (const auto& w : words) {
+            trie->insert(w);
+        }
+        const int n = text.size();
         vector<vector<int>> ans;
         for (int i = 0; i < n; ++i) {
             Trie* node = trie;
             for (int j = i; j < n; ++j) {
-                int idx = text[j] - 'a';
+                const int idx = text[j] - 'a';
                 if (!node->children[idx]) break;
                 node = node->children[idx];
                 if (node->isEnd) ans.push_back({i, j});

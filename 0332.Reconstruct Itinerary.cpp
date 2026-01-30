@@ -4,17 +4,12 @@
  * @approach DFS with backtracking, pop visited edges, reverse final path
  * @complexity Time: O(E log E), Space: O(E)
  */
-#include <algorithm>
-#include <string>
-#include <unordered_map>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] std::vector<std::string> findItinerary(
-        std::vector<std::vector<std::string>>& tickets) const {
+    [[nodiscard]] static std::vector<std::string> findItinerary(
+        std::vector<std::vector<std::string>>& tickets) {
         
-        std::sort(tickets.rbegin(), tickets.rend());
+        std::ranges::sort(tickets, std::greater<>());
         std::unordered_map<std::string, std::vector<std::string>> graph;
         
         for (const auto& ticket : tickets) {
@@ -33,7 +28,7 @@ public:
         
         std::string start = "JFK";
         dfs(start);
-        std::reverse(ans.begin(), ans.end());
+        std::ranges::reverse(ans);
         return ans;
     }
 };

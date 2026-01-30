@@ -1,10 +1,17 @@
-class Solution {
+/**
+ * @brief Count number of longest increasing subsequences
+ * @intuition Track both LIS length and count at each position
+ * @approach DP: f[i] = LIS length ending at i, cnt[i] = count of such sequences
+ * @complexity Time: O(n^2), Space: O(n)
+ */
+class Solution final {
 public:
-    int findNumberOfLIS(vector<int>& nums) {
-        int n = nums.size();
+    [[nodiscard]] static int findNumberOfLIS(const vector<int>& nums) {
+        const int n = nums.size();
         int mx = 0, ans = 0;
         vector<int> f(n, 1);
         vector<int> cnt(n, 1);
+        
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < i; ++j) {
                 if (nums[j] < nums[i]) {

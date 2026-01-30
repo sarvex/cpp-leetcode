@@ -5,40 +5,22 @@
  * @complexity Time: O(n), Space: O(h) where h is tree height
  */
 
-#include <algorithm>
-#include <functional>
-#include <limits>
-
-using std::function;
-
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-
 class Solution final {
 public:
-    [[nodiscard]] auto maxPathSum(TreeNode* root) const -> int {
-        int ans = std::numeric_limits<int>::min();
+    [[nodiscard]] static auto maxPathSum(TreeNode* root) -> int {
+        int result = std::numeric_limits<int>::min();
         
-        function<int(TreeNode*)> dfs = [&](TreeNode* node) -> int {
+        auto dfs = [&result](this auto&& self, TreeNode* node) -> int {
             if (!node) {
                 return 0;
             }
-            const int leftMax = std::max(0, dfs(node->left));
-            const int rightMax = std::max(0, dfs(node->right));
-            ans = std::max(ans, leftMax + rightMax + node->val);
+            const int leftMax = std::max(0, self(node->left));
+            const int rightMax = std::max(0, self(node->right));
+            result = std::max(result, leftMax + rightMax + node->val);
             return node->val + std::max(leftMax, rightMax);
         };
         
         dfs(root);
-        return ans;
+        return result;
     }
 };

@@ -4,19 +4,17 @@
  * @approach Map values to indices, verify duplicate distance <= k
  * @complexity Time: O(n), Space: O(n)
  */
-#include <unordered_map>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto containsNearbyDuplicate(const std::vector<int>& nums, int k) const -> bool {
-    std::unordered_map<int, int> lastIndex;
-    for (int i = 0; i < static_cast<int>(nums.size()); ++i) {
-      if (auto it = lastIndex.find(nums[i]); it != lastIndex.end() && i - it->second <= k) {
-        return true;
-      }
-      lastIndex[nums[i]] = i;
+    [[nodiscard]] static auto containsNearbyDuplicate(const std::vector<int>& nums, int k) -> bool {
+        std::unordered_map<int, int> lastIndex;
+        for (int i = 0; i < static_cast<int>(nums.size()); ++i) {
+            if (auto it = lastIndex.find(nums[i]); it != lastIndex.end() && i - it->second <= k) {
+                return true;
+            }
+            lastIndex[nums[i]] = i;
+        }
+        return false;
     }
-    return false;
-  }
 };

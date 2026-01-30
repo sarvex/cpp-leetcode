@@ -1,20 +1,34 @@
-class Solution {
+/**
+ * @brief Find longest cycle in permutation array
+ * @intuition Each index leads to exactly one cycle; track visited to avoid recount
+ * @approach For each unvisited start, follow chain marking visited, track max length
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    int arrayNesting(vector<int>& nums) {
-        int n = nums.size();
-        vector<bool> vis(n);
-        int res = 0;
+    [[nodiscard]] static int arrayNesting(vector<int>& nums) {
+        const int n = static_cast<int>(nums.size());
+        vector<bool> visited(n);
+        int result = 0;
+        
         for (int i = 0; i < n; ++i) {
-            if (vis[i]) continue;
-            int cur = nums[i], m = 1;
-            vis[cur] = true;
-            while (nums[cur] != nums[i]) {
-                cur = nums[cur];
-                ++m;
-                vis[cur] = true;
+            if (visited[i]) {
+                continue;
             }
-            res = max(res, m);
+            
+            int current = nums[i];
+            int length = 1;
+            visited[current] = true;
+            
+            while (nums[current] != nums[i]) {
+                current = nums[current];
+                ++length;
+                visited[current] = true;
+            }
+            
+            result = max(result, length);
         }
-        return res;
+        
+        return result;
     }
 };

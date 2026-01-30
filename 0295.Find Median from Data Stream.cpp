@@ -1,31 +1,32 @@
-class MedianFinder {
+/**
+ * @brief Two heaps to maintain running median
+ * @intuition Keep smaller half in max-heap, larger half in min-heap
+ * @approach Balance heaps so min-heap has at most one extra element
+ * @complexity Time: O(log n) add, O(1) median, Space: O(n)
+ */
+class MedianFinder final {
 public:
-    MedianFinder() {
-    }
+    MedianFinder() = default;
 
     void addNum(int num) {
-        maxQ.push(num);
-        minQ.push(maxQ.top());
-        maxQ.pop();
+        maxHeap_.push(num);
+        minHeap_.push(maxHeap_.top());
+        maxHeap_.pop();
 
-        if (minQ.size() > maxQ.size() + 1) {
-            maxQ.push(minQ.top());
-            minQ.pop();
+        if (minHeap_.size() > maxHeap_.size() + 1) {
+            maxHeap_.push(minHeap_.top());
+            minHeap_.pop();
         }
     }
 
-    double findMedian() {
-        return minQ.size() == maxQ.size() ? (minQ.top() + maxQ.top()) / 2.0 : minQ.top();
+    [[nodiscard]] double findMedian() const {
+        if (minHeap_.size() == maxHeap_.size()) {
+            return (minHeap_.top() + maxHeap_.top()) / 2.0;
+        }
+        return minHeap_.top();
     }
 
 private:
-    priority_queue<int> maxQ;
-    priority_queue<int, vector<int>, greater<int>> minQ;
+    priority_queue<int> maxHeap_;
+    priority_queue<int, vector<int>, greater<>> minHeap_;
 };
-
-/**
- * Your MedianFinder object will be instantiated and called as such:
- * MedianFinder* obj = new MedianFinder();
- * obj->addNum(num);
- * double param_2 = obj->findMedian();
- */

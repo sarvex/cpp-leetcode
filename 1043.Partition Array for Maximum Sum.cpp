@@ -1,7 +1,13 @@
-class Solution {
+/**
+ * @brief DP partitioning with maximum element per segment
+ * @intuition Partition into segments of length <= k, fill each with its max
+ * @approach f[i] = max sum for first i elements; try all segment lengths up to k
+ * @complexity Time: O(n * k), Space: O(n)
+ */
+class Solution final {
 public:
-    int maxSumAfterPartitioning(vector<int>& arr, int k) {
-        int n = arr.size();
+    [[nodiscard]] static int maxSumAfterPartitioning(const vector<int>& arr, const int k) {
+        const int n = arr.size();
         int f[n + 1];
         memset(f, 0, sizeof(f));
         for (int i = 1; i <= n; ++i) {

@@ -1,8 +1,17 @@
-class Solution {
+/**
+ * @brief Find most common 3-sequence pattern across user website visits
+ * @intuition Group visits by user, generate all 3-sequences, count unique user occurrences
+ * @approach For each user, sort visits by time and generate all triplet combinations.
+ *           Count each unique triplet per user. Return lexicographically smallest with highest count.
+ * @complexity Time: O(n + U * S^3) where U is users, S is max sites per user, Space: O(n)
+ */
+class Solution final {
 public:
-    vector<string> mostVisitedPattern(vector<string>& username, vector<int>& timestamp, vector<string>& website) {
+    [[nodiscard]] static vector<string> mostVisitedPattern(const vector<string>& username,
+                                                           const vector<int>& timestamp,
+                                                           const vector<string>& website) {
         unordered_map<string, vector<pair<int, string>>> d;
-        int n = username.size();
+        const int n = username.size();
         for (int i = 0; i < n; ++i) {
             auto user = username[i];
             int ts = timestamp[i];
@@ -14,7 +23,7 @@ public:
             int m = sites.size();
             unordered_set<string> s;
             if (m > 2) {
-                sort(sites.begin(), sites.end());
+                ranges::sort(sites);
                 for (int i = 0; i < m - 2; ++i) {
                     for (int j = i + 1; j < m - 1; ++j) {
                         for (int k = j + 1; k < m; ++k) {
@@ -23,7 +32,7 @@ public:
                     }
                 }
             }
-            for (auto& t : s) {
+            for (const auto& t : s) {
                 cnt[t]++;
             }
         }
@@ -38,12 +47,13 @@ public:
         return split(t, ',');
     }
 
-    vector<string> split(string& s, char c) {
+private:
+    [[nodiscard]] static vector<string> split(const string& s, char c) {
         vector<string> res;
         stringstream ss(s);
-        string t;
-        while (getline(ss, t, c)) {
-            res.push_back(t);
+        string item;
+        while (getline(ss, item, c)) {
+            res.push_back(item);
         }
         return res;
     }

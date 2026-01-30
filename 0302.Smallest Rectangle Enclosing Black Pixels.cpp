@@ -4,24 +4,34 @@
  * @approach Binary search on rows/columns to find first/last black pixels
  * @complexity Time: O(m log n + n log m), Space: O(1)
  */
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int minArea(std::vector<std::vector<char>>& image, int x, int y) const {
+    [[nodiscard]] static int minArea(const vector<vector<char>>& image, int x, int y) {
         const int m = static_cast<int>(image.size());
         const int n = static_cast<int>(image[0].size());
         
-        // Find top boundary
-        int left = 0;
-        int right = x;
+        auto hasBlackInRow = [&](int row) {
+            for (int c = 0; c < n; ++c) {
+                if (image[row][c] == '1') {
+                    return true;
+                }
+            }
+            return false;
+        };
+        
+        auto hasBlackInCol = [&](int col) {
+            for (int r = 0; r < m; ++r) {
+                if (image[r][col] == '1') {
+                    return true;
+                }
+            }
+            return false;
+        };
+        
+        int left = 0, right = x;
         while (left < right) {
             const int mid = (left + right) >> 1;
-            int c = 0;
-            while (c < n && image[mid][c] == '0') {
-                ++c;
-            }
-            if (c < n) {
+            if (hasBlackInRow(mid)) {
                 right = mid;
             } else {
                 left = mid + 1;
@@ -29,16 +39,11 @@ public:
         }
         const int top = left;
         
-        // Find bottom boundary
         left = x;
         right = m - 1;
         while (left < right) {
             const int mid = (left + right + 1) >> 1;
-            int c = 0;
-            while (c < n && image[mid][c] == '0') {
-                ++c;
-            }
-            if (c < n) {
+            if (hasBlackInRow(mid)) {
                 left = mid;
             } else {
                 right = mid - 1;
@@ -46,16 +51,11 @@ public:
         }
         const int bottom = left;
         
-        // Find left boundary
         left = 0;
         right = y;
         while (left < right) {
             const int mid = (left + right) >> 1;
-            int r = 0;
-            while (r < m && image[r][mid] == '0') {
-                ++r;
-            }
-            if (r < m) {
+            if (hasBlackInCol(mid)) {
                 right = mid;
             } else {
                 left = mid + 1;
@@ -63,16 +63,11 @@ public:
         }
         const int leftBound = left;
         
-        // Find right boundary
         left = y;
         right = n - 1;
         while (left < right) {
             const int mid = (left + right + 1) >> 1;
-            int r = 0;
-            while (r < m && image[r][mid] == '0') {
-                ++r;
-            }
-            if (r < m) {
+            if (hasBlackInCol(mid)) {
                 left = mid;
             } else {
                 right = mid - 1;

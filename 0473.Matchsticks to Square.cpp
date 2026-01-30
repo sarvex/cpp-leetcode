@@ -1,26 +1,53 @@
-class Solution {
+/**
+ * @brief Check if matchsticks can form a square
+ * @intuition Sum must be divisible by 4, DFS to distribute matchsticks to 4 sides
+ * @approach Sort descending for pruning, backtrack with skip for equal edges
+ * @complexity Time: O(4^n), Space: O(n)
+ */
+#include <algorithm>
+#include <functional>
+#include <vector>
+
+class Solution final {
 public:
-    bool makesquare(vector<int>& matchsticks) {
-        int s = 0, mx = 0;
-        for (int& v : matchsticks) {
-            s += v;
-            mx = max(mx, v);
+    [[nodiscard]] auto makesquare(std::vector<int>& matchsticks) const -> bool {
+        int sum = 0;
+        int maxVal = 0;
+
+        for (const int v : matchsticks) {
+            sum += v;
+            maxVal = std::max(maxVal, v);
         }
-        int x = s / 4, mod = s % 4;
-        if (mod != 0 || x < mx) return false;
-        sort(matchsticks.begin(), matchsticks.end(), greater<int>());
-        vector<int> edges(4);
-        return dfs(0, x, matchsticks, edges);
+
+        const int side = sum / 4;
+        if (sum % 4 != 0 || side < maxVal) {
+            return false;
+        }
+
+        std::sort(matchsticks.begin(), matchsticks.end(), std::greater<>());
+        std::vector<int> edges(4, 0);
+
+        return dfs(0, side, matchsticks, edges);
     }
 
-    bool dfs(int u, int x, vector<int>& matchsticks, vector<int>& edges) {
-        if (u == matchsticks.size()) return true;
-        for (int i = 0; i < 4; ++i) {
-            if (i > 0 && edges[i - 1] == edges[i]) continue;
-            edges[i] += matchsticks[u];
-            if (edges[i] <= x && dfs(u + 1, x, matchsticks, edges)) return true;
-            edges[i] -= matchsticks[u];
+private:
+    [[nodiscard]] auto dfs(int idx, int target, const std::vector<int>& matchsticks,
+                           std::vector<int>& edges) const -> bool {
+        if (idx == static_cast<int>(matchsticks.size())) {
+            return true;
         }
+
+        for (int i = 0; i < 4; ++i) {
+            if (i > 0 && edges[i - 1] == edges[i]) {
+                continue;
+            }
+            edges[i] += matchsticks[idx];
+            if (edges[i] <= target && dfs(idx + 1, target, matchsticks, edges)) {
+                return true;
+            }
+            edges[i] -= matchsticks[idx];
+        }
+
         return false;
     }
 };

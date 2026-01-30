@@ -1,8 +1,17 @@
-class Solution {
+/**
+ * @brief Track depth and score atomic pairs at each level
+ * @intuition "()" at depth d contributes 2^d; nested structure doubles inner scores
+ * @approach Track current depth. When closing a "()", if it's an atomic pair,
+ *           add 2^(depth-1) to result. Depth naturally handles nesting.
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    int scoreOfParentheses(string s) {
+    [[nodiscard]] static auto scoreOfParentheses(const std::string& s) -> int {
         int ans = 0, d = 0;
-        for (int i = 0; i < s.size(); ++i) {
+        const int n = static_cast<int>(s.size());
+        
+        for (int i = 0; i < n; ++i) {
             if (s[i] == '(') {
                 ++d;
             } else {

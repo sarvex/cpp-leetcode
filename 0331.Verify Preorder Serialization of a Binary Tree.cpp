@@ -4,13 +4,9 @@
  * @approach Use stack, reduce "num, #, #" to "#" until only "#" remains
  * @complexity Time: O(n), Space: O(n)
  */
-#include <sstream>
-#include <string>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] bool isValidSerialization(const std::string& preorder) const {
+    [[nodiscard]] static bool isValidSerialization(const std::string& preorder) {
         std::vector<std::string> stk;
         std::stringstream ss(preorder);
         std::string token;

@@ -1,36 +1,49 @@
-class Solution {
+/**
+ * @brief Count black pixels in rows with exactly N same-pattern black pixels
+ * @intuition Valid pixels must be in columns with exactly N black pixels, all in identical rows
+ * @approach Track black pixel count per row and column positions per column.
+ *           For each column, check if first row has target count, column has same count,
+ *           and all rows in column are identical. Add target to answer if valid.
+ * @complexity Time: O(m * n), Space: O(m * n)
+ */
+class Solution final {
 public:
-    int findBlackPixel(vector<vector<char>>& picture, int target) {
-        int m = picture.size();
-        int n = picture[0].size();
-        vector<int> g[n];
-        vector<int> rows(m);
+    [[nodiscard]] static auto findBlackPixel(const vector<vector<char>>& picture, 
+                                              int target) -> int {
+        const int m = static_cast<int>(picture.size());
+        const int n = static_cast<int>(picture[0].size());
+        
+        vector<vector<int>> colRows(n);
+        vector<int> rowCount(m, 0);
+        
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (picture[i][j] == 'B') {
-                    ++rows[i];
-                    g[j].push_back(i);
+                    ++rowCount[i];
+                    colRows[j].push_back(i);
                 }
             }
         }
 
         int ans = 0;
         for (int j = 0; j < n; ++j) {
-            if (g[j].empty() || (rows[g[j][0]] != target)) {
+            if (colRows[j].empty() || rowCount[colRows[j][0]] != target) {
                 continue;
             }
-            int i1 = g[j][0];
-            int ok = 0;
-            if (g[j].size() == rows[i1]) {
-                ok = target;
-                for (int i2 : g[j]) {
-                    if (picture[i1] != picture[i2]) {
-                        ok = 0;
+            
+            const int firstRow = colRows[j][0];
+            int validCount = 0;
+            
+            if (static_cast<int>(colRows[j].size()) == rowCount[firstRow]) {
+                validCount = target;
+                for (int row : colRows[j]) {
+                    if (picture[firstRow] != picture[row]) {
+                        validCount = 0;
                         break;
                     }
                 }
             }
-            ans += ok;
+            ans += validCount;
         }
         return ans;
     }

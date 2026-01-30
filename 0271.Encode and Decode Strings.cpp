@@ -4,13 +4,9 @@
  * @approach Store 4-byte length before each string content
  * @complexity Time: O(n) where n is total characters, Space: O(1) extra
  */
-#include <cstring>
-#include <string>
-#include <vector>
-
 class Codec final {
 public:
-  [[nodiscard]] auto encode(const std::vector<std::string>& strs) const -> std::string {
+  [[nodiscard]] static auto encode(const std::vector<std::string>& strs) -> std::string {
     std::string result;
     for (const auto& s : strs) {
       auto length = static_cast<int>(s.size());
@@ -20,7 +16,7 @@ public:
     return result;
   }
 
-  [[nodiscard]] auto decode(const std::string& s) const -> std::vector<std::string> {
+  [[nodiscard]] static auto decode(const std::string& s) -> std::vector<std::string> {
     std::vector<std::string> result;
     std::size_t i = 0;
     const auto n = s.size();

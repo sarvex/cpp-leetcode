@@ -2,23 +2,19 @@
  * @brief Determine if array can be partitioned into two equal sum subsets
  * @intuition Find subset with sum = total/2, other subset automatically equal
  * @approach 0/1 knapsack DP with target = total_sum / 2
- * @complexity Time: O(n * sum) Space: O(n * sum)
+ * @complexity Time: O(n * sum), Space: O(n * sum)
  */
-#include <cstring>
-#include <numeric>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] auto canPartition(std::vector<int>& nums) const -> bool {
+    [[nodiscard]] static auto canPartition(const std::vector<int>& nums) -> bool {
         const int s = std::accumulate(nums.begin(), nums.end(), 0);
 
         if (s % 2 == 1) {
             return false;
         }
 
-        const int n = static_cast<int>(nums.size());
-        const int m = s >> 1;
+        const auto n = static_cast<int>(nums.size());
+        const int m = s / 2;
 
         std::vector<std::vector<bool>> f(n + 1, std::vector<bool>(m + 1, false));
         f[0][0] = true;

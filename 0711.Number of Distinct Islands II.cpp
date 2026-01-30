@@ -1,53 +1,66 @@
-typedef pair<int, int> PII;
-
-class Solution {
+/**
+ * @brief Count distinct islands considering rotations and reflections
+ * @intuition Normalize island shapes by computing all 8 transformations
+ * @approach DFS to find islands, normalize with all symmetries, use set for uniqueness
+ * @complexity Time: O(m*n*k*log(k)) where k is island size, Space: O(m*n)
+ */
+class Solution final {
+    using Point = std::pair<int, int>;
+    
 public:
-    int numDistinctIslands2(vector<vector<int>>& grid) {
-        set<vector<PII>> s;
-        for (int i = 0; i < grid.size(); ++i) {
-            for (int j = 0; j < grid[0].size(); ++j) {
+    [[nodiscard]] int numDistinctIslands2(std::vector<std::vector<int>>& grid) {
+        std::set<std::vector<Point>> uniqueIslands;
+        const int rows = static_cast<int>(grid.size());
+        const int cols = static_cast<int>(grid[0].size());
+        
+        for (int i = 0; i < rows; ++i) {
+            for (int j = 0; j < cols; ++j) {
                 if (grid[i][j]) {
-                    vector<PII> shape;
+                    std::vector<Point> shape;
                     dfs(i, j, grid, shape);
-                    s.insert(normalize(shape));
+                    uniqueIslands.insert(normalize(shape));
                 }
             }
         }
-        return s.size();
+        return static_cast<int>(uniqueIslands.size());
     }
 
-    vector<PII> normalize(vector<PII>& shape) {
-        vector<vector<PII>> shapes(8);
-        for (auto& e : shape) {
-            int i = e.first, j = e.second;
-            shapes[0].push_back({i, j});
-            shapes[1].push_back({i, -j});
-            shapes[2].push_back({-i, j});
-            shapes[3].push_back({-i, -j});
-            shapes[4].push_back({j, i});
-            shapes[5].push_back({j, -i});
-            shapes[6].push_back({-j, -i});
-            shapes[7].push_back({-j, i});
+private:
+    [[nodiscard]] static std::vector<Point> normalize(std::vector<Point>& shape) {
+        std::vector<std::vector<Point>> shapes(8);
+        for (const auto& [i, j] : shape) {
+            shapes[0].emplace_back(i, j);
+            shapes[1].emplace_back(i, -j);
+            shapes[2].emplace_back(-i, j);
+            shapes[3].emplace_back(-i, -j);
+            shapes[4].emplace_back(j, i);
+            shapes[5].emplace_back(j, -i);
+            shapes[6].emplace_back(-j, -i);
+            shapes[7].emplace_back(-j, i);
         }
-        for (auto& e : shapes) {
-            sort(e.begin(), e.end());
-            for (int k = e.size() - 1; k >= 0; --k) {
-                e[k].first -= e[0].first;
-                e[k].second -= e[0].second;
+        for (auto& s : shapes) {
+            std::ranges::sort(s);
+            for (int k = static_cast<int>(s.size()) - 1; k >= 0; --k) {
+                s[k].first -= s[0].first;
+                s[k].second -= s[0].second;
             }
         }
-        sort(shapes.begin(), shapes.end());
+        std::ranges::sort(shapes);
         return shapes[0];
     }
 
-    void dfs(int i, int j, vector<vector<int>>& grid, vector<PII>& shape) {
-        shape.push_back({i, j});
+    static void dfs(const int i, const int j, std::vector<std::vector<int>>& grid, 
+                    std::vector<Point>& shape) {
+        shape.emplace_back(i, j);
         grid[i][j] = 0;
-        vector<int> dirs = {-1, 0, 1, 0, -1};
+        constexpr std::array<int, 5> dirs{-1, 0, 1, 0, -1};
         for (int k = 0; k < 4; ++k) {
-            int x = i + dirs[k], y = j + dirs[k + 1];
-            if (x >= 0 && x < grid.size() && y >= 0 && y < grid[0].size() && grid[x][y] == 1)
+            const int x = i + dirs[k];
+            const int y = j + dirs[k + 1];
+            if (x >= 0 && x < static_cast<int>(grid.size()) && 
+                y >= 0 && y < static_cast<int>(grid[0].size()) && grid[x][y] == 1) {
                 dfs(x, y, grid, shape);
+            }
         }
     }
 };

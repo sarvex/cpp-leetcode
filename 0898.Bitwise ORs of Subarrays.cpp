@@ -1,17 +1,26 @@
-class Solution {
+/**
+ * @brief Count distinct OR values of all subarrays
+ * @intuition OR of subarray ending at i: union of (OR of subarray ending at i-1) | arr[i]
+ * @approach Maintain set of all OR values for subarrays ending at current position.
+ *           For each new element, OR it with all previous values and itself.
+ *           Union into answer set.
+ * @complexity Time: O(n * 32), Space: O(n * 32)
+ */
+class Solution final {
 public:
-    int subarrayBitwiseORs(vector<int>& arr) {
-        unordered_set<int> ans;
-        unordered_set<int> s;
-        for (int x : arr) {
-            unordered_set<int> t;
-            for (int y : s) {
-                t.insert(x | y);
+    [[nodiscard]] static auto subarrayBitwiseORs(const std::vector<int>& arr) -> int {
+        std::unordered_set<int> ans;
+        std::unordered_set<int> current;
+        
+        for (const int x : arr) {
+            std::unordered_set<int> next;
+            for (const int y : current) {
+                next.insert(x | y);
             }
-            t.insert(x);
-            ans.insert(t.begin(), t.end());
-            s = move(t);
+            next.insert(x);
+            ans.insert(next.begin(), next.end());
+            current = std::move(next);
         }
-        return ans.size();
+        return static_cast<int>(ans.size());
     }
 };

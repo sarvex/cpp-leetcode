@@ -1,27 +1,38 @@
-class Solution {
+/**
+ * @brief Network delay time using Dijkstra's algorithm
+ * @intuition Find shortest paths from source to all nodes, return maximum
+ * @approach Dijkstra's algorithm to find single-source shortest paths
+ * @complexity Time: O(n^2), Space: O(n^2)
+ */
+class Solution final {
 public:
-    int networkDelayTime(vector<vector<int>>& times, int n, int k) {
-        const int inf = 1 << 29;
-        vector<vector<int>> g(n, vector<int>(n, inf));
-        for (const auto& e : times) {
-            g[e[0] - 1][e[1] - 1] = e[2];
+    [[nodiscard]] static int networkDelayTime(const std::vector<std::vector<int>>& times, 
+                                               const int n, const int k) {
+        constexpr int INF = 1 << 29;
+        std::vector<std::vector<int>> graph(n, std::vector<int>(n, INF));
+        
+        for (const auto& edge : times) {
+            graph[edge[0] - 1][edge[1] - 1] = edge[2];
         }
-        vector<int> dist(n, inf);
+        
+        std::vector<int> dist(n, INF);
         dist[k - 1] = 0;
-        vector<bool> vis(n);
+        std::vector<bool> visited(n, false);
+        
         for (int i = 0; i < n; ++i) {
-            int t = -1;
+            int closest = -1;
             for (int j = 0; j < n; ++j) {
-                if (!vis[j] && (t == -1 || dist[t] > dist[j])) {
-                    t = j;
+                if (!visited[j] && (closest == -1 || dist[closest] > dist[j])) {
+                    closest = j;
                 }
             }
-            vis[t] = true;
+            visited[closest] = true;
             for (int j = 0; j < n; ++j) {
-                dist[j] = min(dist[j], dist[t] + g[t][j]);
+                dist[j] = std::min(dist[j], dist[closest] + graph[closest][j]);
             }
         }
-        int ans = ranges::max(dist);
-        return ans == inf ? -1 : ans;
+        
+        const int result = std::ranges::max(dist);
+        return result == INF ? -1 : result;
     }
 };

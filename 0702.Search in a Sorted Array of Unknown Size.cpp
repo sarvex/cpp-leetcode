@@ -1,28 +1,25 @@
 /**
- * // This is the ArrayReader's API interface.
- * // You should not implement it, or speculate about its implementation
- * class ArrayReader {
- *   public:
- *     int get(int index);
- * };
+ * @brief Binary search with exponential bound finding
+ * @intuition First find upper bound exponentially, then binary search within range
+ * @approach Double right bound until target found, then apply standard binary search
+ * @complexity Time: O(log n), Space: O(1)
  */
-
-class Solution {
+class Solution final {
 public:
-    int search(const ArrayReader& reader, int target) {
-        int r = 1;
-        while (reader.get(r) < target) {
-            r <<= 1;
+    [[nodiscard]] static int search(const ArrayReader& reader, const int target) {
+        int right = 1;
+        while (reader.get(right) < target) {
+            right <<= 1;
         }
-        int l = r >> 1;
-        while (l < r) {
-            int mid = (l + r) >> 1;
+        int left = right >> 1;
+        while (left < right) {
+            const int mid = (left + right) >> 1;
             if (reader.get(mid) >= target) {
-                r = mid;
+                right = mid;
             } else {
-                l = mid + 1;
+                left = mid + 1;
             }
         }
-        return reader.get(l) == target ? l : -1;
+        return reader.get(left) == target ? left : -1;
     }
 };

@@ -1,61 +1,57 @@
-class Trie {
+/**
+ * @brief Map with prefix sum functionality
+ * @intuition Use Trie storing cumulative sums along paths, adjust for updates
+ * @approach Trie nodes store sum of all values with that prefix
+ * @complexity Time: O(m) for insert/sum, Space: O(n*m)
+ */
+class Trie final {
 public:
-    Trie()
-        : children(26, nullptr) {
-    }
+    Trie() : children_(26, nullptr) {}
 
-    void insert(string& w, int x) {
+    void insert(const string& w, const int x) {
         Trie* node = this;
-        for (char c : w) {
-            c -= 'a';
-            if (!node->children[c]) {
-                node->children[c] = new Trie();
+        for (const char c : w) {
+            const int i = c - 'a';
+            if (!node->children_[i]) {
+                node->children_[i] = new Trie();
             }
-            node = node->children[c];
-            node->val += x;
+            node = node->children_[i];
+            node->val_ += x;
         }
     }
 
-    int search(string& w) {
-        Trie* node = this;
-        for (char c : w) {
-            c -= 'a';
-            if (!node->children[c]) {
+    [[nodiscard]] int search(const string& w) const {
+        const Trie* node = this;
+        for (const char c : w) {
+            const int i = c - 'a';
+            if (!node->children_[i]) {
                 return 0;
             }
-            node = node->children[c];
+            node = node->children_[i];
         }
-        return node->val;
+        return node->val_;
     }
 
 private:
-    vector<Trie*> children;
-    int val = 0;
+    vector<Trie*> children_;
+    int val_ = 0;
 };
 
-class MapSum {
+class MapSum final {
 public:
-    MapSum() {
+    MapSum() : trie_(new Trie()) {}
+
+    void insert(const string& key, const int val) {
+        const int x = val - d_[key];
+        d_[key] = val;
+        trie_->insert(key, x);
     }
 
-    void insert(string key, int val) {
-        int x = val - d[key];
-        d[key] = val;
-        trie->insert(key, x);
-    }
-
-    int sum(string prefix) {
-        return trie->search(prefix);
+    [[nodiscard]] int sum(const string& prefix) const {
+        return trie_->search(prefix);
     }
 
 private:
-    unordered_map<string, int> d;
-    Trie* trie = new Trie();
+    unordered_map<string, int> d_;
+    Trie* trie_;
 };
-
-/**
- * Your MapSum object will be instantiated and called as such:
- * MapSum* obj = new MapSum();
- * obj->insert(key,val);
- * int param_2 = obj->sum(prefix);
- */

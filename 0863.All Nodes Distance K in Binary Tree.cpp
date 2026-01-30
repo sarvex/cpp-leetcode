@@ -1,40 +1,39 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
+ * @brief Build parent pointers then BFS/DFS from target node
+ * @intuition Convert tree to graph by adding parent references; find nodes at distance k
+ * @approach First DFS to build parent map. Then DFS from target, exploring children
+ *           and parent, counting distance. Collect nodes at exactly distance k.
+ * @complexity Time: O(n), Space: O(n)
  */
-class Solution {
+class Solution final {
 public:
-    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
-        unordered_map<TreeNode*, TreeNode*> g;
-        vector<int> ans;
+    [[nodiscard]] auto distanceK(TreeNode* root, TreeNode* target, int k)
+        -> std::vector<int> {
+        std::unordered_map<TreeNode*, TreeNode*> parent;
+        std::vector<int> ans;
 
-        auto dfs = [&](this auto&& dfs, TreeNode* node, TreeNode* fa) {
+        auto buildParent = [&](auto&& self, TreeNode* node, TreeNode* fa) -> void {
             if (!node) return;
-            g[node] = fa;
-            dfs(node->left, node);
-            dfs(node->right, node);
+            parent[node] = fa;
+            self(self, node->left, node);
+            self(self, node->right, node);
         };
 
-        auto dfs2 = [&](this auto&& dfs2, TreeNode* node, TreeNode* fa, int k) {
+        auto findNodes = [&](auto&& self, TreeNode* node, TreeNode* fa, int dist) -> void {
             if (!node) return;
-            if (k == 0) {
+            if (dist == 0) {
                 ans.push_back(node->val);
                 return;
             }
-            for (auto&& nxt : {node->left, node->right, g[node]}) {
+            for (auto* nxt : {node->left, node->right, parent[node]}) {
                 if (nxt != fa) {
-                    dfs2(nxt, node, k - 1);
+                    self(self, nxt, node, dist - 1);
                 }
             }
         };
 
-        dfs(root, nullptr);
-        dfs2(target, nullptr, k);
+        buildParent(buildParent, root, nullptr);
+        findNodes(findNodes, target, nullptr, k);
         return ans;
     }
 };

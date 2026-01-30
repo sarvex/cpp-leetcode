@@ -1,10 +1,15 @@
-class Solution {
+/**
+ * @brief Count valid permutations matching DI pattern
+ * @intuition DP where f[i][j] = count of permutations of length i ending at relative position j
+ * @approach For 'D', sum from current position up; for 'I', sum from 0 to current position
+ * @complexity Time: O(n^3), Space: O(n^2)
+ */
+class Solution final {
 public:
-    int numPermsDISequence(string s) {
-        const int mod = 1e9 + 7;
-        int n = s.size();
-        int f[n + 1][n + 1];
-        memset(f, 0, sizeof(f));
+    [[nodiscard]] static int numPermsDISequence(const string& s) {
+        constexpr int mod = 1e9 + 7;
+        const int n = static_cast<int>(s.size());
+        vector f(n + 1, vector<int>(n + 1, 0));
         f[0][0] = 1;
         for (int i = 1; i <= n; ++i) {
             if (s[i - 1] == 'D') {

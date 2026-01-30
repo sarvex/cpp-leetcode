@@ -1,34 +1,30 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Compute average value at each level of binary tree
+ * @intuition BFS level-by-level, sum values and divide by count
+ * @approach Use queue for BFS, process entire level at once
+ * @complexity Time: O(n), Space: O(w) where w is max width
  */
-class Solution {
+class Solution final {
 public:
-    vector<double> averageOfLevels(TreeNode* root) {
+    [[nodiscard]] static vector<double> averageOfLevels(TreeNode* root) {
         queue<TreeNode*> q{{root}};
         vector<double> ans;
+        
         while (!q.empty()) {
-            int n = q.size();
+            const int n = q.size();
             long long s = 0;
             for (int i = 0; i < n; ++i) {
-                root = q.front();
+                auto* node = q.front();
                 q.pop();
-                s += root->val;
-                if (root->left) {
-                    q.push(root->left);
+                s += node->val;
+                if (node->left) {
+                    q.push(node->left);
                 }
-                if (root->right) {
-                    q.push(root->right);
+                if (node->right) {
+                    q.push(node->right);
                 }
             }
-            ans.push_back(s * 1.0 / n);
+            ans.push_back(static_cast<double>(s) / n);
         }
         return ans;
     }

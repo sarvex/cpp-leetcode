@@ -4,31 +4,23 @@
  * @approach Find neighbors using upper_bound, merge if adjacent
  * @complexity Time: O(log n) addNum, O(n) getIntervals, Space: O(n)
  */
-#include <algorithm>
-#include <map>
-#include <vector>
-
 class SummaryRanges final {
 public:
     SummaryRanges() = default;
 
-    void addNum(int val) {
+    void addNum(const int val) {
         auto right = intervals_.upper_bound(val);
         auto left = right == intervals_.begin() ? intervals_.end() : std::prev(right);
         
         if (left != intervals_.end() && right != intervals_.end() && 
             left->second[1] + 1 == val && right->second[0] - 1 == val) {
-            // Merge both intervals
             left->second[1] = right->second[1];
             intervals_.erase(right);
         } else if (left != intervals_.end() && val <= left->second[1] + 1) {
-            // Extend left interval
             left->second[1] = std::max(val, left->second[1]);
         } else if (right != intervals_.end() && val >= right->second[0] - 1) {
-            // Extend right interval
             right->second[0] = std::min(val, right->second[0]);
         } else {
-            // Create new interval
             intervals_[val] = {val, val};
         }
     }
@@ -45,10 +37,3 @@ public:
 private:
     std::map<int, std::vector<int>> intervals_;
 };
-
-/**
- * Your SummaryRanges object will be instantiated and called as such:
- * SummaryRanges* obj = new SummaryRanges();
- * obj->addNum(val);
- * vector<vector<int>> param_2 = obj->getIntervals();
- */

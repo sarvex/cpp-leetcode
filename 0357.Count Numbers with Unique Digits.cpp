@@ -4,13 +4,10 @@
  * @approach DFS with memoization, handle leading zeros specially
  * @complexity Time: O(n * 2^10), Space: O(n * 2^10)
  */
-#include <cstring>
-
 class Solution final {
 public:
-    [[nodiscard]] int countNumbersWithUniqueDigits(int n) const {
-        int memo[n + 1][1 << 10];
-        std::memset(memo, -1, sizeof(memo));
+    [[nodiscard]] static int countNumbersWithUniqueDigits(const int n) {
+        std::vector<std::vector<int>> memo(n + 1, std::vector<int>(1 << 10, -1));
         
         auto dfs = [&](this auto&& dfs, int pos, int mask, bool leadingZero) -> int {
             if (pos < 0) {

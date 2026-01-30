@@ -1,25 +1,22 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
+ * @brief Level-order serialization/deserialization of binary tree
+ * @intuition BFS traversal with null markers for missing children
+ * @approach Serialize: BFS with "#" for null; Deserialize: BFS reconstruction
+ * @complexity Time: O(n), Space: O(n)
  */
-class Codec {
+class Codec final {
 public:
-    // Encodes a tree to a single string.
-    string serialize(TreeNode* root) {
-        if (!root) {
+    [[nodiscard]] static string serialize(TreeNode* root) {
+        if (root == nullptr) {
             return "";
         }
         queue<TreeNode*> q{{root}};
         string ans;
+        
         while (!q.empty()) {
             auto node = q.front();
             q.pop();
-            if (node) {
+            if (node != nullptr) {
                 ans += to_string(node->val) + " ";
                 q.push(node->left);
                 q.push(node->right);
@@ -31,34 +28,33 @@ public:
         return ans;
     }
 
-    // Decodes your encoded data to tree.
-    TreeNode* deserialize(string data) {
-        if (data == "") {
+    [[nodiscard]] static TreeNode* deserialize(const string& data) {
+        if (data.empty()) {
             return nullptr;
         }
         stringstream ss(data);
-        string t;
-        ss >> t;
-        TreeNode* root = new TreeNode(stoi(t));
+        string token;
+        ss >> token;
+        
+        auto* root = new TreeNode(stoi(token));
         queue<TreeNode*> q{{root}};
+        
         while (!q.empty()) {
-            auto node = q.front();
+            auto* node = q.front();
             q.pop();
-            ss >> t;
-            if (t != "#") {
-                node->left = new TreeNode(stoi(t));
+            
+            ss >> token;
+            if (token != "#") {
+                node->left = new TreeNode(stoi(token));
                 q.push(node->left);
             }
-            ss >> t;
-            if (t != "#") {
-                node->right = new TreeNode(stoi(t));
+            
+            ss >> token;
+            if (token != "#") {
+                node->right = new TreeNode(stoi(token));
                 q.push(node->right);
             }
         }
         return root;
     }
 };
-
-// Your Codec object will be instantiated and called as such:
-// Codec codec;
-// codec.deserialize(codec.serialize(root));

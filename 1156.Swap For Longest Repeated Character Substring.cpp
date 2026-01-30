@@ -1,11 +1,18 @@
-class Solution {
+/**
+ * @brief Find longest substring of same character achievable with one swap
+ * @intuition Consider joining two segments separated by one different character using a swap
+ * @approach Track character counts and iterate through runs. For each run, try extending by
+ *           joining with next same-character run (separated by one char) if spare chars exist.
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    int maxRepOpt1(string text) {
+    [[nodiscard]] static int maxRepOpt1(const string& text) {
         int cnt[26] = {0};
-        for (char& c : text) {
+        for (char c : text) {
             ++cnt[c - 'a'];
         }
-        int n = text.size();
+        const int n = text.size();
         int ans = 0, i = 0;
         while (i < n) {
             int j = i;

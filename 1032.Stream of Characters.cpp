@@ -1,4 +1,10 @@
-class Trie {
+/**
+ * @brief Trie with reversed word insertion for suffix matching
+ * @intuition Store words reversed in trie; search from end of stream backwards
+ * @approach Insert reversed words, check if any word suffix matches stream end
+ * @complexity Time: O(W * L) for construction, O(L) per query, Space: O(W * L)
+ */
+class Trie final {
 private:
     Trie* children[26]{};
     bool isEnd = false;
@@ -7,8 +13,8 @@ public:
     void insert(string& w) {
         Trie* node = this;
         reverse(w.begin(), w.end());
-        for (char& c : w) {
-            int idx = c - 'a';
+        for (const char c : w) {
+            const int idx = c - 'a';
             if (!node->children[idx]) {
                 node->children[idx] = new Trie();
             }
@@ -17,10 +23,10 @@ public:
         node->isEnd = true;
     }
 
-    bool search(string& w) {
-        Trie* node = this;
-        for (int i = w.size() - 1, j = 0; ~i && j < 201; --i, ++j) {
-            int idx = w[i] - 'a';
+    [[nodiscard]] bool search(const string& w) const {
+        const Trie* node = this;
+        for (int i = w.size() - 1, j = 0; i >= 0 && j < 201; --i, ++j) {
+            const int idx = w[i] - 'a';
             if (!node->children[idx]) {
                 return false;
             }
@@ -33,25 +39,19 @@ public:
     }
 };
 
-class StreamChecker {
+class StreamChecker final {
 public:
     Trie* trie = new Trie();
     string s;
 
-    StreamChecker(vector<string>& words) {
+    explicit StreamChecker(vector<string>& words) {
         for (auto& w : words) {
             trie->insert(w);
         }
     }
 
-    bool query(char letter) {
+    [[nodiscard]] bool query(const char letter) {
         s += letter;
         return trie->search(s);
     }
 };
-
-/**
- * Your StreamChecker object will be instantiated and called as such:
- * StreamChecker* obj = new StreamChecker(words);
- * bool param_1 = obj->query(letter);
- */

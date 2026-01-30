@@ -1,93 +1,106 @@
-class Node {
+/**
+ * @brief Track maximum height after each falling square
+ * @intuition Use segment tree with lazy propagation for range max queries and updates
+ * @approach For each square, query max height in landing range, update with new height
+ * @complexity Time: O(n log M) where M is coordinate range, Space: O(n log M)
+ */
+class SegmentTree final {
 public:
-    Node* left;
-    Node* right;
-    int l;
-    int r;
-    int mid;
-    int v;
-    int add;
+    SegmentTree() : root_(new Node(1, 1e9)) {}
 
-    Node(int l, int r) {
-        this->l = l;
-        this->r = r;
-        this->mid = (l + r) >> 1;
-        this->left = this->right = nullptr;
-        v = add = 0;
+    void modify(const int l, const int r, const int v) {
+        modify(l, r, v, root_);
     }
-};
 
-class SegmentTree {
+    [[nodiscard]] int query(const int l, const int r) const {
+        return query(l, r, root_);
+    }
+
 private:
-    Node* root;
+    struct Node {
+        Node* left = nullptr;
+        Node* right = nullptr;
+        int l, r, mid;
+        int v = 0, add = 0;
+        
+        Node(const int l, const int r) : l(l), r(r), mid((l + r) >> 1) {}
+    };
+    
+    Node* root_;
 
-public:
-    SegmentTree() {
-        root = new Node(1, 1e9);
-    }
-
-    void modify(int l, int r, int v) {
-        modify(l, r, v, root);
-    }
-
-    void modify(int l, int r, int v, Node* node) {
-        if (l > r) return;
+    void modify(const int l, const int r, const int v, Node* node) {
+        if (l > r) {
+            return;
+        }
         if (node->l >= l && node->r <= r) {
             node->v = v;
             node->add = v;
             return;
         }
         pushdown(node);
-        if (l <= node->mid) modify(l, r, v, node->left);
-        if (r > node->mid) modify(l, r, v, node->right);
+        if (l <= node->mid) {
+            modify(l, r, v, node->left);
+        }
+        if (r > node->mid) {
+            modify(l, r, v, node->right);
+        }
         pushup(node);
     }
 
-    int query(int l, int r) {
-        return query(l, r, root);
-    }
-
-    int query(int l, int r, Node* node) {
-        if (l > r) return 0;
-        if (node->l >= l && node->r <= r) return node->v;
+    [[nodiscard]] int query(const int l, const int r, Node* node) const {
+        if (l > r) {
+            return 0;
+        }
+        if (node->l >= l && node->r <= r) {
+            return node->v;
+        }
         pushdown(node);
         int v = 0;
-        if (l <= node->mid) v = max(v, query(l, r, node->left));
-        if (r > node->mid) v = max(v, query(l, r, node->right));
+        if (l <= node->mid) {
+            v = max(v, query(l, r, node->left));
+        }
+        if (r > node->mid) {
+            v = max(v, query(l, r, node->right));
+        }
         return v;
     }
 
-    void pushup(Node* node) {
+    static void pushup(Node* node) {
         node->v = max(node->left->v, node->right->v);
     }
 
-    void pushdown(Node* node) {
-        if (!node->left) node->left = new Node(node->l, node->mid);
-        if (!node->right) node->right = new Node(node->mid + 1, node->r);
+    static void pushdown(Node* node) {
+        if (!node->left) {
+            node->left = new Node(node->l, node->mid);
+        }
+        if (!node->right) {
+            node->right = new Node(node->mid + 1, node->r);
+        }
         if (node->add) {
-            Node* left = node->left;
-            Node* right = node->right;
-            left->v = node->add;
-            right->v = node->add;
-            left->add = node->add;
-            right->add = node->add;
+            node->left->v = node->add;
+            node->right->v = node->add;
+            node->left->add = node->add;
+            node->right->add = node->add;
             node->add = 0;
         }
     }
 };
 
-class Solution {
+class Solution final {
 public:
-    vector<int> fallingSquares(vector<vector<int>>& positions) {
+    [[nodiscard]] static vector<int> fallingSquares(const vector<vector<int>>& positions) {
         vector<int> ans;
-        SegmentTree* tree = new SegmentTree();
+        SegmentTree tree;
         int mx = 0;
-        for (auto& p : positions) {
-            int l = p[0], w = p[1], r = l + w - 1;
-            int h = tree->query(l, r) + w;
+        
+        for (const auto& p : positions) {
+            const int l = p[0];
+            const int w = p[1];
+            const int r = l + w - 1;
+            const int h = tree.query(l, r) + w;
             mx = max(mx, h);
             ans.push_back(mx);
-            tree->modify(l, r, h);
+            tree.modify(l, r, h);
         }
         return ans;
     }

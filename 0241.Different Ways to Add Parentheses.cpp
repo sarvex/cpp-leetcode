@@ -4,9 +4,6 @@
  * @approach Recursively compute results for subexpressions, combine with operator
  * @complexity Time: O(4^n / sqrt(n)) Catalan number, Space: O(4^n / sqrt(n))
  */
-#include <string>
-#include <unordered_map>
-#include <vector>
 
 class Solution final {
 private:

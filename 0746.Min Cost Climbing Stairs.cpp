@@ -1,18 +1,25 @@
-class Solution {
+/**
+ * @brief Minimum cost climbing stairs using memoized DP
+ * @intuition Each step can be reached from previous or two steps back
+ * @approach Memoized recursion: min cost to reach top from index i
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    int minCostClimbingStairs(vector<int>& cost) {
-        int n = cost.size();
-        int f[n];
-        memset(f, -1, sizeof(f));
-        auto dfs = [&](this auto&& dfs, int i) -> int {
+    [[nodiscard]] static int minCostClimbingStairs(const std::vector<int>& cost) {
+        const int n = static_cast<int>(cost.size());
+        std::vector<int> memo(n, -1);
+        
+        auto dfs = [&](auto&& self, const int i) -> int {
             if (i >= n) {
                 return 0;
             }
-            if (f[i] < 0) {
-                f[i] = cost[i] + min(dfs(i + 1), dfs(i + 2));
+            if (memo[i] < 0) {
+                memo[i] = cost[i] + std::min(self(self, i + 1), self(self, i + 2));
             }
-            return f[i];
+            return memo[i];
         };
-        return min(dfs(0), dfs(1));
+        
+        return std::min(dfs(dfs, 0), dfs(dfs, 1));
     }
 };

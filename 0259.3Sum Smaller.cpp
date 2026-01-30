@@ -4,13 +4,10 @@
  * @approach When sum < target, all pairs with current j count
  * @complexity Time: O(n^2), Space: O(1)
  */
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto threeSumSmaller(std::vector<int>& nums, int target) const -> int {
-    std::sort(nums.begin(), nums.end());
+  [[nodiscard]] static auto threeSumSmaller(std::vector<int>& nums, const int target) -> int {
+    std::ranges::sort(nums);
     int count = 0;
     const auto n = static_cast<int>(nums.size());
     

@@ -1,30 +1,40 @@
-class Solution {
+/**
+ * @brief Union-Find with lexicographically smallest representative
+ * @intuition Group equivalent characters; always point to smallest in group
+ * @approach Union-Find where parent is always the smaller character
+ * @complexity Time: O(n * alpha), Space: O(1)
+ */
+class Solution final {
 public:
-    vector<int> p;
-
-    string smallestEquivalentString(string s1, string s2, string baseStr) {
-        p.resize(26);
-        for (int i = 0; i < 26; ++i)
-            p[i] = i;
-        for (int i = 0; i < s1.size(); ++i) {
-            int a = s1[i] - 'a', b = s2[i] - 'a';
-            int pa = find(a), pb = find(b);
-            if (pa < pb)
+    [[nodiscard]] static string smallestEquivalentString(
+        const string& s1,
+        const string& s2,
+        const string& baseStr) {
+        
+        array<int, 26> p;
+        iota(p.begin(), p.end(), 0);
+        
+        function<int(int)> find = [&](const int x) -> int {
+            if (p[x] != x) {
+                p[x] = find(p[x]);
+            }
+            return p[x];
+        };
+        
+        for (size_t i = 0; i < s1.size(); ++i) {
+            const int a = s1[i] - 'a', b = s2[i] - 'a';
+            const int pa = find(a), pb = find(b);
+            if (pa < pb) {
                 p[pb] = pa;
-            else
+            } else {
                 p[pa] = pb;
+            }
         }
-        string res = "";
-        for (char a : baseStr) {
-            char b = (char) (find(a - 'a') + 'a');
-            res += b;
+        
+        string res;
+        for (const char a : baseStr) {
+            res += static_cast<char>(find(a - 'a') + 'a');
         }
         return res;
-    }
-
-    int find(int x) {
-        if (p[x] != x)
-            p[x] = find(p[x]);
-        return p[x];
     }
 };

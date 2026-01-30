@@ -4,15 +4,9 @@
  * @approach Count frequencies, use min-heap of size k for most frequent
  * @complexity Time: O(n log k), Space: O(n + k)
  */
-#include <functional>
-#include <queue>
-#include <unordered_map>
-#include <utility>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] std::vector<int> topKFrequent(const std::vector<int>& nums, int k) const {
+    [[nodiscard]] static std::vector<int> topKFrequent(const std::vector<int>& nums, const int k) {
         std::unordered_map<int, int> cnt;
         for (const int x : nums) {
             ++cnt[x];

@@ -4,15 +4,10 @@
  * @approach Use min-heap to always get the smallest next ugly number
  * @complexity Time: O(n * k * log(nk)), Space: O(nk)
  */
-#include <climits>
-#include <functional>
-#include <queue>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int nthSuperUglyNumber(int n, const std::vector<int>& primes) const {
-        std::priority_queue<int, std::vector<int>, std::greater<>> pq;
+    [[nodiscard]] static int nthSuperUglyNumber(int n, const vector<int>& primes) {
+        priority_queue<int, vector<int>, greater<>> pq;
         pq.push(1);
         int x = 0;
         

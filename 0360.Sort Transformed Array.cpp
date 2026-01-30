@@ -4,12 +4,10 @@
  * @approach Two pointers from ends, fill result based on coefficient sign
  * @complexity Time: O(n), Space: O(n)
  */
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] std::vector<int> sortTransformedArray(const std::vector<int>& nums, 
-                                                         int a, int b, int c) const {
+    [[nodiscard]] static std::vector<int> sortTransformedArray(const std::vector<int>& nums, 
+                                                                const int a, const int b, const int c) {
         const int n = static_cast<int>(nums.size());
         int i = 0;
         int j = n - 1;
@@ -42,7 +40,7 @@ public:
     }
 
 private:
-    [[nodiscard]] static constexpr int transform(int a, int b, int c, int x) {
+    [[nodiscard]] static constexpr int transform(const int a, const int b, const int c, const int x) {
         return a * x * x + b * x + c;
     }
 };

@@ -5,20 +5,14 @@
  * @complexity Time: O(m*n), Space: O(m*n)
  */
 
-#include <algorithm>
-#include <limits>
-#include <vector>
-
-using std::vector;
-
 class Solution final {
 public:
-    [[nodiscard]] auto calculateMinimumHP(vector<vector<int>>& dungeon) const -> int {
+    [[nodiscard]] static auto calculateMinimumHP(const std::vector<std::vector<int>>& dungeon) -> int {
         const int m = static_cast<int>(dungeon.size());
         const int n = static_cast<int>(dungeon[0].size());
         constexpr int INF = std::numeric_limits<int>::max() / 2;
         
-        vector<vector<int>> dp(m + 1, vector<int>(n + 1, INF));
+        std::vector<std::vector<int>> dp(m + 1, std::vector<int>(n + 1, INF));
         dp[m][n - 1] = dp[m - 1][n] = 1;
         
         for (int i = m - 1; i >= 0; --i) {

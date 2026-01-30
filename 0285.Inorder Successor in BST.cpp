@@ -1,17 +1,14 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
- * };
+ * @brief Find inorder successor in BST using BST property
+ * @intuition Successor is smallest node greater than p
+ * @approach Binary search: track last node where we went left
+ * @complexity Time: O(h), Space: O(1)
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
+    [[nodiscard]] static TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
         TreeNode* ans = nullptr;
-        while (root) {
+        while (root != nullptr) {
             if (root->val > p->val) {
                 ans = root;
                 root = root->left;

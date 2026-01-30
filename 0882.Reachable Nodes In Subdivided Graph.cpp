@@ -1,35 +1,50 @@
-class Solution {
+/**
+ * @brief Dijkstra's algorithm on subdivided graph
+ * @intuition Each edge becomes cnt+1 edges; count reachable original and new nodes
+ * @approach Run Dijkstra treating edge weights as cnt+1. Count reachable original nodes
+ *           (dist <= maxMoves). For each edge, count reachable new nodes from both ends.
+ * @complexity Time: O(E log V), Space: O(V + E)
+ */
+class Solution final {
 public:
-    int reachableNodes(vector<vector<int>>& edges, int maxMoves, int n) {
-        using pii = pair<int, int>;
-        vector<vector<pii>> g(n);
-        for (auto& e : edges) {
-            int u = e[0], v = e[1], cnt = e[2] + 1;
+    [[nodiscard]] static auto reachableNodes(
+        const std::vector<std::vector<int>>& edges, int maxMoves, int n) -> int {
+        using pii = std::pair<int, int>;
+        std::vector<std::vector<pii>> g(n);
+        
+        for (const auto& e : edges) {
+            const int u = e[0], v = e[1], cnt = e[2] + 1;
             g[u].emplace_back(v, cnt);
             g[v].emplace_back(u, cnt);
         }
-        priority_queue<pii, vector<pii>, greater<pii>> q;
-        q.emplace(0, 0);
-        int dist[n];
-        memset(dist, 0x3f, sizeof dist);
+        
+        std::priority_queue<pii, std::vector<pii>, std::greater<>> pq;
+        pq.emplace(0, 0);
+        std::vector<int> dist(n, INT_MAX);
         dist[0] = 0;
-        while (!q.empty()) {
-            auto [d, u] = q.top();
-            q.pop();
-            for (auto& [v, cnt] : g[u]) {
+        
+        while (!pq.empty()) {
+            auto [d, u] = pq.top();
+            pq.pop();
+            
+            for (auto [v, cnt] : g[u]) {
                 if (d + cnt < dist[v]) {
                     dist[v] = d + cnt;
-                    q.emplace(dist[v], v);
+                    pq.emplace(dist[v], v);
                 }
             }
         }
+        
         int ans = 0;
-        for (int& d : dist) ans += d <= maxMoves;
-        for (auto& e : edges) {
-            int u = e[0], v = e[1], cnt = e[2];
-            int a = min(cnt, max(0, maxMoves - dist[u]));
-            int b = min(cnt, max(0, maxMoves - dist[v]));
-            ans += min(cnt, a + b);
+        for (const int d : dist) {
+            ans += (d <= maxMoves);
+        }
+        
+        for (const auto& e : edges) {
+            const int u = e[0], v = e[1], cnt = e[2];
+            const int a = std::min(cnt, std::max(0, maxMoves - dist[u]));
+            const int b = std::min(cnt, std::max(0, maxMoves - dist[v]));
+            ans += std::min(cnt, a + b);
         }
         return ans;
     }

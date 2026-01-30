@@ -1,8 +1,16 @@
-class Solution {
+/**
+ * @brief Count substrings with equal consecutive 0s and 1s
+ * @intuition Group consecutive same chars, pairs contribute min of adjacent group sizes
+ * @approach Count consecutive groups, sum min of adjacent pair lengths
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    int countBinarySubstrings(string s) {
-        int i = 0, n = s.size();
+    [[nodiscard]] static int countBinarySubstrings(const string& s) {
+        const int n = s.size();
         vector<int> t;
+        int i = 0;
+        
         while (i < n) {
             int cnt = 1;
             while (i + 1 < n && s[i + 1] == s[i]) {
@@ -12,8 +20,11 @@ public:
             t.push_back(cnt);
             ++i;
         }
+        
         int ans = 0;
-        for (i = 1; i < t.size(); ++i) ans += min(t[i - 1], t[i]);
+        for (size_t j = 1; j < t.size(); ++j) {
+            ans += min(t[j - 1], t[j]);
+        }
         return ans;
     }
 };

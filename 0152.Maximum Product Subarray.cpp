@@ -12,20 +12,20 @@ using std::vector;
 
 class Solution final {
 public:
-    [[nodiscard]] auto maxProduct(vector<int>& nums) const -> int {
+    [[nodiscard]] static auto maxProduct(vector<int>& nums) -> int {
         int maxProd = nums[0];
         int minProd = nums[0];
         int result = nums[0];
-        
+
         for (size_t i = 1; i < nums.size(); ++i) {
             const int prevMax = maxProd;
             const int prevMin = minProd;
-            
+
             maxProd = std::max({nums[i], prevMax * nums[i], prevMin * nums[i]});
             minProd = std::min({nums[i], prevMax * nums[i], prevMin * nums[i]});
             result = std::max(result, maxProd);
         }
-        
+
         return result;
     }
 };

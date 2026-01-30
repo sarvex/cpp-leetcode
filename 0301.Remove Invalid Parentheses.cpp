@@ -4,15 +4,10 @@
  * @approach Use DFS to try removing each '(' or ')' while pruning invalid branches
  * @complexity Time: O(2^n) worst case, Space: O(n) for recursion stack
  */
-#include <functional>
-#include <string>
-#include <unordered_set>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] std::vector<std::string> removeInvalidParentheses(const std::string& s) const {
-        std::unordered_set<std::string> ans;
+    [[nodiscard]] static vector<string> removeInvalidParentheses(const string& s) {
+        unordered_set<string> ans;
         int left = 0;
         int right = 0;
         const int n = static_cast<int>(s.size());
@@ -29,8 +24,8 @@ public:
             }
         }
         
-        std::function<void(int, int, int, int, int, std::string)> dfs;
-        dfs = [&](int i, int l, int r, int lcnt, int rcnt, std::string t) {
+        function<void(int, int, int, int, int, string)> dfs;
+        dfs = [&](int i, int l, int r, int lcnt, int rcnt, string t) {
             if (i == n) {
                 if (l == 0 && r == 0) {
                     ans.insert(t);
@@ -52,6 +47,6 @@ public:
         };
 
         dfs(0, left, right, 0, 0, "");
-        return std::vector<std::string>(ans.begin(), ans.end());
+        return vector<string>(ans.begin(), ans.end());
     }
 };

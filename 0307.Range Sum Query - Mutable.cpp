@@ -4,8 +4,6 @@
  * @approach Use BIT to maintain prefix sums with O(log n) updates and queries
  * @complexity Time: O(log n) per operation, Space: O(n)
  */
-#include <vector>
-
 class BinaryIndexedTree final {
 public:
     explicit BinaryIndexedTree(int n) : n_(n), tree_(n + 1) {}
@@ -28,12 +26,12 @@ public:
 
 private:
     int n_;
-    std::vector<int> tree_;
+    vector<int> tree_;
 };
 
 class NumArray final {
 public:
-    explicit NumArray(const std::vector<int>& nums) 
+    explicit NumArray(const vector<int>& nums) 
         : tree_(static_cast<int>(nums.size())) {
         const int n = static_cast<int>(nums.size());
         for (int i = 0; i < n; ++i) {
@@ -53,10 +51,3 @@ public:
 private:
     BinaryIndexedTree tree_;
 };
-
-/**
- * Your NumArray object will be instantiated and called as such:
- * NumArray* obj = new NumArray(nums);
- * obj->update(index,val);
- * int param_2 = obj->sumRange(left,right);
- */

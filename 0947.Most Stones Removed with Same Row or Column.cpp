@@ -1,12 +1,16 @@
+/**
+ * @brief Union-Find to count maximum removable stones
+ * @intuition Stones in same row/column form connected components
+ * @approach Union stones sharing row or column; removals = stones - components
+ * @complexity Time: O(n^2 * α(n)), Space: O(n)
+ */
 class UnionFind {
 public:
-    UnionFind(int n) {
-        p = vector<int>(n);
-        size = vector<int>(n, 1);
+    explicit UnionFind(const int n) : p(n), size(n, 1) {
         iota(p.begin(), p.end(), 0);
     }
 
-    bool unite(int a, int b) {
+    bool unite(const int a, const int b) {
         int pa = find(a), pb = find(b);
         if (pa == pb) {
             return false;
@@ -21,7 +25,7 @@ public:
         return true;
     }
 
-    int find(int x) {
+    int find(const int x) {
         if (p[x] != x) {
             p[x] = find(p[x]);
         }
@@ -32,10 +36,10 @@ private:
     vector<int> p, size;
 };
 
-class Solution {
+class Solution final {
 public:
-    int removeStones(vector<vector<int>>& stones) {
-        int n = stones.size();
+    [[nodiscard]] static int removeStones(const vector<vector<int>>& stones) {
+        const int n = static_cast<int>(stones.size());
         UnionFind uf(n);
         int ans = 0;
         for (int i = 0; i < n; ++i) {

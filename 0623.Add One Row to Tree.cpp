@@ -1,37 +1,32 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Add a row of nodes at specified depth in binary tree
+ * @intuition Insert new nodes as parents at target depth, shifting original children down
+ * @approach DFS to target depth-1, insert new nodes between parent and children
+ * @complexity Time: O(n), Space: O(h) for recursion stack
  */
-class Solution {
+class Solution final {
 public:
-    int val;
-    int depth;
-
-    TreeNode* addOneRow(TreeNode* root, int val, int depth) {
-        if (depth == 1) return new TreeNode(val, root, nullptr);
-        this->val = val;
-        this->depth = depth;
+    [[nodiscard]] TreeNode* addOneRow(TreeNode* root, const int val, const int depth) {
+        if (depth == 1) {
+            return new TreeNode(val, root, nullptr);
+        }
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node, int d) -> void {
+            if (!node) {
+                return;
+            }
+            if (d == depth - 1) {
+                auto* l = new TreeNode(val, node->left, nullptr);
+                auto* r = new TreeNode(val, nullptr, node->right);
+                node->left = l;
+                node->right = r;
+                return;
+            }
+            dfs(node->left, d + 1);
+            dfs(node->right, d + 1);
+        };
+        
         dfs(root, 1);
         return root;
-    }
-
-    void dfs(TreeNode* root, int d) {
-        if (!root) return;
-        if (d == depth - 1) {
-            auto l = new TreeNode(val, root->left, nullptr);
-            auto r = new TreeNode(val, nullptr, root->right);
-            root->left = l;
-            root->right = r;
-            return;
-        }
-        dfs(root->left, d + 1);
-        dfs(root->right, d + 1);
     }
 };

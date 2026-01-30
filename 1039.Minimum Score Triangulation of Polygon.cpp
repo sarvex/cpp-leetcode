@@ -1,10 +1,16 @@
-class Solution {
+/**
+ * @brief Interval DP for polygon triangulation
+ * @intuition Split polygon at each vertex, minimize sum of triangle products
+ * @approach f[i][j] = min cost to triangulate polygon from vertex i to j
+ * @complexity Time: O(n^3), Space: O(n^2)
+ */
+class Solution final {
 public:
-    int minScoreTriangulation(vector<int>& values) {
-        int n = values.size();
+    [[nodiscard]] static int minScoreTriangulation(const vector<int>& values) {
+        const int n = values.size();
         int f[n][n];
         memset(f, 0, sizeof(f));
-        function<int(int, int)> dfs = [&](int i, int j) -> int {
+        function<int(int, int)> dfs = [&](const int i, const int j) -> int {
             if (i + 1 == j) {
                 return 0;
             }

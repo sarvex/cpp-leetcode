@@ -1,4 +1,11 @@
 /**
+ * @brief Parse string into NestedInteger (either integer or list of NestedIntegers)
+ * @intuition Recursive structure: either a number or [elements separated by commas]
+ * @approach Parse recursively, track depth to find comma separators at current level
+ * @complexity Time: O(n^2) worst case, Space: O(n) recursion depth
+ */
+
+/**
  * // This is the interface that allows for creating nested lists.
  * // You should not implement it, or speculate about its implementation
  * class NestedInteger {
@@ -27,19 +34,23 @@
  *     const vector<NestedInteger> &getList() const;
  * };
  */
-class Solution {
+class Solution final {
 public:
-    NestedInteger deserialize(string s) {
-        if (s == "" || s == "[]") {
+    [[nodiscard]] static auto deserialize(const std::string& s) -> NestedInteger {
+        if (s.empty() || s == "[]") {
             return NestedInteger();
         }
+
         if (s[0] != '[') {
-            return NestedInteger(stoi(s));
+            return NestedInteger(std::stoi(s));
         }
+
         NestedInteger ans;
         int depth = 0;
-        for (int i = 1, j = 1; i < s.size(); ++i) {
-            if (depth == 0 && (s[i] == ',' || i == s.size() - 1)) {
+        const auto n = static_cast<int>(s.size());
+
+        for (int i = 1, j = 1; i < n; ++i) {
+            if (depth == 0 && (s[i] == ',' || i == n - 1)) {
                 ans.add(deserialize(s.substr(j, i - j)));
                 j = i + 1;
             } else if (s[i] == '[') {
@@ -48,6 +59,7 @@ public:
                 --depth;
             }
         }
+
         return ans;
     }
 };

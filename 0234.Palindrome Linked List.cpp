@@ -5,17 +5,9 @@
  * @complexity Time: O(n), Space: O(1)
  */
 
-struct ListNode {
-  int val;
-  ListNode* next;
-  ListNode() : val(0), next(nullptr) {}
-  ListNode(int x) : val(x), next(nullptr) {}
-  ListNode(int x, ListNode* next) : val(x), next(next) {}
-};
-
 class Solution final {
 public:
-  [[nodiscard]] auto isPalindrome(ListNode* head) const -> bool {
+  [[nodiscard]] static auto isPalindrome(ListNode* head) -> bool {
     if (head == nullptr || head->next == nullptr) {
       return true;
     }

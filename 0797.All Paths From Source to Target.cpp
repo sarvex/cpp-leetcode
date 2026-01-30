@@ -1,25 +1,30 @@
-class Solution {
+/**
+ * @brief Find all paths from source (0) to target (n-1) in DAG
+ * @intuition DFS exploring all paths, backtrack after reaching target
+ * @approach DFS with path tracking, add to result when reaching target
+ * @complexity Time: O(2^n * n), Space: O(n) for recursion depth
+ */
+class Solution final {
 public:
-    vector<vector<int>> graph;
-    vector<vector<int>> ans;
-
-    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
-        this->graph = graph;
-        vector<int> path;
-        path.push_back(0);
-        dfs(0, path);
-        return ans;
-    }
-
-    void dfs(int i, vector<int> path) {
-        if (i == graph.size() - 1) {
-            ans.push_back(path);
-            return;
-        }
-        for (int j : graph[i]) {
-            path.push_back(j);
-            dfs(j, path);
-            path.pop_back();
-        }
+    [[nodiscard]] static std::vector<std::vector<int>> allPathsSourceTarget(
+            const std::vector<std::vector<int>>& graph) {
+        std::vector<std::vector<int>> result;
+        std::vector<int> path{0};
+        const int target = static_cast<int>(graph.size()) - 1;
+        
+        auto dfs = [&](auto&& self, const int node) -> void {
+            if (node == target) {
+                result.push_back(path);
+                return;
+            }
+            for (const int next : graph[node]) {
+                path.push_back(next);
+                self(self, next);
+                path.pop_back();
+            }
+        };
+        
+        dfs(dfs, 0);
+        return result;
     }
 };

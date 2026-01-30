@@ -5,16 +5,9 @@
  * @complexity Time: O(n), Space: O(h)
  */
 
-struct TreeNode {
-  int val;
-  TreeNode* left;
-  TreeNode* right;
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-};
-
 class Solution final {
 public:
-  [[nodiscard]] auto lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) const -> TreeNode* {
+  [[nodiscard]] static auto lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) -> TreeNode* {
     if (root == nullptr || root == p || root == q) {
       return root;
     }

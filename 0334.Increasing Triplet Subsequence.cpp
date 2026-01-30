@@ -4,12 +4,9 @@
  * @approach Maintain two variables, if we find value greater than both, return true
  * @complexity Time: O(n), Space: O(1)
  */
-#include <climits>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] bool increasingTriplet(const std::vector<int>& nums) const {
+    [[nodiscard]] static bool increasingTriplet(const std::vector<int>& nums) {
         int first = INT_MAX;
         int second = INT_MAX;
         

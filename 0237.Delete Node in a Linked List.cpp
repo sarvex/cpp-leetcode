@@ -5,15 +5,9 @@
  * @complexity Time: O(1), Space: O(1)
  */
 
-struct ListNode {
-  int val;
-  ListNode* next;
-  ListNode(int x) : val(x), next(nullptr) {}
-};
-
 class Solution final {
 public:
-  auto deleteNode(ListNode* node) const -> void {
+  static auto deleteNode(ListNode* node) -> void {
     node->val = node->next->val;
     node->next = node->next->next;
   }

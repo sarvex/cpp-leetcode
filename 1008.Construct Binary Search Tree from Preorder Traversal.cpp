@@ -1,25 +1,20 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Recursive BST construction with binary search for split point
+ * @intuition First element is root; find split point where values become greater
+ * @approach Use binary search to find boundary between left and right subtrees
+ * @complexity Time: O(n log n), Space: O(n)
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* bstFromPreorder(vector<int>& preorder) {
-        auto dfs = [&](this auto&& dfs, int i, int j) -> TreeNode* {
+    [[nodiscard]] static TreeNode* bstFromPreorder(const std::vector<int>& preorder) {
+        auto dfs = [&](this auto&& dfs, const int i, const int j) -> TreeNode* {
             if (i > j) {
                 return nullptr;
             }
-            TreeNode* root = new TreeNode(preorder[i]);
+            auto* root = new TreeNode(preorder[i]);
             int l = i + 1, r = j + 1;
             while (l < r) {
-                int mid = (l + r) >> 1;
+                const int mid = (l + r) >> 1;
                 if (preorder[mid] > preorder[i]) {
                     r = mid;
                 } else {
@@ -30,6 +25,6 @@ public:
             root->right = dfs(l, j);
             return root;
         };
-        return dfs(0, preorder.size() - 1);
+        return dfs(0, static_cast<int>(preorder.size()) - 1);
     }
 };

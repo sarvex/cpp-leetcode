@@ -2,22 +2,16 @@
  * @brief Calculate volume of water trapped in 2D elevation map
  * @intuition Water level at each cell determined by minimum height boundary
  * @approach BFS from border using min-heap, process cells in height order
- * @complexity Time: O(mn log(mn)) Space: O(mn)
+ * @complexity Time: O(mn log(mn)), Space: O(mn)
  */
-#include <algorithm>
-#include <cstring>
-#include <queue>
-#include <tuple>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] auto trapRainWater(std::vector<std::vector<int>>& heightMap) const -> int {
+    [[nodiscard]] static auto trapRainWater(std::vector<std::vector<int>>& heightMap) -> int {
         using tii = std::tuple<int, int, int>;
-        std::priority_queue<tii, std::vector<tii>, std::greater<tii>> pq;
+        std::priority_queue<tii, std::vector<tii>, std::greater<>> pq;
 
-        const int m = static_cast<int>(heightMap.size());
-        const int n = static_cast<int>(heightMap[0].size());
+        const auto m = static_cast<int>(heightMap.size());
+        const auto n = static_cast<int>(heightMap[0].size());
 
         std::vector<std::vector<bool>> vis(m, std::vector<bool>(n, false));
 

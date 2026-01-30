@@ -1,27 +1,22 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief DFS tracking min/max ancestors
+ * @intuition Max difference involves path extremes; track min/max along each path
+ * @approach Pass down min/max values, compute differences at each node
+ * @complexity Time: O(n), Space: O(h) where h = tree height
  */
-class Solution {
+class Solution final {
 public:
-    int maxAncestorDiff(TreeNode* root) {
+    [[nodiscard]] static int maxAncestorDiff(TreeNode* root) {
         int ans = 0;
-        function<void(TreeNode*, int, int)> dfs = [&](TreeNode* root, int mi, int mx) {
-            if (!root) {
+        function<void(TreeNode*, int, int)> dfs = [&](TreeNode* node, int mi, int mx) {
+            if (!node) {
                 return;
             }
-            ans = max({ans, abs(mi - root->val), abs(mx - root->val)});
-            mi = min(mi, root->val);
-            mx = max(mx, root->val);
-            dfs(root->left, mi, mx);
-            dfs(root->right, mi, mx);
+            ans = max({ans, abs(mi - node->val), abs(mx - node->val)});
+            mi = min(mi, node->val);
+            mx = max(mx, node->val);
+            dfs(node->left, mi, mx);
+            dfs(node->right, mi, mx);
         };
         dfs(root, root->val, root->val);
         return ans;

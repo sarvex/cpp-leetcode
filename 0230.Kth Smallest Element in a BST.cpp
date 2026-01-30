@@ -4,20 +4,10 @@
  * @approach Use stack for iterative inorder, return kth visited node
  * @complexity Time: O(H + k), Space: O(H) where H is tree height
  */
-#include <stack>
-
-struct TreeNode {
-  int val;
-  TreeNode* left;
-  TreeNode* right;
-  TreeNode() : val(0), left(nullptr), right(nullptr) {}
-  TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-  TreeNode(int x, TreeNode* left, TreeNode* right) : val(x), left(left), right(right) {}
-};
 
 class Solution final {
 public:
-  [[nodiscard]] auto kthSmallest(TreeNode* root, int k) const -> int {
+  [[nodiscard]] static auto kthSmallest(TreeNode* root, int k) -> int {
     std::stack<TreeNode*> stk;
     auto* current = root;
     

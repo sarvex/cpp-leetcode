@@ -1,9 +1,15 @@
-class Solution {
+/**
+ * @brief Pattern matching with lowercase flexibility
+ * @intuition Pattern chars must appear in order; extra lowercase allowed
+ * @approach Two-pointer matching, skip lowercase in query, fail on uppercase mismatch
+ * @complexity Time: O(n * m) where n = queries, m = max query length, Space: O(n)
+ */
+class Solution final {
 public:
-    vector<bool> camelMatch(vector<string>& queries, string pattern) {
+    [[nodiscard]] static vector<bool> camelMatch(const vector<string>& queries, const string& pattern) {
         vector<bool> ans;
-        auto check = [](string& s, string& t) {
-            int m = s.size(), n = t.size();
+        auto check = [](const string& s, const string& t) {
+            const int m = s.size(), n = t.size();
             int i = 0, j = 0;
             for (; j < n; ++i, ++j) {
                 while (i < m && s[i] != t[j] && islower(s[i])) {
@@ -18,7 +24,7 @@ public:
             }
             return i == m;
         };
-        for (auto& q : queries) {
+        for (const auto& q : queries) {
             ans.push_back(check(q, pattern));
         }
         return ans;

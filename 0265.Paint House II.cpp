@@ -4,14 +4,9 @@
  * @approach Track DP state, find minimum excluding current color
  * @complexity Time: O(n * k^2), Space: O(k)
  */
-#include <algorithm>
-#include <climits>
-#include <utility>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto minCostII(const std::vector<std::vector<int>>& costs) const -> int {
+  [[nodiscard]] static auto minCostII(const std::vector<std::vector<int>>& costs) -> int {
     const auto n = costs.size();
     const auto k = costs[0].size();
     
@@ -30,6 +25,6 @@ public:
       }
       dp = std::move(newDp);
     }
-    return *std::min_element(dp.begin(), dp.end());
+    return *std::ranges::min_element(dp);
   }
 };

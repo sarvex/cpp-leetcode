@@ -4,9 +4,6 @@
  * @approach Maintain BIT for each row, query by summing across rows
  * @complexity Time: O(m log n) per sumRegion, O(log n) per update, Space: O(mn)
  */
-#include <memory>
-#include <vector>
-
 class BinaryIndexedTree final {
 public:
     explicit BinaryIndexedTree(int n) : n_(n), tree_(n + 1) {}
@@ -14,7 +11,7 @@ public:
     void update(int x, int delta) {
         while (x <= n_) {
             tree_[x] += delta;
-            x += lowbit(x);
+            x += x & (-x);
         }
     }
 
@@ -22,29 +19,25 @@ public:
         int sum = 0;
         while (x > 0) {
             sum += tree_[x];
-            x -= lowbit(x);
+            x -= x & (-x);
         }
         return sum;
     }
 
 private:
-    [[nodiscard]] static constexpr int lowbit(int x) {
-        return x & (-x);
-    }
-    
     int n_;
-    std::vector<int> tree_;
+    vector<int> tree_;
 };
 
 class NumMatrix final {
 public:
-    explicit NumMatrix(const std::vector<std::vector<int>>& matrix) {
+    explicit NumMatrix(const vector<vector<int>>& matrix) {
         const int m = static_cast<int>(matrix.size());
         const int n = static_cast<int>(matrix[0].size());
         trees_.reserve(m);
         
         for (int i = 0; i < m; ++i) {
-            trees_.push_back(std::make_unique<BinaryIndexedTree>(n));
+            trees_.push_back(make_unique<BinaryIndexedTree>(n));
             for (int j = 0; j < n; ++j) {
                 trees_[i]->update(j + 1, matrix[i][j]);
             }
@@ -65,12 +58,5 @@ public:
     }
 
 private:
-    std::vector<std::unique_ptr<BinaryIndexedTree>> trees_;
+    vector<unique_ptr<BinaryIndexedTree>> trees_;
 };
-
-/**
- * Your NumMatrix object will be instantiated and called as such:
- * NumMatrix* obj = new NumMatrix(matrix);
- * obj->update(row,col,val);
- * int param_2 = obj->sumRegion(row1,col1,row2,col2);
- */

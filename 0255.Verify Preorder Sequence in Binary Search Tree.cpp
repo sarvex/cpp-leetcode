@@ -4,13 +4,9 @@
  * @approach Use stack to simulate BST structure, maintain min value
  * @complexity Time: O(n), Space: O(n)
  */
-#include <climits>
-#include <stack>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto verifyPreorder(const std::vector<int>& preorder) const -> bool {
+  [[nodiscard]] static auto verifyPreorder(const std::vector<int>& preorder) -> bool {
     std::stack<int> stk;
     int lowerBound = INT_MIN;
     

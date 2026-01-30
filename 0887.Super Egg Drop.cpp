@@ -1,31 +1,36 @@
-class Solution {
+/**
+ * @brief DP with binary search for egg drop problem
+ * @intuition For k eggs and n floors, find minimum moves in worst case
+ * @approach f[n][k] = minimum moves. Binary search for optimal floor to drop:
+ *           balance egg breaks (lower floors) vs survives (upper floors).
+ * @complexity Time: O(k * n * log n), Space: O(n * k)
+ */
+class Solution final {
 public:
-    int superEggDrop(int k, int n) {
-        int f[n + 1][k + 1];
-        memset(f, 0, sizeof(f));
-        auto dfs = [&](this auto&& dfs, int i, int j) -> int {
-            if (i < 1) {
-                return 0;
-            }
-            if (j == 1) {
-                return i;
-            }
-            if (f[i][j]) {
-                return f[i][j];
-            }
-            int l = 1, r = i;
+    [[nodiscard]] static auto superEggDrop(int k, int n) -> int {
+        std::vector<std::vector<int>> f(n + 1, std::vector<int>(k + 1, 0));
+        
+        auto dfs = [&](auto&& self, int floors, int eggs) -> int {
+            if (floors < 1) return 0;
+            if (eggs == 1) return floors;
+            if (f[floors][eggs] != 0) return f[floors][eggs];
+            
+            int l = 1, r = floors;
             while (l < r) {
-                int mid = (l + r + 1) >> 1;
-                int a = dfs(mid - 1, j - 1);
-                int b = dfs(i - mid, j);
-                if (a <= b) {
+                const int mid = (l + r + 1) >> 1;
+                const int breakCase = self(self, mid - 1, eggs - 1);
+                const int surviveCase = self(self, floors - mid, eggs);
+                if (breakCase <= surviveCase) {
                     l = mid;
                 } else {
                     r = mid - 1;
                 }
             }
-            return f[i][j] = max(dfs(l - 1, j - 1), dfs(i - l, j)) + 1;
+            
+            return f[floors][eggs] = std::max(self(self, l - 1, eggs - 1),
+                                               self(self, floors - l, eggs)) + 1;
         };
-        return dfs(n, k);
+        
+        return dfs(dfs, n, k);
     }
 };

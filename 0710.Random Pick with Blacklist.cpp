@@ -1,28 +1,30 @@
-class Solution {
+/**
+ * @brief Random pick with blacklist mapping
+ * @intuition Map blacklisted numbers in valid range to non-blacklisted numbers beyond
+ * @approach Remap blacklist entries < k to available positions >= k using hashmap
+ * @complexity Time: O(b) for init, O(1) for pick, Space: O(b) where b is blacklist size
+ */
+class Solution final {
 public:
-    unordered_map<int, int> d;
-    int k;
-
-    Solution(int n, vector<int>& blacklist) {
-        k = n - blacklist.size();
-        int i = k;
-        unordered_set<int> black(blacklist.begin(), blacklist.end());
-        for (int& b : blacklist) {
-            if (b < k) {
-                while (black.count(i)) ++i;
-                d[b] = i++;
+    Solution(const int n, const std::vector<int>& blacklist) : k_(n - static_cast<int>(blacklist.size())) {
+        int i = k_;
+        std::unordered_set<int> black(blacklist.begin(), blacklist.end());
+        for (const int b : blacklist) {
+            if (b < k_) {
+                while (black.contains(i)) {
+                    ++i;
+                }
+                mapping_[b] = i++;
             }
         }
     }
 
-    int pick() {
-        int x = rand() % k;
-        return d.count(x) ? d[x] : x;
+    [[nodiscard]] int pick() {
+        const int x = std::rand() % k_;
+        return mapping_.contains(x) ? mapping_[x] : x;
     }
-};
 
-/**
- * Your Solution object will be instantiated and called as such:
- * Solution* obj = new Solution(n, blacklist);
- * int param_1 = obj->pick();
- */
+private:
+    int k_;
+    std::unordered_map<int, int> mapping_;
+};

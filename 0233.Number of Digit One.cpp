@@ -4,19 +4,15 @@
  * @approach Recursive digit DP with memoization tracking count of 1s
  * @complexity Time: O(log n * log n), Space: O(log n * log n)
  */
-#include <cstring>
-#include <functional>
-#include <string>
 
 class Solution final {
 public:
-  [[nodiscard]] auto countDigitOne(int n) const -> int {
+  [[nodiscard]] static auto countDigitOne(const int n) -> int {
     const std::string digits = std::to_string(n);
     const int len = static_cast<int>(digits.size());
-    int memo[len][len];
-    std::memset(memo, -1, sizeof(memo));
+    std::vector<std::vector<int>> memo(len, std::vector<int>(len, -1));
     
-    std::function<int(int, int, bool)> dfs = [&](int pos, int count, bool limit) -> int {
+    std::function<int(int, int, bool)> dfs = [&](const int pos, const int count, const bool limit) -> int {
       if (pos >= len) {
         return count;
       }

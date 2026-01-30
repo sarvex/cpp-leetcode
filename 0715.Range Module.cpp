@@ -1,124 +1,83 @@
-template <class T>
-class CachedObj {
-public:
-    void* operator new(size_t s) {
-        if (!head) {
-            T* a = new T[SIZE];
-            for (size_t i = 0; i < SIZE; ++i)
-                add(a + i);
-        }
-        T* p = head;
-        head = head->CachedObj<T>::next;
-        return p;
-    }
-    void operator delete(void* p, size_t) {
-        if (p) add(static_cast<T*>(p));
-    }
-    virtual ~CachedObj() {}
+/**
+ * @brief Range module with dynamic segment tree
+ * @intuition Track range coverage with lazy propagation for efficient updates
+ * @approach Dynamic segment tree with lazy propagation for add/remove/query operations
+ * @complexity Time: O(log N) per operation, Space: O(Q log N) where Q is query count
+ */
+class RangeModule final {
+    struct Node {
+        Node* left = nullptr;
+        Node* right = nullptr;
+        int lazy = 0;
+        bool covered = false;
+    };
 
-protected:
-    T* next;
+public:
+    RangeModule() : root_(new Node()) {}
+
+    void addRange(const int left, const int right) {
+        modify(left, right - 1, 1, 1, 1e9, root_);
+    }
+
+    [[nodiscard]] bool queryRange(const int left, const int right) {
+        return query(left, right - 1, 1, 1e9, root_);
+    }
+
+    void removeRange(const int left, const int right) {
+        modify(left, right - 1, -1, 1, 1e9, root_);
+    }
 
 private:
-    static T* head;
-    static const size_t SIZE;
-    static void add(T* p) {
-        p->CachedObj<T>::next = head;
-        head = p;
-    }
-};
-template <class T>
-T* CachedObj<T>::head = 0;
-template <class T>
-const size_t CachedObj<T>::SIZE = 10000;
-class Node : public CachedObj<Node> {
-public:
-    Node* left;
-    Node* right;
-    int add;
-    bool v;
-};
+    Node* root_;
 
-class SegmentTree {
-private:
-    Node* root;
-
-public:
-    SegmentTree() {
-        root = new Node();
-    }
-
-    void modify(int left, int right, int v) {
-        modify(left, right, v, 1, 1e9, root);
-    }
-
-    void modify(int left, int right, int v, int l, int r, Node* node) {
+    void modify(const int left, const int right, const int v, const int l, const int r, Node* node) {
         if (l >= left && r <= right) {
-            node->v = v == 1;
-            node->add = v;
+            node->covered = (v == 1);
+            node->lazy = v;
             return;
         }
         pushdown(node);
-        int mid = (l + r) >> 1;
-        if (left <= mid) modify(left, right, v, l, mid, node->left);
-        if (right > mid) modify(left, right, v, mid + 1, r, node->right);
+        const int mid = (l + r) >> 1;
+        if (left <= mid) {
+            modify(left, right, v, l, mid, node->left);
+        }
+        if (right > mid) {
+            modify(left, right, v, mid + 1, r, node->right);
+        }
         pushup(node);
     }
 
-    bool query(int left, int right) {
-        return query(left, right, 1, 1e9, root);
-    }
-
-    bool query(int left, int right, int l, int r, Node* node) {
-        if (l >= left && r <= right) return node->v;
+    [[nodiscard]] bool query(const int left, const int right, const int l, const int r, Node* node) {
+        if (l >= left && r <= right) {
+            return node->covered;
+        }
         pushdown(node);
-        int mid = (l + r) >> 1;
-        bool v = true;
-        if (left <= mid) v = v && query(left, right, l, mid, node->left);
-        if (right > mid) v = v && query(left, right, mid + 1, r, node->right);
-        return v;
+        const int mid = (l + r) >> 1;
+        bool result = true;
+        if (left <= mid) {
+            result = result && query(left, right, l, mid, node->left);
+        }
+        if (right > mid) {
+            result = result && query(left, right, mid + 1, r, node->right);
+        }
+        return result;
     }
 
-    void pushup(Node* node) {
-        node->v = node->left && node->left->v && node->right && node->right->v;
+    static void pushup(Node* node) {
+        node->covered = node->left && node->left->covered && node->right && node->right->covered;
     }
 
-    void pushdown(Node* node) {
-        if (!node->left) node->left = new Node();
-        if (!node->right) node->right = new Node();
-        if (node->add) {
-            node->left->add = node->right->add = node->add;
-            node->left->v = node->right->v = node->add == 1;
-            node->add = 0;
+    static void pushdown(Node* node) {
+        if (!node->left) {
+            node->left = new Node();
+        }
+        if (!node->right) {
+            node->right = new Node();
+        }
+        if (node->lazy) {
+            node->left->lazy = node->right->lazy = node->lazy;
+            node->left->covered = node->right->covered = (node->lazy == 1);
+            node->lazy = 0;
         }
     }
 };
-
-class RangeModule {
-public:
-    SegmentTree* tree;
-
-    RangeModule() {
-        tree = new SegmentTree();
-    }
-
-    void addRange(int left, int right) {
-        tree->modify(left, right - 1, 1);
-    }
-
-    bool queryRange(int left, int right) {
-        return tree->query(left, right - 1);
-    }
-
-    void removeRange(int left, int right) {
-        tree->modify(left, right - 1, -1);
-    }
-};
-
-/**
- * Your RangeModule object will be instantiated and called as such:
- * RangeModule* obj = new RangeModule();
- * obj->addRange(left,right);
- * bool param_2 = obj->queryRange(left,right);
- * obj->removeRange(left,right);
- */

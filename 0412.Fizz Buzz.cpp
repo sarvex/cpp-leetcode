@@ -2,14 +2,11 @@
  * @brief Generate FizzBuzz sequence from 1 to n
  * @intuition Replace multiples of 3 with Fizz, 5 with Buzz, both with FizzBuzz
  * @approach Iterate and check divisibility, build string accordingly
- * @complexity Time: O(n) Space: O(1) excluding output
+ * @complexity Time: O(n), Space: O(1) excluding output
  */
-#include <string>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] auto fizzBuzz(int n) const -> std::vector<std::string> {
+    [[nodiscard]] static auto fizzBuzz(int n) -> std::vector<std::string> {
         std::vector<std::string> ans;
         ans.reserve(n);
 

@@ -1,36 +1,27 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find maximum value at each tree level using BFS
+ * @intuition Level-order traversal tracking maximum value per level
+ * @approach BFS with level-by-level processing. For each level, track maximum node value
+ *           and add to result before moving to next level.
+ * @complexity Time: O(n), Space: O(w) where w is max tree width
  */
-class Solution {
+class Solution final {
 public:
-    vector<int> largestValues(TreeNode* root) {
+    [[nodiscard]] static auto largestValues(TreeNode* root) -> vector<int> {
         vector<int> ans;
-        if (!root) {
-            return ans;
-        }
+        if (!root) return ans;
+        
         queue<TreeNode*> q{{root}};
-        while (q.size()) {
-            int x = INT_MIN;
-            for (int i = q.size(); i; --i) {
-                TreeNode* node = q.front();
+        while (!q.empty()) {
+            int maxVal = INT_MIN;
+            for (int i = static_cast<int>(q.size()); i > 0; --i) {
+                auto* node = q.front();
                 q.pop();
-                x = max(x, node->val);
-                if (node->left) {
-                    q.push(node->left);
-                }
-                if (node->right) {
-                    q.push(node->right);
-                }
+                maxVal = max(maxVal, node->val);
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
             }
-            ans.push_back(x);
+            ans.push_back(maxVal);
         }
         return ans;
     }

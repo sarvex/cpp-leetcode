@@ -4,13 +4,10 @@
  * @approach For each column pair, compute row sums and find max subarray <= k
  * @complexity Time: O(m^2 * n log n), Space: O(n)
  */
-#include <algorithm>
-#include <set>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int maxSumSubmatrix(const std::vector<std::vector<int>>& matrix, int k) const {
+    [[nodiscard]] static int maxSumSubmatrix(const std::vector<std::vector<int>>& matrix, 
+                                              const int k) {
         const int m = static_cast<int>(matrix.size());
         const int n = static_cast<int>(matrix[0].size());
         constexpr int inf = 1 << 30;

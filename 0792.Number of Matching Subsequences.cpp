@@ -1,20 +1,31 @@
-class Solution {
+/**
+ * @brief Count words that are subsequences of s
+ * @intuition Process s once, advance word pointers as matching chars appear
+ * @approach Bucket words by current needed character, advance on match
+ * @complexity Time: O(|s| + sum of word lengths), Space: O(total word chars)
+ */
+class Solution final {
 public:
-    int numMatchingSubseq(string s, vector<string>& words) {
-        vector<queue<string>> d(26);
-        for (auto& w : words) d[w[0] - 'a'].emplace(w);
-        int ans = 0;
-        for (char& c : s) {
-            auto& q = d[c - 'a'];
-            for (int k = q.size(); k; --k) {
-                auto t = q.front();
-                q.pop();
-                if (t.size() == 1)
-                    ++ans;
-                else
-                    d[t[1] - 'a'].emplace(t.substr(1));
+    [[nodiscard]] static int numMatchingSubseq(const std::string& s,
+                                                const std::vector<std::string>& words) {
+        std::array<std::queue<std::string>, 26> buckets;
+        for (const auto& word : words) {
+            buckets[word[0] - 'a'].push(word);
+        }
+        
+        int count = 0;
+        for (const char c : s) {
+            auto& bucket = buckets[c - 'a'];
+            for (int k = static_cast<int>(bucket.size()); k > 0; --k) {
+                auto word = bucket.front();
+                bucket.pop();
+                if (word.size() == 1) {
+                    ++count;
+                } else {
+                    buckets[word[1] - 'a'].push(word.substr(1));
+                }
             }
         }
-        return ans;
+        return count;
     }
 };

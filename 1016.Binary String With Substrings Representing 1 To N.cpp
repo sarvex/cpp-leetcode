@@ -1,6 +1,12 @@
-class Solution {
+/**
+ * @brief Check binary representations as substrings
+ * @intuition Only need to check n down to n/2+1; smaller values are substrings of larger
+ * @approach Convert each number to binary string and check if substring exists
+ * @complexity Time: O(n * |s|), Space: O(log n)
+ */
+class Solution final {
 public:
-    bool queryString(string s, int n) {
+    [[nodiscard]] static bool queryString(const string& s, const int n) {
         if (n > 1000) {
             return false;
         }

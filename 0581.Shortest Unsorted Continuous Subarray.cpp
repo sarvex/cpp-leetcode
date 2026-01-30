@@ -1,15 +1,25 @@
-class Solution {
+/**
+ * @brief Find shortest subarray to sort for whole array to be sorted
+ * @intuition Compare with sorted version; find leftmost and rightmost mismatches
+ * @approach Sort copy, find first and last positions where arrays differ
+ * @complexity Time: O(n log n), Space: O(n)
+ */
+class Solution final {
 public:
-    int findUnsortedSubarray(vector<int>& nums) {
-        vector<int> arr = nums;
-        sort(arr.begin(), arr.end());
-        int l = 0, r = arr.size() - 1;
-        while (l <= r && arr[l] == nums[l]) {
-            l++;
+    [[nodiscard]] static int findUnsortedSubarray(vector<int>& nums) {
+        vector<int> sorted = nums;
+        sort(sorted.begin(), sorted.end());
+        
+        int left = 0;
+        int right = static_cast<int>(sorted.size()) - 1;
+        
+        while (left <= right && sorted[left] == nums[left]) {
+            ++left;
         }
-        while (l <= r && arr[r] == nums[r]) {
-            r--;
+        while (left <= right && sorted[right] == nums[right]) {
+            --right;
         }
-        return r - l + 1;
+        
+        return right - left + 1;
     }
 };

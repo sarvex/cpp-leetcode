@@ -2,19 +2,13 @@
  * @brief Determine if frog can cross river by jumping on stones
  * @intuition From each stone, frog can jump k-1, k, or k+1 units if last jump was k
  * @approach DFS with memoization, track position and last jump size
- * @complexity Time: O(n^2) Space: O(n^2)
+ * @complexity Time: O(n^2), Space: O(n^2)
  */
-#include <cstring>
-#include <functional>
-#include <unordered_map>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] auto canCross(std::vector<int>& stones) const -> bool {
-        const int n = static_cast<int>(stones.size());
-        int f[n][n];
-        std::memset(f, -1, sizeof(f));
+    [[nodiscard]] static auto canCross(std::vector<int>& stones) -> bool {
+        const auto n = static_cast<int>(stones.size());
+        std::vector<std::vector<int>> f(n, std::vector<int>(n, -1));
 
         std::unordered_map<int, int> pos;
         for (int i = 0; i < n; ++i) {
@@ -29,7 +23,7 @@ public:
                 return f[i][k];
             }
             for (int j = k - 1; j <= k + 1; ++j) {
-                if (j > 0 && pos.count(stones[i] + j) && dfs(pos[stones[i] + j], j)) {
+                if (j > 0 && pos.contains(stones[i] + j) && dfs(pos[stones[i] + j], j)) {
                     return f[i][k] = true;
                 }
             }

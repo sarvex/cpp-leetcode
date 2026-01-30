@@ -1,6 +1,13 @@
+/**
+ * @brief Synchronize hydrogen and oxygen threads to form H2O molecules using semaphores
+ * @intuition Two hydrogen atoms must bond before one oxygen can be released
+ * @approach Use semaphore to allow 2 hydrogen, track count. When 2 hydrogen collected, signal oxygen.
+ *           Oxygen releases and resets, allowing next 2 hydrogen.
+ * @complexity Time: O(1) per molecule, Space: O(1)
+ */
 #include <semaphore.h>
 
-class H2O {
+class H2O final {
 private:
     sem_t h, o;
     int st;
@@ -14,7 +21,6 @@ public:
 
     void hydrogen(function<void()> releaseHydrogen) {
         sem_wait(&h);
-        // releaseHydrogen() outputs "H". Do not change or remove this line.
         releaseHydrogen();
         ++st;
         if (st == 2) {
@@ -24,7 +30,6 @@ public:
 
     void oxygen(function<void()> releaseOxygen) {
         sem_wait(&o);
-        // releaseOxygen() outputs "O". Do not change or remove this line.
         releaseOxygen();
         st = 0;
         sem_post(&h);

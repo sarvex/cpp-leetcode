@@ -4,7 +4,6 @@
  * @approach Use input stack for push, output stack for pop/peek with lazy transfer
  * @complexity Time: O(1) amortized, Space: O(n)
  */
-#include <stack>
 
 class MyQueue final {
 private:
@@ -23,7 +22,7 @@ private:
 public:
   MyQueue() = default;
 
-  auto push(int x) -> void {
+  auto push(const int x) -> void {
     inputStack.push(x);
   }
 

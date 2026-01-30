@@ -1,24 +1,18 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief DFS accumulating binary value along path
+ * @intuition Build binary number while traversing, sum at leaves
+ * @approach Pass accumulated value to children, shift and add current bit
+ * @complexity Time: O(n), Space: O(h) where h = tree height
  */
-class Solution {
+class Solution final {
 public:
-    int sumRootToLeaf(TreeNode* root) {
+    [[nodiscard]] static int sumRootToLeaf(TreeNode* root) {
+        auto dfs = [](this auto&& dfs, TreeNode* node, int t) -> int {
+            if (!node) return 0;
+            t = (t << 1) | node->val;
+            if (!node->left && !node->right) return t;
+            return dfs(node->left, t) + dfs(node->right, t);
+        };
         return dfs(root, 0);
-    }
-
-    int dfs(TreeNode* root, int t) {
-        if (!root) return 0;
-        t = (t << 1) | root->val;
-        if (!root->left && !root->right) return t;
-        return dfs(root->left, t) + dfs(root->right, t);
     }
 };

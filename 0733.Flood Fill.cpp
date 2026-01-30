@@ -1,22 +1,34 @@
-class Solution {
+/**
+ * @brief Flood fill using DFS
+ * @intuition Starting from source, recursively fill connected cells of same color
+ * @approach DFS with 4-directional neighbors, skip if already target color
+ * @complexity Time: O(m*n), Space: O(m*n) for recursion stack
+ */
+class Solution final {
 public:
-    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
-        int m = image.size(), n = image[0].size();
-        int oc = image[sr][sc];
-        if (oc == color) {
+    [[nodiscard]] static std::vector<std::vector<int>> floodFill(
+            std::vector<std::vector<int>>& image, const int sr, const int sc, const int color) {
+        const int m = static_cast<int>(image.size());
+        const int n = static_cast<int>(image[0].size());
+        const int originalColor = image[sr][sc];
+        
+        if (originalColor == color) {
             return image;
         }
-        const int dirs[5] = {-1, 0, 1, 0, -1};
-        auto dfs = [&](this auto&& dfs, int i, int j) -> void {
+        
+        constexpr std::array<int, 5> dirs{-1, 0, 1, 0, -1};
+        auto dfs = [&](auto&& self, const int i, const int j) -> void {
             image[i][j] = color;
             for (int k = 0; k < 4; ++k) {
-                int x = i + dirs[k], y = j + dirs[k + 1];
-                if (x >= 0 && x < m && y >= 0 && y < n && image[x][y] == oc) {
-                    dfs(x, y);
+                const int x = i + dirs[k];
+                const int y = j + dirs[k + 1];
+                if (x >= 0 && x < m && y >= 0 && y < n && image[x][y] == originalColor) {
+                    self(self, x, y);
                 }
             }
         };
-        dfs(sr, sc);
+        
+        dfs(dfs, sr, sc);
         return image;
     }
 };

@@ -4,17 +4,13 @@
  * @approach Scan each direction, accumulate counts stopping at walls
  * @complexity Time: O(mn), Space: O(mn)
  */
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int maxKilledEnemies(const std::vector<std::vector<char>>& grid) const {
+    [[nodiscard]] static int maxKilledEnemies(const std::vector<std::vector<char>>& grid) {
         const int m = static_cast<int>(grid.size());
         const int n = static_cast<int>(grid[0].size());
         std::vector<std::vector<int>> kills(m, std::vector<int>(n));
         
-        // Count from left and right
         for (int i = 0; i < m; ++i) {
             int count = 0;
             for (int j = 0; j < n; ++j) {
@@ -36,7 +32,6 @@ public:
             }
         }
         
-        // Count from top and bottom
         for (int j = 0; j < n; ++j) {
             int count = 0;
             for (int i = 0; i < m; ++i) {

@@ -1,26 +1,31 @@
-class Solution {
+/**
+ * @brief Shuffle array with Fisher-Yates algorithm, support reset
+ * @intuition Fisher-Yates ensures uniform random permutation
+ * @approach Swap each element with random element from remaining positions
+ * @complexity Time: O(n) per operation, Space: O(n)
+ */
+class Solution final {
 public:
-    vector<int> nums;
-    vector<int> original;
+    explicit Solution(std::vector<int>& nums)
+        : nums_(nums), original_(nums) {}
 
-    Solution(vector<int>& nums) {
-        this->nums = nums;
-        this->original.resize(nums.size());
-        copy(nums.begin(), nums.end(), original.begin());
+    [[nodiscard]] auto reset() -> std::vector<int> {
+        nums_ = original_;
+        return nums_;
     }
 
-    vector<int> reset() {
-        copy(original.begin(), original.end(), nums.begin());
-        return nums;
-    }
-
-    vector<int> shuffle() {
-        for (int i = 0; i < nums.size(); ++i) {
-            int j = i + rand() % (nums.size() - i);
-            swap(nums[i], nums[j]);
+    [[nodiscard]] auto shuffle() -> std::vector<int> {
+        const auto n = static_cast<int>(nums_.size());
+        for (int i = 0; i < n; ++i) {
+            const int j = i + rand() % (n - i);
+            std::swap(nums_[i], nums_[j]);
         }
-        return nums;
+        return nums_;
     }
+
+private:
+    std::vector<int> nums_;
+    std::vector<int> original_;
 };
 
 /**

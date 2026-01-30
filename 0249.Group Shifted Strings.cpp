@@ -4,14 +4,10 @@
  * @approach Normalize each string by shifting first char to 'a', group by key
  * @complexity Time: O(n * m), Space: O(n * m) where m is average string length
  */
-#include <string>
-#include <unordered_map>
-#include <utility>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto groupStrings(const std::vector<std::string>& strings) const 
+  [[nodiscard]] static auto groupStrings(const std::vector<std::string>& strings) 
       -> std::vector<std::vector<std::string>> {
     std::unordered_map<std::string, std::vector<std::string>> groups;
     

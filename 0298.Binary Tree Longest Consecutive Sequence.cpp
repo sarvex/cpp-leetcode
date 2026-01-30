@@ -1,34 +1,32 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief DFS to find longest consecutive sequence in binary tree
+ * @intuition Track consecutive length at each node, reset if not consecutive
+ * @approach Post-order DFS, extend sequence if child val equals parent val + 1
+ * @complexity Time: O(n), Space: O(h) for recursion
  */
-class Solution {
+class Solution final {
 public:
-    int longestConsecutive(TreeNode* root) {
+    [[nodiscard]] static int longestConsecutive(TreeNode* root) {
         int ans = 0;
-        function<int(TreeNode*)> dfs = [&](TreeNode* root) {
-            if (!root) {
+        function<int(TreeNode*)> dfs = [&](TreeNode* node) -> int {
+            if (node == nullptr) {
                 return 0;
             }
-            int l = dfs(root->left) + 1;
-            int r = dfs(root->right) + 1;
-            if (root->left && root->left->val - root->val != 1) {
-                l = 1;
+            int left = dfs(node->left) + 1;
+            int right = dfs(node->right) + 1;
+            
+            if (node->left != nullptr && node->left->val - node->val != 1) {
+                left = 1;
             }
-            if (root->right && root->right->val - root->val != 1) {
-                r = 1;
+            if (node->right != nullptr && node->right->val - node->val != 1) {
+                right = 1;
             }
-            int t = max(l, r);
-            ans = max(ans, t);
-            return t;
+            
+            const int maxLen = max(left, right);
+            ans = max(ans, maxLen);
+            return maxLen;
         };
+        
         dfs(root);
         return ans;
     }

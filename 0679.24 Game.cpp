@@ -1,22 +1,29 @@
-class Solution {
+/**
+ * @brief Check if 4 cards can make 24 using +, -, *, /
+ * @intuition Try all pairs and operations recursively, reduce to 3, 2, 1 numbers
+ * @approach DFS trying all combinations of two numbers and four operations
+ * @complexity Time: O(1) - bounded by card count, Space: O(1)
+ */
+class Solution final {
 public:
-    bool judgePoint24(vector<int>& cards) {
+    [[nodiscard]] static bool judgePoint24(const vector<int>& cards) {
         vector<double> nums;
-        for (int num : cards) {
+        nums.reserve(4);
+        for (const int num : cards) {
             nums.push_back(static_cast<double>(num));
         }
         return dfs(nums);
     }
 
 private:
-    const char ops[4] = {'+', '-', '*', '/'};
+    static constexpr char ops_[] = {'+', '-', '*', '/'};
 
-    bool dfs(vector<double>& nums) {
-        int n = nums.size();
+    [[nodiscard]] static bool dfs(vector<double>& nums) {
+        const int n = nums.size();
         if (n == 1) {
             return abs(nums[0] - 24) < 1e-6;
         }
-        bool ok = false;
+        
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (i != j) {
@@ -26,26 +33,17 @@ private:
                             nxt.push_back(nums[k]);
                         }
                     }
-                    for (char op : ops) {
-                        switch (op) {
-                        case '/':
-                            if (nums[j] == 0) {
-                                continue;
-                            }
-                            nxt.push_back(nums[i] / nums[j]);
-                            break;
-                        case '*':
-                            nxt.push_back(nums[i] * nums[j]);
-                            break;
-                        case '+':
-                            nxt.push_back(nums[i] + nums[j]);
-                            break;
-                        case '-':
-                            nxt.push_back(nums[i] - nums[j]);
-                            break;
+                    for (const char op : ops_) {
+                        if (op == '/' && nums[j] == 0) {
+                            continue;
                         }
-                        ok |= dfs(nxt);
-                        if (ok) {
+                        switch (op) {
+                            case '+': nxt.push_back(nums[i] + nums[j]); break;
+                            case '-': nxt.push_back(nums[i] - nums[j]); break;
+                            case '*': nxt.push_back(nums[i] * nums[j]); break;
+                            case '/': nxt.push_back(nums[i] / nums[j]); break;
+                        }
+                        if (dfs(nxt)) {
                             return true;
                         }
                         nxt.pop_back();
@@ -53,6 +51,6 @@ private:
                 }
             }
         }
-        return ok;
+        return false;
     }
 };

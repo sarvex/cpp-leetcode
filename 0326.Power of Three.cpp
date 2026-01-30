@@ -6,7 +6,7 @@
  */
 class Solution final {
 public:
-    [[nodiscard]] constexpr bool isPowerOfThree(int n) const {
+    [[nodiscard]] static constexpr bool isPowerOfThree(int n) {
         while (n > 2) {
             if (n % 3 != 0) {
                 return false;

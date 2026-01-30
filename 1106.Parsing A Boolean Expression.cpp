@@ -1,11 +1,18 @@
-class Solution {
+/**
+ * @brief Stack-based parsing of boolean expressions
+ * @intuition Use a stack to track operators and operands, evaluating when closing parenthesis is found
+ * @approach Push operators and boolean values onto stack. When ')' is encountered, pop all booleans
+ *           until finding the operator, then evaluate and push the result.
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    bool parseBoolExpr(string expression) {
+    [[nodiscard]] static bool parseBoolExpr(const string& expression) {
         stack<char> stk;
         for (char c : expression) {
-            if (c != '(' && c != ')' && c != ',')
+            if (c != '(' && c != ')' && c != ',') {
                 stk.push(c);
-            else if (c == ')') {
+            } else if (c == ')') {
                 int t = 0, f = 0;
                 while (stk.top() == 't' || stk.top() == 'f') {
                     t += stk.top() == 't';

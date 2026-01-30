@@ -1,28 +1,25 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Find minimum absolute difference between any two BST nodes
+ * @intuition BST inorder traversal is sorted; min diff must be between consecutive values
+ * @approach Inorder traversal tracking previous value. Minimum difference is between
+ *           current and previous node values. Update answer at each step.
+ * @complexity Time: O(n), Space: O(h) for recursion stack
  */
-class Solution {
+class Solution final {
 public:
-    int getMinimumDifference(TreeNode* root) {
-        const int inf = 1 << 30;
-        int ans = inf, pre = -inf;
-        auto dfs = [&](this auto&& dfs, TreeNode* root) -> void {
-            if (!root) {
-                return;
-            }
-            dfs(root->left);
-            ans = min(ans, root->val - pre);
-            pre = root->val;
-            dfs(root->right);
+    [[nodiscard]] static auto getMinimumDifference(TreeNode* root) -> int {
+        constexpr int INF = 1 << 30;
+        int ans = INF;
+        int prev = -INF;
+        
+        auto dfs = [&](this auto&& dfs, TreeNode* node) -> void {
+            if (!node) return;
+            dfs(node->left);
+            ans = min(ans, node->val - prev);
+            prev = node->val;
+            dfs(node->right);
         };
+        
         dfs(root);
         return ans;
     }

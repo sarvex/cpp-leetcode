@@ -4,17 +4,12 @@
  * @approach Single pass tracking indices of word1 and word2
  * @complexity Time: O(n), Space: O(1)
  */
-#include <algorithm>
-#include <climits>
-#include <cmath>
-#include <string>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto shortestDistance(const std::vector<std::string>& wordsDict, 
-                                       const std::string& word1, 
-                                       const std::string& word2) const -> int {
+  [[nodiscard]] static auto shortestDistance(const std::vector<std::string>& wordsDict, 
+                                              const std::string& word1, 
+                                              const std::string& word2) -> int {
     int minDistance = INT_MAX;
     int idx1 = -1;
     int idx2 = -1;

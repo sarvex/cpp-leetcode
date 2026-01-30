@@ -1,50 +1,45 @@
-class MaxStack {
+/**
+ * @brief Max stack with O(log n) operations using list and multimap
+ * @intuition Doubly linked list for O(1) removal, multimap for O(log n) max lookup
+ * @approach List stores values, multimap maps values to list iterators
+ * @complexity Time: O(log n) for all operations, Space: O(n)
+ */
+class MaxStack final {
 public:
-    MaxStack() {
+    MaxStack() = default;
+
+    void push(const int x) {
+        stack_.push_back(x);
+        valueToIter_.insert({x, std::prev(stack_.end())});
     }
 
-    void push(int x) {
-        stk.push_back(x);
-        tm.insert({x, --stk.end()});
+    [[nodiscard]] int pop() {
+        auto it = std::prev(stack_.end());
+        const int result = *it;
+        auto mapIt = std::prev(valueToIter_.upper_bound(result));
+        valueToIter_.erase(mapIt);
+        stack_.erase(it);
+        return result;
     }
 
-    int pop() {
-        auto it = --stk.end();
-        int ans = *it;
-        auto mit = --tm.upper_bound(ans);
-        tm.erase(mit);
-        stk.erase(it);
-        return ans;
+    [[nodiscard]] int top() const {
+        return stack_.back();
     }
 
-    int top() {
-        return stk.back();
+    [[nodiscard]] int peekMax() const {
+        return valueToIter_.rbegin()->first;
     }
 
-    int peekMax() {
-        return tm.rbegin()->first;
-    }
-
-    int popMax() {
-        auto mit = --tm.end();
-        auto it = mit->second;
-        int ans = *it;
-        tm.erase(mit);
-        stk.erase(it);
-        return ans;
+    [[nodiscard]] int popMax() {
+        auto mapIt = std::prev(valueToIter_.end());
+        auto listIt = mapIt->second;
+        const int result = *listIt;
+        valueToIter_.erase(mapIt);
+        stack_.erase(listIt);
+        return result;
     }
 
 private:
-    multimap<int, list<int>::iterator> tm;
-    list<int> stk;
+    std::list<int> stack_;
+    std::multimap<int, std::list<int>::iterator> valueToIter_;
 };
-
-/**
- * Your MaxStack object will be instantiated and called as such:
- * MaxStack* obj = new MaxStack();
- * obj->push(x);
- * int param_2 = obj->pop();
- * int param_3 = obj->top();
- * int param_4 = obj->peekMax();
- * int param_5 = obj->popMax();
- */

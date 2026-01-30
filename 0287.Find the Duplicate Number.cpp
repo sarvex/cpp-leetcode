@@ -1,19 +1,27 @@
-class Solution {
+/**
+ * @brief Binary search on value range to find duplicate
+ * @intuition Count elements <= mid, if count > mid, duplicate is in [1, mid]
+ * @approach Binary search on answer space with counting
+ * @complexity Time: O(n log n), Space: O(1)
+ */
+class Solution final {
 public:
-    int findDuplicate(vector<int>& nums) {
-        int l = 0, r = nums.size() - 1;
-        while (l < r) {
-            int mid = (l + r) >> 1;
+    [[nodiscard]] static int findDuplicate(const vector<int>& nums) {
+        int left = 1;
+        int right = static_cast<int>(nums.size()) - 1;
+        
+        while (left < right) {
+            const int mid = (left + right) >> 1;
             int cnt = 0;
-            for (int& v : nums) {
-                cnt += v <= mid;
+            for (const int v : nums) {
+                cnt += (v <= mid);
             }
             if (cnt > mid) {
-                r = mid;
+                right = mid;
             } else {
-                l = mid + 1;
+                left = mid + 1;
             }
         }
-        return l;
+        return left;
     }
 };

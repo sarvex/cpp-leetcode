@@ -1,13 +1,20 @@
-class Solution {
+/**
+ * @brief Count minimum additions for valid parentheses
+ * @intuition Track unmatched open and close parentheses
+ * @approach Use stack simulation; count unmatched after processing
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    int minAddToMakeValid(string s) {
+    [[nodiscard]] static int minAddToMakeValid(const string& s) {
         string stk;
-        for (char c : s) {
-            if (c == ')' && stk.size() && stk.back() == '(')
+        for (const char c : s) {
+            if (c == ')' && !stk.empty() && stk.back() == '(') {
                 stk.pop_back();
-            else
+            } else {
                 stk.push_back(c);
+            }
         }
-        return stk.size();
+        return static_cast<int>(stk.size());
     }
 };

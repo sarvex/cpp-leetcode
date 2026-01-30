@@ -1,7 +1,15 @@
-class Solution {
+/**
+ * @brief In-place Game of Life using state encoding
+ * @intuition Encode current and next state in same cell (2 = was 1, -1 = will be 1)
+ * @approach Count live neighbors, encode transitions, decode final state
+ * @complexity Time: O(m*n), Space: O(1)
+ */
+class Solution final {
 public:
-    void gameOfLife(vector<vector<int>>& board) {
-        int m = board.size(), n = board[0].size();
+    static void gameOfLife(vector<vector<int>>& board) {
+        const int m = static_cast<int>(board.size());
+        const int n = static_cast<int>(board[0].size());
+        
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 int live = -board[i][j];
@@ -20,6 +28,7 @@ public:
                 }
             }
         }
+        
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
                 if (board[i][j] == 2) {

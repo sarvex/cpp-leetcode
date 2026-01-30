@@ -4,16 +4,12 @@
  * @approach Different logic when word1 equals word2
  * @complexity Time: O(n), Space: O(1)
  */
-#include <algorithm>
-#include <cmath>
-#include <string>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto shortestWordDistance(const std::vector<std::string>& wordsDict,
-                                           const std::string& word1,
-                                           const std::string& word2) const -> int {
+  [[nodiscard]] static auto shortestWordDistance(const std::vector<std::string>& wordsDict,
+                                                  const std::string& word1,
+                                                  const std::string& word2) -> int {
     const auto n = static_cast<int>(wordsDict.size());
     int minDistance = n;
     

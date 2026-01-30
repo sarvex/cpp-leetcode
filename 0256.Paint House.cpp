@@ -4,12 +4,9 @@
  * @approach Track costs for each color, update based on previous minimum
  * @complexity Time: O(n), Space: O(1)
  */
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto minCost(const std::vector<std::vector<int>>& costs) const -> int {
+  [[nodiscard]] static auto minCost(const std::vector<std::vector<int>>& costs) -> int {
     int red = 0;
     int green = 0;
     int blue = 0;

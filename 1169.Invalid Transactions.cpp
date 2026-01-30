@@ -1,6 +1,13 @@
-class Solution {
+/**
+ * @brief Find invalid transactions based on amount and location rules
+ * @intuition Transaction invalid if amount > 1000 or same name in different city within 60 minutes
+ * @approach Parse transactions, group by name. Check amount threshold and cross-reference with
+ *           same-name transactions for city/time conflicts.
+ * @complexity Time: O(n^2), Space: O(n)
+ */
+class Solution final {
 public:
-    vector<string> invalidTransactions(vector<string>& transactions) {
+    [[nodiscard]] static vector<string> invalidTransactions(const vector<string>& transactions) {
         unordered_map<string, vector<tuple<int, string, int>>> d;
         unordered_set<int> idx;
         for (int i = 0; i < transactions.size(); ++i) {
@@ -9,7 +16,7 @@ public:
             int time = stoi(e[1]);
             int amount = stoi(e[2]);
             string city = e[3];
-            d[name].push_back({time, city, i});
+            d[name].emplace_back(time, city, i);
             if (amount > 1000) {
                 idx.insert(i);
             }
@@ -27,7 +34,8 @@ public:
         return ans;
     }
 
-    vector<string> split(string& s, char delim) {
+private:
+    [[nodiscard]] static vector<string> split(const string& s, char delim) {
         stringstream ss(s);
         string item;
         vector<string> res;

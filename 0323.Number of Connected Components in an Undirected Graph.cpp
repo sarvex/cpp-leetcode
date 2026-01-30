@@ -4,13 +4,10 @@
  * @approach Mark visited nodes during DFS, count starting points
  * @complexity Time: O(V + E), Space: O(V + E)
  */
-#include <functional>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int countComponents(int n, std::vector<std::vector<int>>& edges) const {
-        std::vector<std::vector<int>> graph(n);
+    [[nodiscard]] static int countComponents(int n, const vector<vector<int>>& edges) {
+        vector<vector<int>> graph(n);
         for (const auto& edge : edges) {
             const int a = edge[0];
             const int b = edge[1];
@@ -18,21 +15,23 @@ public:
             graph[b].push_back(a);
         }
         
-        std::vector<bool> visited(n);
-        std::function<int(int)> dfs = [&](int node) -> int {
+        vector<bool> visited(n);
+        function<void(int)> dfs = [&](int node) {
             if (visited[node]) {
-                return 0;
+                return;
             }
             visited[node] = true;
             for (const int neighbor : graph[node]) {
                 dfs(neighbor);
             }
-            return 1;
         };
         
         int ans = 0;
         for (int i = 0; i < n; ++i) {
-            ans += dfs(i);
+            if (!visited[i]) {
+                dfs(i);
+                ++ans;
+            }
         }
         return ans;
     }

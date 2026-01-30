@@ -2,14 +2,11 @@
  * @brief Split array into k subarrays to minimize largest sum
  * @intuition Binary search on answer - if max sum is x, greedily count subarrays needed
  * @approach Binary search between max element and total sum, validate with greedy check
- * @complexity Time: O(n log(sum)) Space: O(1)
+ * @complexity Time: O(n log(sum)), Space: O(1)
  */
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] auto splitArray(std::vector<int>& nums, int k) const -> int {
+    [[nodiscard]] static auto splitArray(const std::vector<int>& nums, int k) -> int {
         int left = 0;
         int right = 0;
 

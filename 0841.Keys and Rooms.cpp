@@ -1,21 +1,28 @@
-class Solution {
+/**
+ * @brief DFS traversal to check if all rooms are reachable from room 0
+ * @intuition Starting from room 0, recursively visit rooms using found keys
+ * @approach DFS from room 0, marking visited rooms. Count visited rooms and
+ *           compare with total. All rooms reachable iff count equals n.
+ * @complexity Time: O(n + k) where k is total keys, Space: O(n)
+ */
+class Solution final {
 public:
-    bool canVisitAllRooms(vector<vector<int>>& rooms) {
-        int n = rooms.size();
+    [[nodiscard]] static auto canVisitAllRooms(
+        const std::vector<std::vector<int>>& rooms) -> bool {
+        const int n = static_cast<int>(rooms.size());
         int cnt = 0;
-        bool vis[n];
-        memset(vis, false, sizeof(vis));
-        function<void(int)> dfs = [&](int i) {
-            if (vis[i]) {
-                return;
-            }
+        std::vector<bool> vis(n, false);
+        
+        auto dfs = [&](auto&& self, int i) -> void {
+            if (vis[i]) return;
             vis[i] = true;
             ++cnt;
-            for (int j : rooms[i]) {
-                dfs(j);
+            for (const int j : rooms[i]) {
+                self(self, j);
             }
         };
-        dfs(0);
+        
+        dfs(dfs, 0);
         return cnt == n;
     }
 };

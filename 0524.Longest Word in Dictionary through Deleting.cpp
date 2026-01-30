@@ -1,21 +1,27 @@
-class Solution {
+/**
+ * @brief Find longest dictionary word that is subsequence of input string
+ * @intuition Check each dictionary word if it's a subsequence; prefer longer or lexicographically smaller
+ * @approach For each dictionary word, verify subsequence relationship with two pointers.
+ *           Update answer if current word is longer or same length but lexicographically smaller.
+ * @complexity Time: O(n * L) where n = dictionary size, L = string length
+ */
+class Solution final {
 public:
-    string findLongestWord(string s, vector<string>& dictionary) {
-        string ans = "";
-        auto check = [&](const string& s, const string& t) {
-            int m = s.size(), n = t.size();
-            int i = 0;
-            for (int j = 0; i < m && j < n; ++j) {
-                if (s[i] == t[j]) {
-                    ++i;
-                }
+    [[nodiscard]] static auto findLongestWord(const string& s, 
+                                               const vector<string>& dictionary) -> string {
+        auto isSubseq = [&s](const string& t) {
+            size_t i = 0;
+            for (size_t j = 0; i < t.size() && j < s.size(); ++j) {
+                if (t[i] == s[j]) ++i;
             }
-            return i == m;
+            return i == t.size();
         };
-        for (auto& t : dictionary) {
-            int a = ans.size(), b = t.size();
-            if (check(t, s) && (a < b || (a == b && ans > t))) {
-                ans = t;
+        
+        string ans;
+        for (const auto& word : dictionary) {
+            const auto a = ans.size(), b = word.size();
+            if (isSubseq(word) && (a < b || (a == b && ans > word))) {
+                ans = word;
             }
         }
         return ans;

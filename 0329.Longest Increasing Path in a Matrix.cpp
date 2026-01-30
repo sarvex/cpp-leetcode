@@ -4,21 +4,16 @@
  * @approach DFS with memoization, each cell stores longest path starting from it
  * @complexity Time: O(mn), Space: O(mn)
  */
-#include <algorithm>
-#include <array>
-#include <functional>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] int longestIncreasingPath(std::vector<std::vector<int>>& matrix) const {
+    [[nodiscard]] static int longestIncreasingPath(std::vector<std::vector<int>>& matrix) {
         const int m = static_cast<int>(matrix.size());
         const int n = static_cast<int>(matrix[0].size());
         std::vector<std::vector<int>> memo(m, std::vector<int>(n, 0));
         int ans = 0;
         constexpr std::array<int, 5> dirs = {-1, 0, 1, 0, -1};
 
-        std::function<int(int, int)> dfs = [&](int i, int j) -> int {
+        auto dfs = [&](this auto&& dfs, int i, int j) -> int {
             if (memo[i][j] != 0) {
                 return memo[i][j];
             }

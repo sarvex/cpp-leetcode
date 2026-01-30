@@ -2,15 +2,11 @@
  * @brief Union-Find to verify graph is a valid tree
  * @intuition A valid tree has n-1 edges and no cycles
  * @approach Use Union-Find to detect cycles while processing edges
- * @complexity Time: O(n * α(n)), Space: O(n)
+ * @complexity Time: O(n * alpha(n)), Space: O(n)
  */
-#include <functional>
-#include <numeric>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto validTree(int n, const std::vector<std::vector<int>>& edges) const -> bool {
+  [[nodiscard]] static auto validTree(const int n, const std::vector<std::vector<int>>& edges) -> bool {
     std::vector<int> parent(n);
     std::iota(parent.begin(), parent.end(), 0);
     

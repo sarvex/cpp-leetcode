@@ -4,14 +4,9 @@
  * @approach Use priority queue with deduplication to find nth ugly number
  * @complexity Time: O(n log n), Space: O(n)
  */
-#include <array>
-#include <queue>
-#include <unordered_set>
-#include <vector>
-
 class Solution final {
 public:
-  [[nodiscard]] auto nthUglyNumber(int n) const -> int {
+  [[nodiscard]] static auto nthUglyNumber(int n) -> int {
     std::priority_queue<long, std::vector<long>, std::greater<>> minHeap;
     std::unordered_set<long> seen;
     
@@ -26,7 +21,7 @@ public:
       minHeap.pop();
       for (const int factor : factors) {
         const long next = result * factor;
-        if (seen.find(next) == seen.end()) {
+        if (!seen.contains(next)) {
           seen.insert(next);
           minHeap.push(next);
         }

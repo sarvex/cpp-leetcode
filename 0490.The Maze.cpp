@@ -1,34 +1,51 @@
-class Solution {
+/**
+ * @brief Determine if ball can stop at destination in maze
+ * @intuition Ball rolls until hitting wall, DFS from each stop position
+ * @approach From each position, try all 4 directions until wall, mark visited
+ * @complexity Time: O(m * n), Space: O(m * n)
+ */
+#include <vector>
+
+class Solution final {
 public:
-    vector<vector<int>> maze;
-    vector<vector<bool>> vis;
-    vector<int> d;
-    int m;
-    int n;
+    [[nodiscard]] auto hasPath(std::vector<std::vector<int>>& maze,
+                                std::vector<int>& start,
+                                std::vector<int>& destination) const -> bool {
+        const int m = static_cast<int>(maze.size());
+        const int n = static_cast<int>(maze[0].size());
+        std::vector<std::vector<bool>> visited(m, std::vector<bool>(n, false));
 
-    bool hasPath(vector<vector<int>>& maze, vector<int>& start, vector<int>& destination) {
-        m = maze.size();
-        n = maze[0].size();
-        d = destination;
-        vis.resize(m, vector<bool>(n, false));
-        this->maze = maze;
-        dfs(start[0], start[1]);
-        return vis[d[0]][d[1]];
-    }
-
-    void dfs(int i, int j) {
-        if (vis[i][j]) return;
-        vis[i][j] = true;
-        if (i == d[0] && j == d[1]) return;
-        vector<int> dirs = {-1, 0, 1, 0, -1};
-        for (int k = 0; k < 4; ++k) {
-            int x = i, y = j;
-            int a = dirs[k], b = dirs[k + 1];
-            while (x + a >= 0 && x + a < m && y + b >= 0 && y + b < n && maze[x + a][y + b] == 0) {
-                x += a;
-                y += b;
+        auto dfs = [&](this auto&& dfs, int row, int col) -> bool {
+            if (visited[row][col]) {
+                return false;
             }
-            dfs(x, y);
-        }
+            visited[row][col] = true;
+
+            if (row == destination[0] && col == destination[1]) {
+                return true;
+            }
+
+            constexpr int dirs[5] = {-1, 0, 1, 0, -1};
+            for (int k = 0; k < 4; ++k) {
+                int x = row;
+                int y = col;
+                const int dx = dirs[k];
+                const int dy = dirs[k + 1];
+
+                while (x + dx >= 0 && x + dx < m && y + dy >= 0 && y + dy < n &&
+                       maze[x + dx][y + dy] == 0) {
+                    x += dx;
+                    y += dy;
+                }
+
+                if (dfs(x, y)) {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        return dfs(start[0], start[1]);
     }
 };

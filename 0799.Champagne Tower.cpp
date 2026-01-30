@@ -1,18 +1,27 @@
-class Solution {
+/**
+ * @brief Simulate champagne tower overflow
+ * @intuition Each glass receives overflow from two glasses above
+ * @approach DP simulation: track amount in each glass, distribute overflow
+ * @complexity Time: O(query_row^2), Space: O(query_row^2)
+ */
+class Solution final {
 public:
-    double champagneTower(int poured, int query_row, int query_glass) {
-        double f[101][101] = {0.0};
-        f[0][0] = poured;
-        for (int i = 0; i <= query_row; ++i) {
-            for (int j = 0; j <= i; ++j) {
-                if (f[i][j] > 1) {
-                    double half = (f[i][j] - 1) / 2.0;
-                    f[i][j] = 1;
-                    f[i + 1][j] += half;
-                    f[i + 1][j + 1] += half;
+    [[nodiscard]] static double champagneTower(const int poured, 
+                                                const int queryRow, 
+                                                const int queryGlass) {
+        std::vector<std::vector<double>> glasses(101, std::vector<double>(101, 0.0));
+        glasses[0][0] = poured;
+        
+        for (int row = 0; row <= queryRow; ++row) {
+            for (int col = 0; col <= row; ++col) {
+                if (glasses[row][col] > 1.0) {
+                    const double overflow = (glasses[row][col] - 1.0) / 2.0;
+                    glasses[row][col] = 1.0;
+                    glasses[row + 1][col] += overflow;
+                    glasses[row + 1][col + 1] += overflow;
                 }
             }
         }
-        return f[query_row][query_glass];
+        return glasses[queryRow][queryGlass];
     }
 };

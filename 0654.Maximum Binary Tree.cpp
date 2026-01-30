@@ -1,31 +1,28 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Construct maximum binary tree from array
+ * @intuition Root is maximum element, recursively build left/right from subarrays
+ * @approach Find max in range, create node, recurse on left and right portions
+ * @complexity Time: O(n^2) average, Space: O(n) for recursion
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* constructMaximumBinaryTree(vector<int>& nums) {
-        return dfs(nums, 0, nums.size() - 1);
-    }
-
-    TreeNode* dfs(vector<int>& nums, int l, int r) {
-        if (l > r) return nullptr;
-        int i = l;
-        for (int j = l; j <= r; ++j) {
-            if (nums[i] < nums[j]) {
-                i = j;
+    [[nodiscard]] TreeNode* constructMaximumBinaryTree(const vector<int>& nums) {
+        auto dfs = [&](this auto&& dfs, int l, int r) -> TreeNode* {
+            if (l > r) {
+                return nullptr;
             }
-        }
-        TreeNode* root = new TreeNode(nums[i]);
-        root->left = dfs(nums, l, i - 1);
-        root->right = dfs(nums, i + 1, r);
-        return root;
+            int i = l;
+            for (int j = l; j <= r; ++j) {
+                if (nums[i] < nums[j]) {
+                    i = j;
+                }
+            }
+            auto* root = new TreeNode(nums[i]);
+            root->left = dfs(l, i - 1);
+            root->right = dfs(i + 1, r);
+            return root;
+        };
+        
+        return dfs(0, nums.size() - 1);
     }
 };

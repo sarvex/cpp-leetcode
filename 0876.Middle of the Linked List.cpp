@@ -1,18 +1,17 @@
 /**
- * Definition for singly-linked list.
- * struct ListNode {
- *     int val;
- *     ListNode *next;
- *     ListNode() : val(0), next(nullptr) {}
- *     ListNode(int x) : val(x), next(nullptr) {}
- *     ListNode(int x, ListNode *next) : val(x), next(next) {}
- * };
+ * @brief Two-pointer technique to find middle node
+ * @intuition Slow pointer moves 1 step, fast moves 2; when fast reaches end, slow is at middle
+ * @approach Initialize slow and fast at head. Move slow by 1 and fast by 2 until
+ *           fast reaches end. Slow points to middle (second middle if even length).
+ * @complexity Time: O(n), Space: O(1)
  */
-class Solution {
+class Solution final {
 public:
-    ListNode* middleNode(ListNode* head) {
-        ListNode *slow = head, *fast = head;
-        while (fast && fast->next) {
+    [[nodiscard]] static auto middleNode(ListNode* head) -> ListNode* {
+        auto* slow = head;
+        auto* fast = head;
+        
+        while (fast != nullptr && fast->next != nullptr) {
             slow = slow->next;
             fast = fast->next->next;
         }

@@ -1,8 +1,15 @@
-class Solution {
+/**
+ * @brief Validate if data represents valid UTF-8 encoding
+ * @intuition Check leading byte pattern and count continuation bytes
+ * @approach State machine: track expected continuation bytes based on lead byte
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    bool validUtf8(vector<int>& data) {
+    [[nodiscard]] static auto validUtf8(const std::vector<int>& data) -> bool {
         int cnt = 0;
-        for (int& v : data) {
+
+        for (const int v : data) {
             if (cnt > 0) {
                 if (v >> 6 != 0b10) {
                     return false;
@@ -20,6 +27,7 @@ public:
                 return false;
             }
         }
+
         return cnt == 0;
     }
 };

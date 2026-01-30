@@ -1,25 +1,29 @@
-class Solution {
+/**
+ * @brief QuickSort implementation for array sorting
+ * @intuition Use partition-based divide and conquer
+ * @approach Choose middle element as pivot, partition around it, recurse on halves
+ * @complexity Time: O(n log n) average, O(n^2) worst, Space: O(log n)
+ */
+class Solution final {
 public:
-    vector<int> sortArray(vector<int>& nums) {
-        function<void(int, int)> quick_sort = [&](int l, int r) {
+    [[nodiscard]] static vector<int> sortArray(vector<int>& nums) {
+        auto quickSort = [&](this auto&& quickSort, int l, int r) -> void {
             if (l >= r) {
                 return;
             }
             int i = l - 1, j = r + 1;
-            int x = nums[(l + r) >> 1];
+            const int x = nums[(l + r) >> 1];
             while (i < j) {
-                while (nums[++i] < x) {
-                }
-                while (nums[--j] > x) {
-                }
+                while (nums[++i] < x) {}
+                while (nums[--j] > x) {}
                 if (i < j) {
                     swap(nums[i], nums[j]);
                 }
             }
-            quick_sort(l, j);
-            quick_sort(j + 1, r);
+            quickSort(l, j);
+            quickSort(j + 1, r);
         };
-        quick_sort(0, nums.size() - 1);
+        quickSort(0, static_cast<int>(nums.size()) - 1);
         return nums;
     }
 };

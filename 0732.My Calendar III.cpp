@@ -1,113 +1,83 @@
-class Node {
-public:
-    Node* left;
-    Node* right;
-    int l;
-    int r;
-    int mid;
-    int v;
-    int add;
-
-    Node(int l, int r) {
-        this->l = l;
-        this->r = r;
-        this->mid = (l + r) >> 1;
-        this->left = this->right = nullptr;
-        v = add = 0;
-    }
-};
-
-class SegmentTree {
-private:
-    Node* root;
-
-public:
-    SegmentTree() {
-        root = new Node(1, 1e9 + 1);
-    }
-
-    void modify(int l, int r, int v) {
-        modify(l, r, v, root);
-    }
-
-    void modify(int l, int r, int v, Node* node) {
-        if (l > r) {
-            return;
-        }
-        if (node->l >= l && node->r <= r) {
-            node->v += v;
-            node->add += v;
-            return;
-        }
-        pushdown(node);
-        if (l <= node->mid) {
-            modify(l, r, v, node->left);
-        }
-        if (r > node->mid) {
-            modify(l, r, v, node->right);
-        }
-        pushup(node);
-    }
-
-    int query(int l, int r) {
-        return query(l, r, root);
-    }
-
-    int query(int l, int r, Node* node) {
-        if (l > r) {
-            return 0;
-        }
-        if (node->l >= l && node->r <= r) return node->v;
-        pushdown(node);
-        int v = 0;
-        if (l <= node->mid) {
-            v = max(v, query(l, r, node->left));
-        }
-        if (r > node->mid) {
-            v = max(v, query(l, r, node->right));
-        }
-        return v;
-    }
-
-    void pushup(Node* node) {
-        node->v = max(node->left->v, node->right->v);
-    }
-
-    void pushdown(Node* node) {
-        if (!node->left) {
-            node->left = new Node(node->l, node->mid);
-        }
-        if (!node->right) {
-            node->right = new Node(node->mid + 1, node->r);
-        }
-        if (node->add) {
-            Node* left = node->left;
-            Node* right = node->right;
-            left->v += node->add;
-            right->v += node->add;
-            left->add += node->add;
-            right->add += node->add;
-            node->add = 0;
-        }
-    }
-};
-
-class MyCalendarThree {
-public:
-    SegmentTree* tree;
-
-    MyCalendarThree() {
-        tree = new SegmentTree();
-    }
-
-    int book(int start, int end) {
-        tree->modify(start + 1, end, 1);
-        return tree->query(1, 1e9 + 1);
-    }
-};
-
 /**
- * Your MyCalendarThree object will be instantiated and called as such:
- * MyCalendarThree* obj = new MyCalendarThree();
- * int param_1 = obj->book(start,end);
+ * @brief Calendar max concurrent bookings using segment tree
+ * @intuition Track maximum overlap using lazy propagation segment tree
+ * @approach Dynamic segment tree with lazy propagation for range updates
+ * @complexity Time: O(log N) per booking, Space: O(Q log N)
  */
+class MyCalendarThree final {
+    struct Node {
+        Node* left = nullptr;
+        Node* right = nullptr;
+        int l, r, mid;
+        int maxVal = 0;
+        int lazy = 0;
+
+        Node(int l, int r) : l(l), r(r), mid((l + r) >> 1) {}
+    };
+
+    class SegmentTree {
+    public:
+        SegmentTree() : root_(new Node(1, 1e9 + 1)) {}
+
+        void modify(const int l, const int r, const int val) {
+            modify(l, r, val, root_);
+        }
+
+        [[nodiscard]] int query(const int l, const int r) {
+            return query(l, r, root_);
+        }
+
+    private:
+        Node* root_;
+
+        void modify(const int l, const int r, const int val, Node* node) {
+            if (l > r) return;
+            if (node->l >= l && node->r <= r) {
+                node->maxVal += val;
+                node->lazy += val;
+                return;
+            }
+            pushdown(node);
+            if (l <= node->mid) modify(l, r, val, node->left);
+            if (r > node->mid) modify(l, r, val, node->right);
+            pushup(node);
+        }
+
+        [[nodiscard]] int query(const int l, const int r, Node* node) {
+            if (l > r) return 0;
+            if (node->l >= l && node->r <= r) return node->maxVal;
+            pushdown(node);
+            int result = 0;
+            if (l <= node->mid) result = std::max(result, query(l, r, node->left));
+            if (r > node->mid) result = std::max(result, query(l, r, node->right));
+            return result;
+        }
+
+        static void pushup(Node* node) {
+            node->maxVal = std::max(node->left->maxVal, node->right->maxVal);
+        }
+
+        static void pushdown(Node* node) {
+            if (!node->left) node->left = new Node(node->l, node->mid);
+            if (!node->right) node->right = new Node(node->mid + 1, node->r);
+            if (node->lazy) {
+                node->left->maxVal += node->lazy;
+                node->right->maxVal += node->lazy;
+                node->left->lazy += node->lazy;
+                node->right->lazy += node->lazy;
+                node->lazy = 0;
+            }
+        }
+    };
+
+public:
+    MyCalendarThree() : tree_(std::make_unique<SegmentTree>()) {}
+
+    [[nodiscard]] int book(const int start, const int end) {
+        tree_->modify(start + 1, end, 1);
+        return tree_->query(1, 1e9 + 1);
+    }
+
+private:
+    std::unique_ptr<SegmentTree> tree_;
+};

@@ -1,8 +1,15 @@
-class Solution {
+/**
+ * @brief Difference array for range updates
+ * @intuition Use difference array technique to efficiently handle range additions
+ * @approach For each booking, add seats at start index and subtract at end+1. Then compute
+ *           prefix sums to get actual seat counts for each flight.
+ * @complexity Time: O(n + m) where m is bookings count, Space: O(n)
+ */
+class Solution final {
 public:
-    vector<int> corpFlightBookings(vector<vector<int>>& bookings, int n) {
+    [[nodiscard]] static vector<int> corpFlightBookings(const vector<vector<int>>& bookings, const int n) {
         vector<int> ans(n);
-        for (auto& e : bookings) {
+        for (const auto& e : bookings) {
             int first = e[0], last = e[1], seats = e[2];
             ans[first - 1] += seats;
             if (last < n) {

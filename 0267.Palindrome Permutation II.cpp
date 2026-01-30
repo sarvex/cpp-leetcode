@@ -4,13 +4,9 @@
  * @approach Find middle char (if any), backtrack to generate permutations
  * @complexity Time: O((n/2)!), Space: O(n)
  */
-#include <string>
-#include <unordered_map>
-#include <vector>
-
 class Solution final {
 private:
-  std::size_t targetLength;
+  std::size_t targetLength = 0;
   std::vector<std::string> result;
   std::unordered_map<char, int> charCount;
 
@@ -22,8 +18,8 @@ private:
     for (auto& [ch, count] : charCount) {
       if (count > 1) {
         count -= 2;
-        const std::string newStr = ch + current + ch;
-        dfs(const_cast<std::string&>(newStr));
+        std::string newStr = ch + current + ch;
+        dfs(newStr);
         count += 2;
       }
     }

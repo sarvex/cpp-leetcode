@@ -1,36 +1,24 @@
-/*
-// Definition for a Node.
-class Node {
+/**
+ * @brief Preorder traversal of N-ary tree (root before children)
+ * @intuition Visit root first, then recursively visit each child left to right
+ * @approach DFS: add current value, then recurse on all children
+ * @complexity Time: O(n), Space: O(h) where h is tree height
+ */
+class Solution final {
 public:
-    int val;
-    vector<Node*> children;
-
-    Node() {}
-
-    Node(int _val) {
-        val = _val;
-    }
-
-    Node(int _val, vector<Node*> _children) {
-        val = _val;
-        children = _children;
-    }
-};
-*/
-
-class Solution {
-public:
-    vector<int> preorder(Node* root) {
+    [[nodiscard]] static vector<int> preorder(Node* root) {
         vector<int> ans;
-        function<void(Node*)> dfs = [&](Node* root) {
-            if (!root) {
+        
+        auto dfs = [&](this auto&& dfs, Node* node) -> void {
+            if (!node) {
                 return;
             }
-            ans.push_back(root->val);
-            for (auto& child : root->children) {
+            ans.push_back(node->val);
+            for (auto* child : node->children) {
                 dfs(child);
             }
         };
+        
         dfs(root);
         return ans;
     }

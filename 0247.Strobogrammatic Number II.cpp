@@ -4,17 +4,13 @@
  * @approach Recursive generation adding symmetric pairs around middle
  * @complexity Time: O(5^(n/2)), Space: O(5^(n/2))
  */
-#include <functional>
-#include <string>
-#include <utility>
-#include <vector>
 
 class Solution final {
 public:
-  [[nodiscard]] auto findStrobogrammatic(int n) const -> std::vector<std::string> {
+  [[nodiscard]] auto findStrobogrammatic(const int n) const -> std::vector<std::string> {
     const std::vector<std::pair<char, char>> pairs = {{'1', '1'}, {'8', '8'}, {'6', '9'}, {'9', '6'}};
     
-    std::function<std::vector<std::string>(int)> dfs = [&](int len) -> std::vector<std::string> {
+    std::function<std::vector<std::string>(int)> dfs = [&](const int len) -> std::vector<std::string> {
       if (len == 0) {
         return {""};
       }

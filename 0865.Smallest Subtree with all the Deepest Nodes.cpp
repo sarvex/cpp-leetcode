@@ -1,32 +1,24 @@
 /**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
+ * @brief Post-order traversal tracking depth to find LCA of deepest nodes
+ * @intuition The answer is LCA of all deepest nodes; track depth to identify them
+ * @approach Return (node, depth) pairs. If left deeper, return left result; if right
+ *           deeper, return right; if equal, current node is LCA of deepest nodes.
+ * @complexity Time: O(n), Space: O(h)
  */
-class Solution {
+class Solution final {
 public:
-    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
-        using pti = pair<TreeNode*, int>;
-        auto dfs = [&](this auto&& dfs, TreeNode* root) -> pti {
-            if (!root) {
-                return {nullptr, 0};
-            }
-            auto [l, ld] = dfs(root->left);
-            auto [r, rd] = dfs(root->right);
-            if (ld > rd) {
-                return {l, ld + 1};
-            }
-            if (ld < rd) {
-                return {r, rd + 1};
-            }
-            return {root, ld + 1};
+    [[nodiscard]] auto subtreeWithAllDeepest(TreeNode* root) -> TreeNode* {
+        auto dfs = [&](auto&& self, TreeNode* node) -> std::pair<TreeNode*, int> {
+            if (!node) return {nullptr, 0};
+            
+            auto [l, ld] = self(self, node->left);
+            auto [r, rd] = self(self, node->right);
+            
+            if (ld > rd) return {l, ld + 1};
+            if (ld < rd) return {r, rd + 1};
+            return {node, ld + 1};
         };
-        return dfs(root).first;
+        
+        return dfs(dfs, root).first;
     }
 };

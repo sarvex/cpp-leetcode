@@ -1,20 +1,29 @@
-class Solution {
+/**
+ * @brief Check if string with '(', ')' and '*' (wildcard) is valid
+ * @intuition Track min and max possible open parentheses count
+ * @approach '*' can be '(', ')' or empty; track range of possible open counts
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    bool checkValidString(string s) {
-        int n = s.size();
-        vector<vector<bool>> dp(n, vector<bool>(n));
-        for (int i = 0; i < n; ++i) {
-            dp[i][i] = s[i] == '*';
-        }
-        for (int i = n - 2; i >= 0; --i) {
-            for (int j = i + 1; j < n; ++j) {
-                char a = s[i], b = s[j];
-                dp[i][j] = (a == '(' || a == '*') && (b == '*' || b == ')') && (i + 1 == j || dp[i + 1][j - 1]);
-                for (int k = i; k < j && !dp[i][j]; ++k) {
-                    dp[i][j] = dp[i][k] && dp[k + 1][j];
-                }
+    [[nodiscard]] static bool checkValidString(const string& s) {
+        int lo = 0, hi = 0;
+        
+        for (const char c : s) {
+            if (c == '(') {
+                ++lo;
+                ++hi;
+            } else if (c == ')') {
+                lo = max(0, lo - 1);
+                --hi;
+            } else {
+                lo = max(0, lo - 1);
+                ++hi;
+            }
+            if (hi < 0) {
+                return false;
             }
         }
-        return dp[0][n - 1];
+        return lo == 0;
     }
 };

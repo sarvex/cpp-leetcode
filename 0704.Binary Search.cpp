@@ -1,15 +1,22 @@
-class Solution {
+/**
+ * @brief Standard binary search implementation
+ * @intuition Halve search space each iteration by comparing middle element
+ * @approach Use left-closed, right-open interval to find lower bound
+ * @complexity Time: O(log n), Space: O(1)
+ */
+class Solution final {
 public:
-    int search(vector<int>& nums, int target) {
-        int l = 0, r = nums.size() - 1;
-        while (l < r) {
-            int mid = (l + r) >> 1;
+    [[nodiscard]] static int search(const std::vector<int>& nums, const int target) {
+        int left = 0;
+        int right = static_cast<int>(nums.size()) - 1;
+        while (left < right) {
+            const int mid = (left + right) >> 1;
             if (nums[mid] >= target) {
-                r = mid;
+                right = mid;
             } else {
-                l = mid + 1;
+                left = mid + 1;
             }
         }
-        return nums[l] == target ? l : -1;
+        return nums[left] == target ? left : -1;
     }
 };

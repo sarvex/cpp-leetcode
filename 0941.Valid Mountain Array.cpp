@@ -1,7 +1,13 @@
-class Solution {
+/**
+ * @brief Check if array forms a valid mountain
+ * @intuition Find peak by climbing from both ends; must meet at same point
+ * @approach Two pointers from both ends climb up; check if they meet and not at edges
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    bool validMountainArray(vector<int>& arr) {
-        int n = arr.size();
+    [[nodiscard]] static bool validMountainArray(const vector<int>& arr) {
+        const int n = static_cast<int>(arr.size());
         if (n < 3) {
             return false;
         }

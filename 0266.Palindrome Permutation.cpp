@@ -4,12 +4,9 @@
  * @approach Count character frequencies, check odd count <= 1
  * @complexity Time: O(n), Space: O(1)
  */
-#include <array>
-#include <string>
-
 class Solution final {
 public:
-  [[nodiscard]] auto canPermutePalindrome(const std::string& s) const -> bool {
+  [[nodiscard]] static auto canPermutePalindrome(const std::string& s) -> bool {
     std::array<int, 26> count{};
     for (const char c : s) {
       ++count[c - 'a'];

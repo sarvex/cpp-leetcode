@@ -1,25 +1,34 @@
-class Solution {
+/**
+ * @brief Minimum deletions to make two strings equal (edit distance variant)
+ * @intuition Result = len1 + len2 - 2*LCS, or use DP directly for min deletions
+ * @approach DP where f[i][j] = min deletions for word1[0..i) and word2[0..j)
+ * @complexity Time: O(m*n), Space: O(m*n)
+ */
+class Solution final {
 public:
-    int minDistance(string word1, string word2) {
-        int m = word1.length(), n = word2.length();
-        vector<vector<int>> f(m + 1, vector<int>(n + 1));
+    [[nodiscard]] static int minDistance(const string& word1, const string& word2) {
+        const int m = static_cast<int>(word1.length());
+        const int n = static_cast<int>(word2.length());
+        
+        vector<vector<int>> dp(m + 1, vector<int>(n + 1));
+        
         for (int i = 0; i <= m; ++i) {
-            f[i][0] = i;
+            dp[i][0] = i;
         }
         for (int j = 0; j <= n; ++j) {
-            f[0][j] = j;
+            dp[0][j] = j;
         }
+        
         for (int i = 1; i <= m; ++i) {
             for (int j = 1; j <= n; ++j) {
-                char a = word1[i - 1];
-                char b = word2[j - 1];
-                if (a == b) {
-                    f[i][j] = f[i - 1][j - 1];
+                if (word1[i - 1] == word2[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1];
                 } else {
-                    f[i][j] = min(f[i - 1][j], f[i][j - 1]) + 1;
+                    dp[i][j] = min(dp[i - 1][j], dp[i][j - 1]) + 1;
                 }
             }
         }
-        return f[m][n];
+        
+        return dp[m][n];
     }
 };

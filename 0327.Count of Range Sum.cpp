@@ -4,14 +4,11 @@
  * @approach Coordinate compress, use BIT for counting in range
  * @complexity Time: O(n log n), Space: O(n)
  */
-#include <algorithm>
-#include <vector>
-
 class BinaryIndexedTree final {
 public:
-    explicit BinaryIndexedTree(int n) : n_(n), tree_(n + 1) {}
+    explicit BinaryIndexedTree(const int n) : n_(n), tree_(n + 1) {}
 
-    void update(int x, int v) {
+    void update(int x, const int v) {
         while (x <= n_) {
             tree_[x] += v;
             x += x & (-x);
@@ -34,7 +31,8 @@ private:
 
 class Solution final {
 public:
-    [[nodiscard]] int countRangeSum(const std::vector<int>& nums, int lower, int upper) const {
+    [[nodiscard]] static int countRangeSum(const std::vector<int>& nums, 
+                                           const int lower, const int upper) {
         using ll = long long;
         const int n = static_cast<int>(nums.size());
         
@@ -50,20 +48,20 @@ public:
             sorted.push_back(prefix[i] - lower);
             sorted.push_back(prefix[i] - upper);
         }
-        std::sort(sorted.begin(), sorted.end());
-        sorted.erase(std::unique(sorted.begin(), sorted.end()), sorted.end());
+        std::ranges::sort(sorted);
+        sorted.erase(std::ranges::unique(sorted).begin(), sorted.end());
         const int m = static_cast<int>(sorted.size());
         
         BinaryIndexedTree tree(m);
         int ans = 0;
         
         for (int i = 0; i <= n; ++i) {
-            const int l = static_cast<int>(std::lower_bound(sorted.begin(), sorted.end(), 
+            const int l = static_cast<int>(std::ranges::lower_bound(sorted, 
                                                             prefix[i] - upper) - sorted.begin()) + 1;
-            const int r = static_cast<int>(std::lower_bound(sorted.begin(), sorted.end(), 
+            const int r = static_cast<int>(std::ranges::lower_bound(sorted, 
                                                             prefix[i] - lower) - sorted.begin()) + 1;
             ans += tree.query(r) - tree.query(l - 1);
-            tree.update(static_cast<int>(std::lower_bound(sorted.begin(), sorted.end(), 
+            tree.update(static_cast<int>(std::ranges::lower_bound(sorted, 
                                                           prefix[i]) - sorted.begin()) + 1, 1);
         }
         return ans;

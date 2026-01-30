@@ -1,17 +1,23 @@
-class Solution {
+/**
+ * @brief Count ways to tile 2×n board with dominoes and trominoes
+ * @intuition Track 4 states: both filled, top only, bottom only, neither
+ * @approach DP with state transitions for each column configuration
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    const int mod = 1e9 + 7;
-
-    int numTilings(int n) {
-        long f[4] = {1, 0, 0, 0};
+    [[nodiscard]] static int numTilings(const int n) {
+        constexpr int MOD = 1e9 + 7;
+        std::array<long long, 4> dp{1, 0, 0, 0};
+        
         for (int i = 1; i <= n; ++i) {
-            long g[4] = {0, 0, 0, 0};
-            g[0] = (f[0] + f[1] + f[2] + f[3]) % mod;
-            g[1] = (f[2] + f[3]) % mod;
-            g[2] = (f[1] + f[3]) % mod;
-            g[3] = f[0];
-            memcpy(f, g, sizeof(g));
+            std::array<long long, 4> next{0, 0, 0, 0};
+            next[0] = (dp[0] + dp[1] + dp[2] + dp[3]) % MOD;
+            next[1] = (dp[2] + dp[3]) % MOD;
+            next[2] = (dp[1] + dp[3]) % MOD;
+            next[3] = dp[0];
+            dp = next;
         }
-        return f[0];
+        return static_cast<int>(dp[0]);
     }
 };

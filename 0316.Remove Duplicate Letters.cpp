@@ -4,19 +4,17 @@
  * @approach Use stack and track last occurrence of each char with bitmask
  * @complexity Time: O(n), Space: O(1) - 26 chars max
  */
-#include <string>
-
 class Solution final {
 public:
-    [[nodiscard]] std::string removeDuplicateLetters(const std::string& s) const {
+    [[nodiscard]] static string removeDuplicateLetters(const string& s) {
         const int n = static_cast<int>(s.size());
-        int last[26] = {0};
+        int last[26] = {};
         
         for (int i = 0; i < n; ++i) {
             last[s[i] - 'a'] = i;
         }
         
-        std::string ans;
+        string ans;
         int mask = 0;
         
         for (int i = 0; i < n; ++i) {

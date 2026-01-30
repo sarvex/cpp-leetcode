@@ -1,36 +1,50 @@
-class Solution {
+/**
+ * @brief Find lexicographically largest string from concatenated loop
+ * @intuition Each string can be normal or reversed; try all split points
+ * @approach Pre-reverse strings to max form, then try each string at each position as start
+ * @complexity Time: O(n * L^2), Space: O(L) where L is total length
+ */
+class Solution final {
 public:
-    string splitLoopedString(vector<string>& strs) {
+    [[nodiscard]] static string splitLoopedString(vector<string>& strs) {
         for (auto& s : strs) {
             string t{s.rbegin(), s.rend()};
             s = max(s, t);
         }
-        int n = strs.size();
-        string ans = "";
-        for (int i = 0; i < strs.size(); ++i) {
+        
+        const int n = static_cast<int>(strs.size());
+        string ans;
+        
+        for (int i = 0; i < n; ++i) {
             auto& s = strs[i];
-            string t;
+            string tail;
+            
             for (int j = i + 1; j < n; ++j) {
-                t += strs[j];
+                tail += strs[j];
             }
             for (int j = 0; j < i; ++j) {
-                t += strs[j];
+                tail += strs[j];
             }
-            for (int j = 0; j < s.size(); ++j) {
-                auto a = s.substr(j);
-                auto b = s.substr(0, j);
-                auto cur = a + t + b;
+            
+            for (size_t j = 0; j < s.size(); ++j) {
+                auto prefix = s.substr(j);
+                auto suffix = s.substr(0, j);
+                auto cur = prefix + tail + suffix;
+                
                 if (ans < cur) {
                     ans = cur;
                 }
-                reverse(a.begin(), a.end());
-                reverse(b.begin(), b.end());
-                cur = b + t + a;
+                
+                reverse(prefix.begin(), prefix.end());
+                reverse(suffix.begin(), suffix.end());
+                cur = suffix + tail + prefix;
+                
                 if (ans < cur) {
                     ans = cur;
                 }
             }
         }
+        
         return ans;
     }
 };

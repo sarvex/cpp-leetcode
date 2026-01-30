@@ -16,28 +16,28 @@ private:
         int val;
         Node* prev;
         Node* next;
-        
+
         Node(int k, int v) : key(k), val(v), prev(nullptr), next(nullptr) {}
     };
-    
+
     int size_;
     int capacity_;
     Node* head_;
     Node* tail_;
     unordered_map<int, Node*> cache_;
-    
+
     auto removeNode(Node* node) -> void {
         node->prev->next = node->next;
         node->next->prev = node->prev;
     }
-    
+
     auto addToHead(Node* node) -> void {
         node->next = head_->next;
         node->prev = head_;
         head_->next->prev = node;
         head_->next = node;
     }
-    
+
 public:
     explicit LRUCache(int capacity) : size_(0), capacity_(capacity) {
         head_ = new Node(0, 0);
@@ -45,7 +45,7 @@ public:
         head_->next = tail_;
         tail_->prev = head_;
     }
-    
+
     [[nodiscard]] auto get(int key) -> int {
         if (!cache_.contains(key)) {
             return -1;
@@ -55,7 +55,7 @@ public:
         addToHead(node);
         return node->val;
     }
-    
+
     auto put(int key, int value) -> void {
         if (cache_.contains(key)) {
             Node* node = cache_[key];
@@ -76,10 +76,3 @@ public:
         }
     }
 };
-
-/**
- * Your LRUCache object will be instantiated and called as such:
- * LRUCache* obj = new LRUCache(capacity);
- * int param_1 = obj->get(key);
- * obj->put(key,value);
- */

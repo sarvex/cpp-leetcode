@@ -1,7 +1,13 @@
-class Solution {
+/**
+ * @brief DP for counting valid playlists with song constraints
+ * @intuition f[i][j] = playlists of length i using exactly j songs
+ * @approach New song: multiply by remaining; repeat: only if >k songs played
+ * @complexity Time: O(goal * n), Space: O(goal * n)
+ */
+class Solution final {
 public:
-    int numMusicPlaylists(int n, int goal, int k) {
-        const int mod = 1e9 + 7;
+    [[nodiscard]] static int numMusicPlaylists(const int n, const int goal, const int k) {
+        constexpr int mod = 1e9 + 7;
         long long f[goal + 1][n + 1];
         memset(f, 0, sizeof(f));
         f[0][0] = 1;
@@ -14,6 +20,6 @@ public:
                 f[i][j] %= mod;
             }
         }
-        return f[goal][n];
+        return static_cast<int>(f[goal][n]);
     }
 };

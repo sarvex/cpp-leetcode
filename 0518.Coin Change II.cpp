@@ -1,10 +1,18 @@
-class Solution {
+/**
+ * @brief Count combinations to make amount using unbounded coins
+ * @intuition Classic unbounded knapsack; each coin can be used unlimited times
+ * @approach DP where f[i][j] = ways to make amount j using first i coin types.
+ *           f[i][j] = f[i-1][j] (skip coin) + f[i][j-coin] (use coin again).
+ * @complexity Time: O(m * n), Space: O(m * n)
+ */
+class Solution final {
 public:
-    int change(int amount, vector<int>& coins) {
-        int m = coins.size(), n = amount;
-        unsigned f[m + 1][n + 1];
-        memset(f, 0, sizeof(f));
+    [[nodiscard]] static auto change(int amount, const vector<int>& coins) -> int {
+        const int m = static_cast<int>(coins.size());
+        const int n = amount;
+        vector<vector<unsigned>> f(m + 1, vector<unsigned>(n + 1, 0));
         f[0][0] = 1;
+        
         for (int i = 1; i <= m; ++i) {
             for (int j = 0; j <= n; ++j) {
                 f[i][j] = f[i - 1][j];
@@ -13,6 +21,6 @@ public:
                 }
             }
         }
-        return f[m][n];
+        return static_cast<int>(f[m][n]);
     }
 };

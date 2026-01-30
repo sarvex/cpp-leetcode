@@ -1,7 +1,13 @@
-class Solution {
+/**
+ * @brief DP for counting knight dialer paths
+ * @intuition Track count of paths ending at each digit
+ * @approach For each hop, update counts based on valid knight moves
+ * @complexity Time: O(n), Space: O(1)
+ */
+class Solution final {
 public:
-    int knightDialer(int n) {
-        const int mod = 1e9 + 7;
+    [[nodiscard]] static int knightDialer(int n) {
+        constexpr int mod = 1e9 + 7;
         vector<long long> f(10, 1);
         while (--n) {
             vector<long long> g(10);
@@ -16,6 +22,6 @@ public:
             g[9] = (f[2] + f[4]) % mod;
             f = g;
         }
-        return accumulate(f.begin(), f.end(), 0LL) % mod;
+        return static_cast<int>(accumulate(f.begin(), f.end(), 0LL) % mod);
     }
 };

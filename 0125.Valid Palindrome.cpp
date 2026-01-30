@@ -5,14 +5,9 @@
  * @complexity Time: O(n), Space: O(1)
  */
 
-#include <cctype>
-#include <string>
-
-using std::string;
-
 class Solution final {
 public:
-    [[nodiscard]] auto isPalindrome(const string& s) const -> bool {
+    [[nodiscard]] static auto isPalindrome(const std::string& s) -> bool {
         int left = 0;
         int right = static_cast<int>(s.size()) - 1;
         

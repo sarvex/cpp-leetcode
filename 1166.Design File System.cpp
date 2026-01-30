@@ -1,16 +1,21 @@
-class Trie {
+/**
+ * @brief Trie-based file system for path creation and value retrieval
+ * @intuition Use trie where each node represents a path component
+ * @approach Split paths by '/'. For create, verify parent exists before adding new node.
+ *           For get, traverse trie following path components.
+ * @complexity Time: O(path length) per operation, Space: O(total path components)
+ */
+class Trie final {
 public:
     unordered_map<string, Trie*> children;
     int v;
 
-    Trie(int v) {
-        this->v = v;
-    }
+    Trie(int v) : v(v) {}
 
-    bool insert(string& w, int v) {
+    [[nodiscard]] bool insert(const string& w, int val) {
         Trie* node = this;
         auto ps = split(w, '/');
-        for (int i = 1; i < ps.size() - 1; ++i) {
+        for (size_t i = 1; i < ps.size() - 1; ++i) {
             auto p = ps[i];
             if (!node->children.count(p)) {
                 return false;
@@ -20,25 +25,25 @@ public:
         if (node->children.count(ps.back())) {
             return false;
         }
-        node->children[ps.back()] = new Trie(v);
+        node->children[ps.back()] = new Trie(val);
         return true;
     }
 
-    int search(string& w) {
-        Trie* node = this;
+    [[nodiscard]] int search(const string& w) const {
+        const Trie* node = this;
         auto ps = split(w, '/');
-        for (int i = 1; i < ps.size(); ++i) {
+        for (size_t i = 1; i < ps.size(); ++i) {
             auto p = ps[i];
             if (!node->children.count(p)) {
                 return -1;
             }
-            node = node->children[p];
+            node = node->children.at(p);
         }
         return node->v;
     }
 
 private:
-    vector<string> split(string& s, char delim) {
+    [[nodiscard]] static vector<string> split(const string& s, char delim) {
         stringstream ss(s);
         string item;
         vector<string> res;
@@ -49,27 +54,18 @@ private:
     }
 };
 
-class FileSystem {
+class FileSystem final {
 public:
-    FileSystem() {
-        trie = new Trie(-1);
-    }
+    FileSystem() : trie(new Trie(-1)) {}
 
-    bool createPath(string path, int value) {
+    [[nodiscard]] bool createPath(const string& path, int value) {
         return trie->insert(path, value);
     }
 
-    int get(string path) {
+    [[nodiscard]] int get(const string& path) const {
         return trie->search(path);
     }
 
 private:
     Trie* trie;
 };
-
-/**
- * Your FileSystem object will be instantiated and called as such:
- * FileSystem* obj = new FileSystem();
- * bool param_1 = obj->createPath(path,value);
- * int param_2 = obj->get(path);
- */

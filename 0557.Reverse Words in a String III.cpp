@@ -1,14 +1,22 @@
-class Solution {
+/**
+ * @brief Reverse each word in string while preserving word order
+ * @intuition Split by spaces, reverse each word, rejoin
+ * @approach Use stringstream to extract words, reverse each, concatenate with spaces
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    string reverseWords(string s) {
+    [[nodiscard]] static string reverseWords(const string& s) {
         stringstream ss(s);
-        string t;
+        string word;
         string ans;
-        while (ss >> t) {
-            reverse(t.begin(), t.end());
-            ans += t;
+        
+        while (ss >> word) {
+            reverse(word.begin(), word.end());
+            ans += word;
             ans.push_back(' ');
         }
+        
         ans.pop_back();
         return ans;
     }

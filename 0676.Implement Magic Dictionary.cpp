@@ -1,40 +1,40 @@
-class Trie {
-private:
-    Trie* children[26];
-    bool isEnd = false;
-
+/**
+ * @brief Magic dictionary that searches for words differing by exactly one character
+ * @intuition Use Trie to store words, search with exactly one character difference
+ * @approach DFS through Trie, track number of mismatches, must be exactly one at end
+ * @complexity Time: O(n*m) for build, O(26*m) for search, Space: O(n*m)
+ */
+class Trie final {
 public:
     Trie() {
-        fill(begin(children), end(children), nullptr);
+        fill(begin(children_), end(children_), nullptr);
     }
 
     void insert(const string& w) {
         Trie* node = this;
-        for (char c : w) {
-            int i = c - 'a';
-            if (!node->children[i]) {
-                node->children[i] = new Trie();
+        for (const char c : w) {
+            const int i = c - 'a';
+            if (!node->children_[i]) {
+                node->children_[i] = new Trie();
             }
-            node = node->children[i];
+            node = node->children_[i];
         }
-        node->isEnd = true;
+        node->isEnd_ = true;
     }
 
-    bool search(const string& w) {
-        function<bool(int, Trie*, int)> dfs = [&](int i, Trie* node, int diff) {
+    [[nodiscard]] bool search(const string& w) const {
+        auto dfs = [&](this auto&& dfs, size_t i, const Trie* node, int diff) -> bool {
             if (i >= w.size()) {
-                return diff == 1 && node->isEnd;
+                return diff == 1 && node->isEnd_;
             }
-            int j = w[i] - 'a';
-            if (node->children[j] && dfs(i + 1, node->children[j], diff)) {
+            const int j = w[i] - 'a';
+            if (node->children_[j] && dfs(i + 1, node->children_[j], diff)) {
                 return true;
             }
             if (diff == 0) {
                 for (int k = 0; k < 26; ++k) {
-                    if (k != j && node->children[k]) {
-                        if (dfs(i + 1, node->children[k], 1)) {
-                            return true;
-                        }
+                    if (k != j && node->children_[k] && dfs(i + 1, node->children_[k], 1)) {
+                        return true;
                     }
                 }
             }
@@ -42,31 +42,26 @@ public:
         };
         return dfs(0, this, 0);
     }
+
+private:
+    Trie* children_[26];
+    bool isEnd_ = false;
 };
 
-class MagicDictionary {
+class MagicDictionary final {
 public:
-    MagicDictionary() {
-        trie = new Trie();
-    }
+    MagicDictionary() : trie_(new Trie()) {}
 
-    void buildDict(vector<string> dictionary) {
-        for (auto& w : dictionary) {
-            trie->insert(w);
+    void buildDict(const vector<string>& dictionary) {
+        for (const auto& w : dictionary) {
+            trie_->insert(w);
         }
     }
 
-    bool search(string searchWord) {
-        return trie->search(searchWord);
+    [[nodiscard]] bool search(const string& searchWord) const {
+        return trie_->search(searchWord);
     }
 
 private:
-    Trie* trie;
+    Trie* trie_;
 };
-
-/**
- * Your MagicDictionary object will be instantiated and called as such:
- * MagicDictionary* obj = new MagicDictionary();
- * obj->buildDict(dictionary);
- * bool param_2 = obj->search(searchWord);
- */

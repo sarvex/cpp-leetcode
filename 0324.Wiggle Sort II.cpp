@@ -4,14 +4,11 @@
  * @approach Sort then interleave from middle to avoid equal adjacent elements
  * @complexity Time: O(n log n), Space: O(n)
  */
-#include <algorithm>
-#include <vector>
-
 class Solution final {
 public:
-    void wiggleSort(std::vector<int>& nums) const {
-        std::vector<int> sorted = nums;
-        std::sort(sorted.begin(), sorted.end());
+    static void wiggleSort(vector<int>& nums) {
+        vector<int> sorted = nums;
+        sort(sorted.begin(), sorted.end());
         
         const int n = static_cast<int>(nums.size());
         int i = (n - 1) >> 1;

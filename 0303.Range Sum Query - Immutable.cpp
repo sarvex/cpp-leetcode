@@ -4,11 +4,9 @@
  * @approach Build prefix sum array, then query as s[right+1] - s[left]
  * @complexity Time: O(n) build, O(1) query, Space: O(n)
  */
-#include <vector>
-
 class NumArray final {
 public:
-    explicit NumArray(const std::vector<int>& nums) {
+    explicit NumArray(const vector<int>& nums) {
         const int n = static_cast<int>(nums.size());
         prefix_sum_.resize(n + 1);
         for (int i = 0; i < n; ++i) {
@@ -21,11 +19,5 @@ public:
     }
 
 private:
-    std::vector<int> prefix_sum_;
+    vector<int> prefix_sum_;
 };
-
-/**
- * Your NumArray object will be instantiated and called as such:
- * NumArray* obj = new NumArray(nums);
- * int param_1 = obj->sumRange(left,right);
- */

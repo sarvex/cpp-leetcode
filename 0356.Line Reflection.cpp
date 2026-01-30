@@ -4,14 +4,9 @@
  * @approach Find min/max x, check each point has reflection partner
  * @complexity Time: O(n), Space: O(n)
  */
-#include <algorithm>
-#include <set>
-#include <utility>
-#include <vector>
-
 class Solution final {
 public:
-    [[nodiscard]] bool isReflected(const std::vector<std::vector<int>>& points) const {
+    [[nodiscard]] static bool isReflected(const std::vector<std::vector<int>>& points) {
         constexpr int inf = 1 << 30;
         int minX = inf;
         int maxX = -inf;

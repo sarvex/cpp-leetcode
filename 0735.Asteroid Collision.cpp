@@ -1,21 +1,28 @@
-class Solution {
+/**
+ * @brief Asteroid collision simulation using stack
+ * @intuition Only right-moving and left-moving asteroids can collide
+ * @approach Stack of right-moving asteroids, handle left-moving collisions
+ * @complexity Time: O(n), Space: O(n)
+ */
+class Solution final {
 public:
-    vector<int> asteroidCollision(vector<int>& asteroids) {
-        vector<int> stk;
-        for (int x : asteroids) {
-            if (x > 0) {
-                stk.push_back(x);
+    [[nodiscard]] static std::vector<int> asteroidCollision(const std::vector<int>& asteroids) {
+        std::vector<int> stack;
+        
+        for (const int asteroid : asteroids) {
+            if (asteroid > 0) {
+                stack.push_back(asteroid);
             } else {
-                while (stk.size() && stk.back() > 0 && stk.back() < -x) {
-                    stk.pop_back();
+                while (!stack.empty() && stack.back() > 0 && stack.back() < -asteroid) {
+                    stack.pop_back();
                 }
-                if (stk.size() && stk.back() == -x) {
-                    stk.pop_back();
-                } else if (stk.empty() || stk.back() < 0) {
-                    stk.push_back(x);
+                if (!stack.empty() && stack.back() == -asteroid) {
+                    stack.pop_back();
+                } else if (stack.empty() || stack.back() < 0) {
+                    stack.push_back(asteroid);
                 }
             }
         }
-        return stk;
+        return stack;
     }
 };

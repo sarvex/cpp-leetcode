@@ -4,13 +4,10 @@
  * @approach Count characters, increment for s, decrement for t, all should be zero
  * @complexity Time: O(n), Space: O(1) - fixed 26 characters
  */
-#include <algorithm>
-#include <array>
-#include <string>
 
 class Solution final {
 public:
-  [[nodiscard]] auto isAnagram(const std::string& s, const std::string& t) const -> bool {
+  [[nodiscard]] static auto isAnagram(const std::string& s, const std::string& t) -> bool {
     if (s.size() != t.size()) {
       return false;
     }
@@ -19,6 +16,6 @@ public:
       ++count[s[i] - 'a'];
       --count[t[i] - 'a'];
     }
-    return std::all_of(count.begin(), count.end(), [](int x) { return x == 0; });
+    return std::ranges::all_of(count, [](const int x) { return x == 0; });
   }
 };

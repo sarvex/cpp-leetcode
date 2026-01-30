@@ -1,13 +1,19 @@
-class Solution {
+/**
+ * @brief Greedy negation with frequency counting
+ * @intuition Negate smallest negatives first, handle remaining flips on smallest absolute value
+ * @approach Count frequencies, flip negatives from smallest, handle odd remaining flips
+ * @complexity Time: O(n + C) where C = value range, Space: O(C)
+ */
+class Solution final {
 public:
-    int largestSumAfterKNegations(vector<int>& nums, int k) {
-        unordered_map<int, int> cnt;
-        for (int& x : nums) {
+    [[nodiscard]] static int largestSumAfterKNegations(const std::vector<int>& nums, int k) {
+        std::unordered_map<int, int> cnt;
+        for (const int x : nums) {
             ++cnt[x];
         }
         for (int x = -100; x < 0 && k > 0; ++x) {
             if (cnt[x]) {
-                int m = min(cnt[x], k);
+                const int m = std::min(cnt[x], k);
                 cnt[x] -= m;
                 cnt[-x] += m;
                 k -= m;
@@ -23,7 +29,7 @@ public:
             }
         }
         int ans = 0;
-        for (auto& [x, v] : cnt) {
+        for (const auto& [x, v] : cnt) {
             ans += x * v;
         }
         return ans;
